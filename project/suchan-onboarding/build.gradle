@@ -1,0 +1,28 @@
+plugins {
+    id 'java'
+}
+
+dependencies {
+    implementation project(':suchan-onboarding:domain')
+    implementation project(':suchan-onboarding:application')
+    implementation project(':suchan-onboarding:common')
+}
+
+subprojects {
+    if (name == 'application') {
+        bootJar {
+            enabled = true
+        }
+        jar {
+            enabled = false
+        }
+    }
+    if (name == 'domain' || name == 'common') {
+        bootJar {
+            enabled = false
+        }
+        jar {
+            enabled = true
+        }
+    }
+}
