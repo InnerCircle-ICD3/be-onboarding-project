@@ -1,0 +1,62 @@
+### Java ###
+# 컴파일된 클래스 파일
+*.class
+
+# 로그 파일
+*.log
+
+# 패키지 파일
+*.jar
+*.war
+*.zip
+*.tar.gz
+
+### Gradle ###
+.gradle
+**/build/
+!src/**/build/
+
+# gradle wrapper를 무시하지 않음
+!gradle/wrapper/gradle-wrapper.jar
+!gradle/wrapper/gradle-wrapper.properties
+
+# Gradle cache
+.gradle/
+
+### Spring Boot ###
+HELP.md
+.gradle
+build/
+!gradle/wrapper/gradle-wrapper.jar
+!**/src/main/**/build/
+!**/src/test/**/build/
+
+### IntelliJ IDEA ###
+.idea
+*.iws
+*.iml
+*.ipr
+out/
+!**/src/main/**/out/
+!**/src/test/**/out/
+
+### 운영체제 관련 ###
+# Windows
+Thumbs.db
+ehthumbs.db
+Desktop.ini
+$RECYCLE.BIN/
+
+### 애플리케이션 설정 ###
+# application.properties나 application.yml에 포함된 민감한 정보를 무시
+**/src/main/resources/application-*.yml
+**/src/main/resources/application-*.properties
+# 단, 기본 설정 파일은 포함
+!**/src/main/resources/application.yml
+!**/src/main/resources/application.properties
+
+### 데이터베이스 ###
+# H2 데이터베이스 파일
+*.db
+*.mv.db
+*.trace.db
