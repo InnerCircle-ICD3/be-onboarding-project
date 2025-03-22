@@ -5,6 +5,51 @@
 [설문 받을 항목]은 [항목 이름], [항목 설명], [항목 입력 형태], [항목 필수 여부]의 구성으로 이루어져있습니다.
 [항목 입력 형태]는 [단답형], [장문형], [단일 선택 리스트], [다중 선택 리스트]의 구성으로 이루어져있습니다.
 
+### 프로젝트 구조
+```
+📦 project-root
+├── 📂 domain
+│   ├── 📂 entity
+│   │   ├── Survey.java
+│   │   └── SurveyResponse.java
+│   ├── 📂 repository
+│   │   ├── SurveyRepository.java
+│   │   └── SurveyResponseRepository.java
+│   ├── 📂 query
+│   │   ├── 📂 dto
+│   │   │   ├── SurveyQuery.java
+│   │   │   └── SurveyResponseQuery.java
+│   │   └── 📂 service
+│   │       ├── SurveyQueryService.java
+│   │       └── SurveyResponseQueryService.java
+│   └── 📂 command
+│       ├── 📂 dto
+│       │   ├── SurveyCommand.java
+│       │   └── SurveyResponseCommand.java
+│       └── 📂 service
+│           ├── SurveyCommandService.java
+│           └── SurveyResponseCommandService.java
+│
+├── 📂 application
+│   ├── 📂 controller
+│   │   ├── 📂 request
+│   │   │   ├── CreateSurveyRequest.java
+│   │   │   ├── UpdateSurveyRequest.java
+│   │   │   ├── SubmitSurveyResponseRequest.java
+│   │   │   └── SurveyResponseQueryRequest.java
+│   │   ├── 📂 response
+│   │   │   ├── SurveyResponse.java
+│   │   │   ├── SurveyListResponse.java
+│   │   │   └── SurveyResponseResponse.java
+│   │   ├── SurveyController.java
+│   │   └── SurveyResponseController.java
+│   └── 📂 service
+│       ├── 📂 dto
+│       │   ├── SurveyDto.java
+│       │   └── SurveyResponseDto.java
+│       ├── SurveyService.java
+│       └── SurveyResponseService.java
+```
 
 ### 추가 사용 라이브러리
 
