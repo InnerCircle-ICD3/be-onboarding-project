@@ -15,7 +15,7 @@ public enum ChoiceType {
         return Arrays.stream(ChoiceType.values())
                 .filter(type -> type.getName().equals(choiceType))
                 .findFirst()
-                .orElseThrow(() -> new IllegalArgumentException("잘못된 타입 변환 " + choiceType));
+                .orElseThrow(() -> new IllegalArgumentException("잘못된 choice 타입 변환 : " + choiceType));
     }
 
     private String getName() {

@@ -15,7 +15,7 @@ public enum TextType {
         return Arrays.stream(TextType.values())
                 .filter(type -> type.getName().equals(textType))
                 .findFirst()
-                .orElseThrow(() -> new IllegalArgumentException("잘못된 타입 변환 " + textType));
+                .orElseThrow(() -> new IllegalArgumentException("잘못된 text 타입 변환 : " + textType));
     }
 
     private String getName() {
