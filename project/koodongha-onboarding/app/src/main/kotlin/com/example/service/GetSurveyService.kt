@@ -4,7 +4,7 @@ import com.example.dto.SurveyDetailResponse
 import com.example.dto.SurveyItemResponse
 import com.example.entity.InputType
 import com.example.repository.SurveyRepository
-import com.springframework.stereotype.Service
+import org.springframework.stereotype.Service
 
 @Service
 class GetSurveyService(

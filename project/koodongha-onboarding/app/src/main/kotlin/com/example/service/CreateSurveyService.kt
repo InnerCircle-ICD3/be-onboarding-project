@@ -3,7 +3,7 @@ package com.example.service
 import com.example.dto.CreateSurveyRequest
 import com.example.entity.*
 import com.example.repository.SurveyRepository
-import com.springframework.stereotype.Service
+import org.springframework.stereotype.Service
 
 @Service
 class CreateSurveyService(

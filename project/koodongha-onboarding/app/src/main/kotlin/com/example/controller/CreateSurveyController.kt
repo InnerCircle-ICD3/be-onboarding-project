@@ -2,8 +2,8 @@ package com.example.controller
 
 import com.example.dto.CreateSurveyRequest
 import com.example.service.CreateSurveyService
-import com.springframework.http.ResponseEntity
-import com.springframework.web.bind.annotation.*
+import org.springframework.http.ResponseEntity
+import org.springframework.web.bind.annotation.*
 
 @RestController
 @RequestMapping("/surveys")
