@@ -16,6 +16,10 @@ buildscript {
     }
 }
 
+plugins {
+    id 'java'
+}
+
 allprojects {
     group = 'com.survey'
     version = '0.0.1-SNAPSHOT'
@@ -42,7 +46,6 @@ subprojects {
     dependencies {
         // spring
         implementation 'org.springframework.boot:spring-boot-starter'
-        developmentOnly 'org.springframework.boot:spring-boot-devtools'
 
         // lombok
         compileOnly "org.projectlombok:lombok:${lombokVersion}"
