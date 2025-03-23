@@ -28,7 +28,7 @@ public class SurveyOption {
     @JoinColumn(name = "survey_id")
     private Survey survey;
 
-    @OneToMany(mappedBy = "surveyOption")
+    @OneToMany(mappedBy = "surveyOption", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<InputForm> inputForms = new ArrayList<>();
 
     public SurveyOption(String title, String description, boolean isNecessary, List<InputForm> inputForms) {

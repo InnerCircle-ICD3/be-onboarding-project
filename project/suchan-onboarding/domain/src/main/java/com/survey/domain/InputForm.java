@@ -32,6 +32,14 @@ public class InputForm {
         addChoiceInputForm(choiceInputForm);
     }
 
+    public InputForm(String question, TextInputForm textInputForm) {
+        this(question, textInputForm, null);
+    }
+
+    public InputForm(String question, ChoiceInputForm choiceInputForm) {
+        this(question, null, choiceInputForm);
+    }
+
     private void validateInputForm(TextInputForm textInputForm, ChoiceInputForm choiceInputForm) {
         if (textInputForm == null && choiceInputForm == null) {
             throw new IllegalArgumentException("최소 하나의 입력 형태는 존재해야 합니다.");
