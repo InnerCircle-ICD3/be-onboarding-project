@@ -1,6 +1,8 @@
 package com.survey.application.dto;
 
 import com.survey.domain.Survey;
+import jakarta.validation.constraints.NotEmpty;
+import jakarta.validation.constraints.NotNull;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -13,8 +15,13 @@ import java.util.List;
 @AllArgsConstructor
 public class CreateSurveyRequest {
 
+    @NotNull
     private String title;
+
+    @NotNull
     private String description;
+
+    @NotEmpty
     private List<SurveyOptionDto> surveyOptionDtos = new ArrayList<>();
 
     public Survey create() {
