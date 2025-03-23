@@ -1,11 +1,14 @@
 package com.survey.domain;
 
 import jakarta.persistence.*;
+import lombok.AccessLevel;
+import lombok.NoArgsConstructor;
 
 import java.util.ArrayList;
 import java.util.List;
 
 @Entity
+@NoArgsConstructor(access = AccessLevel.PROTECTED)
 public class ChoiceInputForm {
 
     @Id
@@ -27,4 +30,13 @@ public class ChoiceInputForm {
     @OneToOne
     @JoinColumn(name = "input_form_id")
     private InputForm inputForm;
+
+    public ChoiceInputForm(ChoiceType choiceType, List<InputOption> inputOptions) {
+        this.choiceType = choiceType;
+        this.inputOptions = inputOptions;
+    }
+
+    public void addInputForm(InputForm inputForm) {
+        this.inputForm = inputForm;
+    }
 }

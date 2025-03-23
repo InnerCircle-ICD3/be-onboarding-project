@@ -1,8 +1,11 @@
 package com.survey.domain;
 
 import jakarta.persistence.*;
+import lombok.AccessLevel;
+import lombok.NoArgsConstructor;
 
 @Entity
+@NoArgsConstructor(access = AccessLevel.PROTECTED)
 public class TextInputForm {
 
     @Id
@@ -16,4 +19,12 @@ public class TextInputForm {
     @OneToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "input_form_id")
     private InputForm inputForm;
+
+    public TextInputForm(TextType textType) {
+        this.textType = textType;
+    }
+
+    public void addInputForm(InputForm inputForm) {
+        this.inputForm = inputForm;
+    }
 }

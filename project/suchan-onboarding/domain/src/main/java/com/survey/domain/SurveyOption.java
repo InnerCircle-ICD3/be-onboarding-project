@@ -1,11 +1,14 @@
 package com.survey.domain;
 
 import jakarta.persistence.*;
+import lombok.AccessLevel;
+import lombok.NoArgsConstructor;
 
 import java.util.ArrayList;
 import java.util.List;
 
 @Entity
+@NoArgsConstructor(access = AccessLevel.PROTECTED)
 public class SurveyOption {
 
     @Id
@@ -27,4 +30,20 @@ public class SurveyOption {
 
     @OneToMany(mappedBy = "surveyOption")
     private List<InputForm> inputForms = new ArrayList<>();
+
+    public SurveyOption(String title, String description, boolean isNecessary, List<InputForm> inputForms) {
+        this.title = title;
+        this.description = description;
+        this.isNecessary = isNecessary;
+        inputForms.forEach(this::addInputForm);
+    }
+
+    public void addSurvey(Survey survey) {
+        this.survey = survey;
+    }
+
+    private void addInputForm(InputForm inputForm) {
+        this.inputForms.add(inputForm);
+        inputForm.addSurveyOption(this);
+    }
 }
