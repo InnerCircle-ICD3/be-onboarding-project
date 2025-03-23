@@ -17,9 +17,7 @@ public enum TextType {
         return Arrays.stream(TextType.values())
                 .filter(type -> type.getName().equals(textType))
                 .findFirst()
-                .orElseThrow(() -> {
-                    return new IllegalArgumentException(TEXT_TYPE_EXCEPTION_PREFIX + textType);
-                });
+                .orElseThrow(() -> new IllegalArgumentException(TEXT_TYPE_EXCEPTION_PREFIX + textType));
     }
 
     private String getName() {

@@ -17,9 +17,7 @@ public enum ChoiceType {
         return Arrays.stream(ChoiceType.values())
                 .filter(type -> type.getName().equals(choiceType))
                 .findFirst()
-                .orElseThrow(() -> {
-                    return new IllegalArgumentException(CHOICE_TYPE_EXCEPTION_PREFIX + choiceType);
-                });
+                .orElseThrow(() -> new IllegalArgumentException(CHOICE_TYPE_EXCEPTION_PREFIX + choiceType));
     }
 
     private String getName() {
