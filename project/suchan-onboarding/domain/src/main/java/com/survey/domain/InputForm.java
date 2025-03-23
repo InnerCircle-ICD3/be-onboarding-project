@@ -7,6 +7,8 @@ import lombok.NoArgsConstructor;
 @Entity
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 public class InputForm {
+    private static final String NON_INPUT_EXCEPTION_MESSAGE = "최소 하나의 입력 형태는 존재해야 합니다.";
+    private static final String DOUBLE_INPUT_EXCEPTION_MESSAGE = "입력 형태가 2가지일 수는 없습니다.";
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -42,11 +44,11 @@ public class InputForm {
 
     private void validateInputForm(TextInputForm textInputForm, ChoiceInputForm choiceInputForm) {
         if (textInputForm == null && choiceInputForm == null) {
-            throw new IllegalArgumentException("최소 하나의 입력 형태는 존재해야 합니다.");
+            throw new IllegalArgumentException(NON_INPUT_EXCEPTION_MESSAGE);
         }
 
         if (textInputForm != null && choiceInputForm != null) {
-            throw new IllegalArgumentException("입력 형태가 2가지일 수는 없습니다.");
+            throw new IllegalArgumentException(DOUBLE_INPUT_EXCEPTION_MESSAGE);
         }
     }
 
