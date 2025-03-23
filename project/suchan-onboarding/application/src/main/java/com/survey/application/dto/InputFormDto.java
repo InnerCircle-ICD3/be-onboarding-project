@@ -10,6 +10,7 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @AllArgsConstructor
 public class InputFormDto {
+    private static final String INPUT_FORM_DTO_EXCEPTION_MESSAGE = "InputFormDto 의 내용이 비어있습니다.";
 
     @NotNull
     private String question;
@@ -31,6 +32,6 @@ public class InputFormDto {
             );
         }
 
-        throw new IllegalStateException("InputFormDto 의 내용이 비어있습니다.");
+        throw new IllegalStateException(INPUT_FORM_DTO_EXCEPTION_MESSAGE);
     }
 }
