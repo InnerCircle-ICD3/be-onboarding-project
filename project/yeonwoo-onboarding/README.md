@@ -4,10 +4,12 @@
 
 - “설문조사 서비스"를 구현하려고 합니다.
 - 아래 “온보딩 프로젝트 기능 요구사항"을 구현할 것 입니다.
-- 
+## ERD
+![설문조사 (3)](https://github.com/user-attachments/assets/48ca1ee9-27e4-49c6-a9f5-e1d05e20fadd)
+
 ## 사용된 기술스택
 
-- JAVA
+- JAVA 17
 - Spring Boot
 - Gradle
 - JPA
