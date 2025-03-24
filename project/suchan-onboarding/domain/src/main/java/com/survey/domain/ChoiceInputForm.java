@@ -13,6 +13,7 @@ import java.util.Objects;
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @Getter
 public class ChoiceInputForm {
+    private static final String INPUT_OPTIONS_EXCEPTION_MESSAGE = "선택 항목은 1개 이상이어야 합니다.";
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -35,8 +36,15 @@ public class ChoiceInputForm {
     private InputForm inputForm;
 
     public ChoiceInputForm(ChoiceType choiceType, List<InputOption> inputOptions) {
+        validateInputOptions(inputOptions);
         this.choiceType = choiceType;
         this.inputOptions = inputOptions;
+    }
+
+    private void validateInputOptions(List<InputOption> inputOptions) {
+        if (inputOptions == null || inputOptions.isEmpty()) {
+            throw new IllegalArgumentException(INPUT_OPTIONS_EXCEPTION_MESSAGE);
+        }
     }
 
     public void addInputForm(InputForm inputForm) {
