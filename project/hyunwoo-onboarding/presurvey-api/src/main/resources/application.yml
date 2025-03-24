@@ -3,9 +3,9 @@ spring:
     name: presurvey-api
 
   datasource:
-    url: jdbc:h2:mem:testdb
+    url: jdbc:h2:tcp://localhost/~/test
     driver-class-name: org.h2.Driver
-    username: user
+    username: sa
     password:
     hikari:
       maximum-pool-size: 5
