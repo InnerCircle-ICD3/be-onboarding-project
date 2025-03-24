@@ -2,10 +2,12 @@ package com.survey.domain;
 
 import jakarta.persistence.*;
 import lombok.AccessLevel;
+import lombok.Getter;
 import lombok.NoArgsConstructor;
 
 @Entity
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
+@Getter
 public class InputForm {
     private static final String NON_INPUT_EXCEPTION_MESSAGE = "최소 하나의 입력 형태는 존재해야 합니다.";
     private static final String DOUBLE_INPUT_EXCEPTION_MESSAGE = "입력 형태가 2가지일 수는 없습니다.";
@@ -27,11 +29,15 @@ public class InputForm {
     @OneToOne(mappedBy = "inputForm", cascade = CascadeType.ALL, orphanRemoval = true)
     private ChoiceInputForm choiceInputForm;
 
-    public InputForm(String question, TextInputForm textInputForm, ChoiceInputForm choiceInputForm) {
+    protected InputForm(String question, TextInputForm textInputForm, ChoiceInputForm choiceInputForm) {
         validateInputForm(textInputForm, choiceInputForm);
         this.question = question;
         addTextInputForm(textInputForm);
         addChoiceInputForm(choiceInputForm);
+    }
+
+    protected InputForm(String question) {
+        this(question, null, null);
     }
 
     public InputForm(String question, TextInputForm textInputForm) {
