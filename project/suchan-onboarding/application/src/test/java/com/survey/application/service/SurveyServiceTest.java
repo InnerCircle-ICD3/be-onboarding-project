@@ -1,8 +1,6 @@
 package com.survey.application.service;
 
 import com.survey.application.dto.CreateSurveyRequest;
-import com.survey.application.repository.FakeSurveyRepository;
-import com.survey.application.test.TestFixture;
 import com.survey.domain.Survey;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
