@@ -1,8 +1,6 @@
 package com.survey.application.service;
 
 import com.survey.application.dto.*;
-import com.survey.domain.ChoiceType;
-import com.survey.domain.TextType;
 
 import java.util.List;
 
