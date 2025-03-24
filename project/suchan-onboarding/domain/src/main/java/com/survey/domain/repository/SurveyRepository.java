@@ -4,5 +4,5 @@ import com.survey.domain.Survey;
 
 public interface SurveyRepository {
 
-    void save(Survey survey);
+    Survey save(Survey survey);
 }

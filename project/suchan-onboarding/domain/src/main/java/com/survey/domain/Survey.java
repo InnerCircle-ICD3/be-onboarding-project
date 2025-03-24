@@ -45,4 +45,8 @@ public class Survey {
         this.surveyOptions.add(surveyOption);
         surveyOption.addSurvey(this);
     }
+
+    public void changeId(long idIndex) {
+        this.id = idIndex;
+    }
 }
