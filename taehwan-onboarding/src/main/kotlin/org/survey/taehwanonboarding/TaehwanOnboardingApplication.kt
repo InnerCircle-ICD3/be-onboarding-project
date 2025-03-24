@@ -7,5 +7,5 @@ import org.springframework.boot.runApplication
 class TaehwanOnboardingApplication
 
 fun main(args: Array<String>) {
-	runApplication<TaehwanOnboardingApplication>(*args)
+    runApplication<TaehwanOnboardingApplication>(*args)
 }
