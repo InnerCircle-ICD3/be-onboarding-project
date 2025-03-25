@@ -1,4 +1,4 @@
-package com.example.service
+package com.example
 
 import com.example.entity.InputType
 import com.example.entity.Survey

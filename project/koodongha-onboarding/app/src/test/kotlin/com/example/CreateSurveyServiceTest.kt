@@ -1,4 +1,4 @@
-package com.example.service
+package com.example
 
 import com.example.dto.CreateSurveyItemRequest
 import com.example.dto.CreateSurveyRequest
@@ -7,6 +7,7 @@ import com.example.repository.SurveyRepository
 import org.junit.jupiter.api.Assertions.*
 import org.junit.jupiter.api.Test
 import org.mockito.kotlin.mock
+import org.mockito.kotlin.verify
 
 class CreateSurveyServiceTest {
 
@@ -29,6 +30,7 @@ class CreateSurveyServiceTest {
         )
 
         assertDoesNotThrow { createSurveyService.createSurvey(request) }
+        verify(surveyRepository).save(any())  // surveyRepository save 호출 확인
     }
 
     @Test
@@ -155,6 +157,72 @@ class CreateSurveyServiceTest {
                     inputType = InputType.MULTI_CHOICE,
                     isRequired = true,
                     options = null
+                )
+            )
+        )
+
+        val exception = assertThrows(IllegalArgumentException::class.java) {
+            createSurveyService.createSurvey(request)
+        }
+
+        assertEquals("선택형 항목에는 옵션이 필수입니다.", exception.message)
+    }
+    @Test
+    fun `설문 제목이 비어있을 경우 예외 발생`() {
+        val request = CreateSurveyRequest(
+            title = "",
+            description = "설명",
+            items = listOf(
+                CreateSurveyItemRequest(
+                    name = "질문1",
+                    description = "설명1",
+                    inputType = InputType.SHORT_TEXT,
+                    isRequired = true
+                )
+            )
+        )
+
+        val exception = assertThrows(IllegalArgumentException::class.java) {
+            createSurveyService.createSurvey(request)
+        }
+
+        assertEquals("설문 제목은 필수입니다.", exception.message)
+    }
+
+    @Test
+    fun `설문 설명이 비어있을 경우 예외 발생`() {
+        val request = CreateSurveyRequest(
+            title = "제목",
+            description = "",
+            items = listOf(
+                CreateSurveyItemRequest(
+                    name = "질문1",
+                    description = "설명1",
+                    inputType = InputType.SHORT_TEXT,
+                    isRequired = true
+                )
+            )
+        )
+
+        val exception = assertThrows(IllegalArgumentException::class.java) {
+            createSurveyService.createSurvey(request)
+        }
+
+        assertEquals("설문 설명은 필수입니다.", exception.message)
+    }
+
+    @Test
+    fun `선택형 항목인데 옵션이 빈 리스트일 경우 예외 발생`() {
+        val request = CreateSurveyRequest(
+            title = "제목",
+            description = "설명",
+            items = listOf(
+                CreateSurveyItemRequest(
+                    name = "언어 선택",
+                    description = "옵션 리스트가 비었어요",
+                    inputType = InputType.SINGLE_CHOICE,
+                    isRequired = true,
+                    options = emptyList()
                 )
             )
         )
