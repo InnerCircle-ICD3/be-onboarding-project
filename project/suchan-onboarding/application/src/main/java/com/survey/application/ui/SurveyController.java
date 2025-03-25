@@ -18,11 +18,11 @@ public class SurveyController {
 
     @PostMapping
     public void createSurvey(@Valid @RequestBody CreateSurveyRequest request) {
-        surveyService.createSurvey(request);
+        surveyService.registerSurvey(request);
     }
 
     @PutMapping
     public void updateSurvey(@Valid @RequestBody UpdateSurveyRequest request) {
-        surveyService.updateSurvey(request);
+        surveyService.changeSurvey(request);
     }
 }

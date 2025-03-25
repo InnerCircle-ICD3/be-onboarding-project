@@ -30,7 +30,7 @@ class SurveyServiceTest {
         CreateSurveyRequest request = TestFixture.createDefaultSurveyRequest();
 
         // when
-        surveyService.createSurvey(request);
+        surveyService.registerSurvey(request);
 
         // then
         assertThat(surveyRepository.getCallCounter()).isEqualTo(1);
