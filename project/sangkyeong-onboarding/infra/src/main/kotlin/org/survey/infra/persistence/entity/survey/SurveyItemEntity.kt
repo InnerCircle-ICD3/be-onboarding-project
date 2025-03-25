@@ -29,4 +29,7 @@ class SurveyItemEntity(
 
     var isRequired: Boolean = isRequired
         protected set
+
+    var isDeleted: Boolean = false
+        protected set
 }
