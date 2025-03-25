@@ -1,11 +1,11 @@
-package org.innercircle.survey
+package org.survey
 
 import org.springframework.boot.autoconfigure.SpringBootApplication
 import org.springframework.boot.runApplication
 
 @SpringBootApplication
-class SangkyeongOnboardingApplication
+class BootstrapApplication
 
 fun main(args: Array<String>) {
-    runApplication<SangkyeongOnboardingApplication>(*args)
+    runApplication<BootstrapApplication>(*args)
 }
