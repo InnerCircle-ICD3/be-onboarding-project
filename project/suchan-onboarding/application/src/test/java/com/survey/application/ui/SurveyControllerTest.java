@@ -1,7 +1,7 @@
 package com.survey.application.ui;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.survey.application.dto.CreateSurveyRequest;
+import com.survey.application.request.CreateSurveyRequest;
 import com.survey.application.dto.InputFormDto;
 import com.survey.application.dto.SurveyOptionDto;
 import com.survey.application.dto.TextInputFormDto;
