@@ -4,6 +4,8 @@ import com.survey.domain.Survey;
 import com.survey.domain.repository.SurveyRepository;
 import org.springframework.stereotype.Repository;
 
+import java.util.Optional;
+
 @Repository
 public class SurveyRepositoryImpl implements SurveyRepository {
 
@@ -16,5 +18,10 @@ public class SurveyRepositoryImpl implements SurveyRepository {
     @Override
     public Survey save(Survey survey) {
         return jpaSurveyRepository.save(survey);
+    }
+
+    @Override
+    public Optional<Survey> findById(Long surveyId) {
+        return jpaSurveyRepository.findById(surveyId);
     }
 }
