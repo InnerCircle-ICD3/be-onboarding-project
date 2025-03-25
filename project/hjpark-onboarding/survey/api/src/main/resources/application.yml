@@ -1,0 +1,26 @@
+spring:
+  application:
+    name: hjpark-onboarding
+  profiles:
+    active: local
+  config:
+    import:
+      - logging.yml
+
+server:
+  port: 8080
+
+logging:
+  level:
+    root: INFO
+    hjpark: DEBUG
+
+--- #local profile 설정
+spring.config.activate.on-profile: local
+
+--- #dev profile 설정
+spring.config.activate.on-profile: dev
+
+--- #prod profile 설정
+spring.config.activate.on-profile: prod
+
