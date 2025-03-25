@@ -7,5 +7,5 @@ import org.springframework.boot.runApplication
 class SurveyApiApplication
 
 fun main(args: Array<String>) {
-	runApplication<SurveyApiApplication>(*args)
+    runApplication<SurveyApiApplication>(*args)
 }
