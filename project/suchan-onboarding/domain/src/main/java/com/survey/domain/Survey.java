@@ -6,7 +6,6 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
@@ -62,13 +61,7 @@ public class Survey {
     }
 
     public void modify(Survey survey) {
-        if (survey.getSurveyOptions() == null || survey.getSurveyOptions().isEmpty()) {
-            return;
-        }
-
-        if (survey.getSurveyOptions().size() > 10) {
-            throw new IllegalArgumentException(SURVEY_OPTIONS_CNT_EXCEPTION_MESSAGE);
-        }
+        if (shouldSkipModification(survey)) return;
 
         this.title = survey.getTitle();
         this.description = survey.getDescription();
@@ -81,13 +74,9 @@ public class Survey {
 
         for (SurveyOption newOption : survey.getSurveyOptions()) {
             if (newOption.getId() != null && existingOptionsMap.containsKey(newOption.getId())) {
-                SurveyOption existingOption = existingOptionsMap.get(newOption.getId());
-                existingOption.update(newOption);
-                updatedOptions.add(existingOption);
-                existingOptionsMap.remove(newOption.getId());
+                changeSurveyOption(newOption, existingOptionsMap, updatedOptions);
             } else {
-                newOption.addSurvey(this);
-                updatedOptions.add(newOption);
+                registerSurveyOption(newOption, updatedOptions);
             }
         }
 
@@ -95,9 +84,26 @@ public class Survey {
         this.surveyOptions.addAll(updatedOptions);
     }
 
-//    public void cancelOptions(List<Long> deletedSurveyOptionIds) {
-//        for (Long deletedSurveyOptionId : deletedSurveyOptionIds) {
-//            this.surveyOptions.removeIf(surveyOption -> surveyOption.isSameIdentity(deletedSurveyOptionId));
-//        }
-//    }
+    private boolean shouldSkipModification(Survey survey) {
+        if (survey.getSurveyOptions() == null || survey.getSurveyOptions().isEmpty()) {
+            return true;
+        }
+
+        if (survey.getSurveyOptions().size() > 10) {
+            throw new IllegalArgumentException(SURVEY_OPTIONS_CNT_EXCEPTION_MESSAGE);
+        }
+        return false;
+    }
+
+    private void changeSurveyOption(SurveyOption newOption, Map<Long, SurveyOption> existingOptionsMap, List<SurveyOption> updatedOptions) {
+        SurveyOption existingOption = existingOptionsMap.get(newOption.getId());
+        existingOption.update(newOption);
+        updatedOptions.add(existingOption);
+        existingOptionsMap.remove(newOption.getId());
+    }
+
+    private void registerSurveyOption(SurveyOption newOption, List<SurveyOption> updatedOptions) {
+        newOption.addSurvey(this);
+        updatedOptions.add(newOption);
+    }
 }
