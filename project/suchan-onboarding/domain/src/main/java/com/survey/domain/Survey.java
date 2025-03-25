@@ -9,6 +9,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.stream.Collectors;
 
 @Entity
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
@@ -29,6 +30,14 @@ public class Survey {
     @Column(nullable = false)
     @OneToMany(mappedBy = "survey", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<SurveyOption> surveyOptions = new ArrayList<>();
+
+    public Survey(Long id, String title, String description, List<SurveyOption> surveyOptions) {
+        this.id = id;
+        this.title = title;
+        this.description = description;
+        validateSurveyOptionCnt(surveyOptions);
+        surveyOptions.forEach(this::addSurveyOption);
+    }
 
     public Survey(String title, String description, List<SurveyOption> surveyOptions) {
         this.title = title;
@@ -52,29 +61,43 @@ public class Survey {
         this.id = idIndex;
     }
 
-    public void update(Survey survey) {
-        validateSurveyOptionCnt(survey.getSurveyOptions());
+    public void modify(Survey survey) {
+        if (survey.getSurveyOptions() == null || survey.getSurveyOptions().isEmpty()) {
+            return;
+        }
+
+        if (survey.getSurveyOptions().size() > 10) {
+            throw new IllegalArgumentException(SURVEY_OPTIONS_CNT_EXCEPTION_MESSAGE);
+        }
+
         this.title = survey.getTitle();
         this.description = survey.getDescription();
 
-        Map<Long, SurveyOption> surveyOptionMap = new HashMap<>();
-        for (SurveyOption surveyOption : survey.getSurveyOptions()) {
-            surveyOptionMap.put(surveyOption.getId(), surveyOption);
+        Map<Long, SurveyOption> existingOptionsMap = this.surveyOptions.stream()
+                .filter(option -> option.getId() != null)
+                .collect(Collectors.toMap(SurveyOption::getId, option -> option, (a, b) -> b));
+
+        List<SurveyOption> updatedOptions = new ArrayList<>();
+
+        for (SurveyOption newOption : survey.getSurveyOptions()) {
+            if (newOption.getId() != null && existingOptionsMap.containsKey(newOption.getId())) {
+                SurveyOption existingOption = existingOptionsMap.get(newOption.getId());
+                existingOption.update(newOption);
+                updatedOptions.add(existingOption);
+                existingOptionsMap.remove(newOption.getId());
+            } else {
+                newOption.addSurvey(this);
+                updatedOptions.add(newOption);
+            }
         }
 
-        surveyOptionMap.forEach((k, v) -> {
-            boolean isNewSurveyOption = true;
-            for (SurveyOption surveyOption : this.surveyOptions) {
-                if (surveyOption.isSameIdentity(k)) {
-                    isNewSurveyOption = false;
-                    surveyOption.update(v);
-                }
-            }
-
-            if (isNewSurveyOption) {
-               surveyOptions.add(v);
-            }
-        });
-
+        this.surveyOptions.clear();
+        this.surveyOptions.addAll(updatedOptions);
     }
+
+//    public void cancelOptions(List<Long> deletedSurveyOptionIds) {
+//        for (Long deletedSurveyOptionId : deletedSurveyOptionIds) {
+//            this.surveyOptions.removeIf(surveyOption -> surveyOption.isSameIdentity(deletedSurveyOptionId));
+//        }
+//    }
 }

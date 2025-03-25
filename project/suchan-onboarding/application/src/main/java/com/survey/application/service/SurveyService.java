@@ -11,6 +11,7 @@ import org.springframework.transaction.annotation.Transactional;
 @Service
 @Transactional
 public class SurveyService {
+    private static final String SURVEY_NOT_FOUND_EXCEPTION = "설문 조사를 찾을 수 없습니다.";
 
     private final SurveyRepository surveyRepository;
 
@@ -18,13 +19,16 @@ public class SurveyService {
         this.surveyRepository = surveyRepository;
     }
 
-    public void createSurvey(CreateSurveyRequest request) {
+    public void registerSurvey(CreateSurveyRequest request) {
         Survey survey = request.create();
         surveyRepository.save(survey);
     }
 
-    public void updateSurvey(@Valid UpdateSurveyRequest request) {
-        Survey survey = request.create();
-        survey.update(survey);
+    // 변경/추가/삭제 모두 처리
+    public void changeSurvey(@Valid UpdateSurveyRequest request) {
+        Survey existingSurvey = surveyRepository.findById(request.getSurveyId())
+                .orElseThrow(() -> new IllegalArgumentException(SURVEY_NOT_FOUND_EXCEPTION));
+        Survey updatedSurvey = request.create();
+        existingSurvey.modify(updatedSurvey);
     }
 }
