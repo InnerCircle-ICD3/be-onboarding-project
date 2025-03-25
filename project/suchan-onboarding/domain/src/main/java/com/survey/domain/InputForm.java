@@ -19,7 +19,7 @@ public class InputForm {
     @Column(nullable = false)
     private String question;
 
-    @ManyToOne(fetch = FetchType.LAZY)
+    @OneToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "survey_option_id")
     private SurveyOption surveyOption;
 
