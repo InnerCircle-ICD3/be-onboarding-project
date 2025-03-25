@@ -63,13 +63,18 @@ public class Survey {
         }
 
         surveyOptionMap.forEach((k, v) -> {
+            boolean isNewSurveyOption = true;
             for (SurveyOption surveyOption : this.surveyOptions) {
                 if (surveyOption.isSameIdentity(k)) {
+                    isNewSurveyOption = false;
                     surveyOption.update(v);
                 }
             }
-        });
 
+            if (isNewSurveyOption) {
+               surveyOptions.add(v);
+            }
+        });
 
     }
 }
