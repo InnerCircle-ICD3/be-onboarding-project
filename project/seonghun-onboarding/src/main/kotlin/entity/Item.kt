@@ -20,9 +20,6 @@ data class Item(
     val type: Enum<ItemType>,
 
     @ElementCollection
-    @CollectionTable(
-        name = "item_contents",
-        joinColumns = [JoinColumn(name = "itemId")]
-    )
+    @CollectionTable(name = "item_contents", joinColumns = [JoinColumn(name = "itemId")])
     val contents: List<String>
 )

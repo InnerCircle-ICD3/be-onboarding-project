@@ -17,17 +17,11 @@ data class Answer(
     val name: String,
 
     @ElementCollection
-    @CollectionTable(
-        name = "answer_items",
-        joinColumns = [JoinColumn(name = "answer_id")]
-    )
+    @CollectionTable(name = "answer_items", joinColumns = [JoinColumn(name = "answer_id")])
     val items: List<String>,
 
     @ElementCollection
-    @CollectionTable(
-        name = "answer_responses",
-        joinColumns = [JoinColumn(name = "answer_id")]
-    )
+    @CollectionTable( name = "answer_responses", joinColumns = [JoinColumn(name = "answer_id")])
     val responses: List<String>,
 
     @ManyToOne
