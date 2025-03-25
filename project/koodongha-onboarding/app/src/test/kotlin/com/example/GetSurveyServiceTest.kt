@@ -1,47 +1,56 @@
 package com.example
 
-import com.example.entity.InputType
-import com.example.entity.Survey
-import com.example.entity.SurveyItem
+import com.example.dto.SurveyResponse
+import com.example.entity.*
+import com.example.repository.SurveyAnswerRepository
 import com.example.repository.SurveyRepository
+import com.example.service.GetSurveyService
 import org.junit.jupiter.api.Assertions.*
 import org.junit.jupiter.api.Test
-import org.springframework.beans.factory.annotation.Autowired
-import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest
+import org.mockito.kotlin.*
+import java.util.*
 
-@DataJpaTest
-class GetSurveyServiceTest @Autowired constructor(
-    val surveyRepository: SurveyRepository
-) {
+class GetSurveyServiceTest {
+
+    private val surveyRepository: SurveyRepository = mock()
+    private val answerRepository: SurveyAnswerRepository = mock()
+    private val service = GetSurveyService(surveyRepository, answerRepository)
 
     @Test
-    fun `저장된 설문을 정상적으로 조회할 수 있다`() {
-        val survey = Survey(
-            title = "조회 테스트",
-            description = "설명입니다."
-        )
+    fun `존재하는 설문을 정상적으로 조회할 수 있다`() {
+        val surveyId = 1L
+        val survey = Survey(surveyId, "테스트 설문", "설문 설명")
         val item = SurveyItem(
-            name = "질문 1",
-            description = "내용",
-            inputType = InputType.SHORT_TEXT,
+            name = "언어 선택",
+            description = "언어를 골라주세요",
+            inputType = InputType.SINGLE_CHOICE,
             isRequired = true,
             survey = survey
         )
+        val option = SelectionOption(value = "Kotlin", surveyItem = item)
+        item.options.add(option)
         survey.items.add(item)
-        val saved = surveyRepository.save(survey)
 
-        val service = GetSurveyService(surveyRepository)
+        val answer = SurveyAnswer(
+            survey = survey,
+            surveyItem = item,
+            shortAnswer = "Kotlin"
+        )
 
-        val result = service.getSurvey(saved.id)
+        whenever(surveyRepository.findById(surveyId)).thenReturn(Optional.of(survey))
+        whenever(answerRepository.findBySurveyId(surveyId)).thenReturn(listOf(answer))
 
-        assertEquals("조회 테스트", result.title)
+        val result: SurveyResponse = service.getSurvey(surveyId)
+
+        assertEquals("테스트 설문", result.title)
         assertEquals(1, result.items.size)
-        assertEquals("질문 1", result.items[0].name)
+        assertEquals("언어 선택", result.items[0].name)
+        assertEquals("Kotlin", result.items[0].answers?.first())
     }
 
     @Test
-    fun `존재하지 않는 설문 조회 시 예외가 발생한다`() {
-        val service = GetSurveyService(surveyRepository)
+    fun `존재하지 않는 설문 조회 시 예외 발생`() {
+        whenever(surveyRepository.findById(9999L)).thenReturn(Optional.empty())
 
         val exception = assertThrows(RuntimeException::class.java) {
             service.getSurvey(9999L)
@@ -51,98 +60,75 @@ class GetSurveyServiceTest @Autowired constructor(
     }
 
     @Test
-    fun `설문 응답 조회 시 응답 항목과 값을 제대로 가져올 수 있다`() {
-        val survey = Survey(
-            title = "응답 테스트 설문",
-            description = "응답을 제출하고 조회하는 테스트"
-        )
+    fun `설문 항목에 응답이 없을 경우 응답 리스트는 비어있다`() {
+        val surveyId = 2L
+        val survey = Survey(surveyId, "빈 응답 설문", "응답 없음")
         val item = SurveyItem(
-            name = "언어 선택",
-            description = "언어를 고르세요",
-            inputType = InputType.SINGLE_CHOICE,
-            isRequired = true,
+            name = "취미",
+            description = "취미를 입력하세요",
+            inputType = InputType.SHORT_TEXT,
+            isRequired = false,
             survey = survey
         )
         survey.items.add(item)
 
-        val savedSurvey = surveyRepository.save(survey)
+        whenever(surveyRepository.findById(surveyId)).thenReturn(Optional.of(survey))
+        whenever(answerRepository.findBySurveyId(surveyId)).thenReturn(emptyList())
 
-        val answer = Answer(
-            surveyItem = item,
-            answer = "Kotlin",
-            survey = savedSurvey
-        )
-        val answerRepository = mock<AnswerRepository>()
-        answerRepository.save(answer)
+        val result = service.getSurvey(surveyId)
 
-        val service = GetSurveyService(surveyRepository)
-
-        val result = service.getSurvey(savedSurvey.id)
-
-        assertEquals("응답 테스트 설문", result.title)
+        assertEquals("빈 응답 설문", result.title)
         assertEquals(1, result.items.size)
-        assertEquals("언어 선택", result.items[0].name)
-        assertEquals("Kotlin", result.items[0].options?.first())
+        assertTrue(result.items[0].answers?.isEmpty() == true)
     }
 
     @Test
-    fun `옵션이 없는 설문 항목에 응답을 제출하려고 할 때 예외가 발생한다`() {
-        val survey = Survey(
-            title = "옵션 없는 항목 테스트",
-            description = "옵션이 없는 선택형 항목에 응답을 제출하려고 할 때"
-        )
+    fun `답변 필터링 - 특정 항목 이름과 응답 값이 일치하는 경우`() {
+        val surveyId = 3L
+        val survey = Survey(surveyId, "필터 테스트", "특정 항목 필터")
         val item = SurveyItem(
-            name = "언어 선택",
-            description = "언어를 고르세요",
+            name = "프레임워크",
+            description = "사용 프레임워크",
             inputType = InputType.SINGLE_CHOICE,
             isRequired = true,
             survey = survey
         )
         survey.items.add(item)
 
-        val savedSurvey = surveyRepository.save(survey)
+        val answer1 = SurveyAnswer(survey = survey, surveyItem = item, shortAnswer = "Spring")
+        val answer2 = SurveyAnswer(survey = survey, surveyItem = item, shortAnswer = "Django")
 
-        val exception = assertThrows(IllegalArgumentException::class.java) {
-            Answer(
-                surveyItem = item,
-                answer = "Kotlin",
-                survey = savedSurvey
-            )
-        }
+        whenever(surveyRepository.findById(surveyId)).thenReturn(Optional.of(survey))
+        whenever(answerRepository.findBySurveyId(surveyId)).thenReturn(listOf(answer1, answer2))
 
-        assertEquals("선택형 항목에는 옵션이 필수입니다.", exception.message)
+        val result = service.getSurvey(surveyId, filterName = "프레임워크", filterAnswer = "Spring")
+
+        assertEquals(1, result.items.size)
+        assertEquals("프레임워크", result.items[0].name)
+        assertTrue(result.items[0].answers!!.contains("Spring"))
+        assertFalse(result.items[0].answers!!.contains("Django"))
     }
 
     @Test
-    fun `설문 응답 항목 이름 및 응답 값으로 조회하기`() {
-        val survey = Survey(
-            title = "응답 항목 이름으로 조회",
-            description = "응답 항목 이름과 응답 값으로 설문을 조회합니다."
-        )
+    fun `답변 필터링 - 필터 조건 불일치시 항목 제외`() {
+        val surveyId = 4L
+        val survey = Survey(surveyId, "필터 제외 테스트", "조건 불일치")
         val item = SurveyItem(
-            name = "언어 선택",
-            description = "언어를 고르세요",
+            name = "OS",
+            description = "운영체제",
             inputType = InputType.SINGLE_CHOICE,
-            isRequired = true,
+            isRequired = false,
             survey = survey
         )
         survey.items.add(item)
 
-        val savedSurvey = surveyRepository.save(survey)
+        val answer = SurveyAnswer(survey = survey, surveyItem = item, shortAnswer = "Linux")
 
-        val answer = Answer(
-            surveyItem = item,
-            answer = "Kotlin",
-            survey = savedSurvey
-        )
-        val answerRepository = mock<AnswerRepository>()
-        answerRepository.save(answer)
+        whenever(surveyRepository.findById(surveyId)).thenReturn(Optional.of(survey))
+        whenever(answerRepository.findBySurveyId(surveyId)).thenReturn(listOf(answer))
 
-        val service = GetSurveyService(surveyRepository)
+        val result = service.getSurvey(surveyId, filterName = "OS", filterAnswer = "Windows")
 
-        val result = service.getSurvey(savedSurvey.id)
-
-        assertEquals("언어 선택", result.items[0].name)
-        assertEquals("Kotlin", result.items[0].options?.first())
+        assertTrue(result.items.isEmpty())
     }
 }
