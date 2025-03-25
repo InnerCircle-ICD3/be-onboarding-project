@@ -54,7 +54,6 @@ public class SurveyOption {
         this.title = surveyOption.title;
         this.description = surveyOption.description;
         this.isNecessary = surveyOption.isNecessary;
-
-        // TODO
+        addInputForm(surveyOption.inputForm);
     }
 }
