@@ -22,3 +22,10 @@ spring:
     properties:
       hibernate:
         format_sql: true
+
+logging:
+  pattern:
+    console: "%d{yyyy-MM-dd HH:mm:ss.SSS} [%X{traceId}] [%X{method} %X{uri}] %-5level %logger{36} - %msg%n"
+  level:
+    root: INFO
+    com.example.survey: DEBUG
