@@ -1,9 +1,8 @@
-package com.survey.application.service;
+package com.survey.application.repository;
 
 import com.survey.domain.Survey;
 import com.survey.domain.repository.SurveyRepository;
 
-import java.util.HashMap;
 import java.util.Map;
 
 public class FakeSurveyRepository implements SurveyRepository {

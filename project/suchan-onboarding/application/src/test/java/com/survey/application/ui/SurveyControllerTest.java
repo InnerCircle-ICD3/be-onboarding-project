@@ -86,7 +86,7 @@ class SurveyControllerTest {
                     "옵션 " + i,
                     "설명 " + i,
                     true,
-                    List.of(inputFormDto)
+                    inputFormDto
             ));
         }
         return options;

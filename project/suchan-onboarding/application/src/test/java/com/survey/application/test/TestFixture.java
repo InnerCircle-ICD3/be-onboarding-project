@@ -1,4 +1,4 @@
-package com.survey.application.service;
+package com.survey.application.test;
 
 import com.survey.application.dto.*;
 import com.survey.application.request.CreateSurveyRequest;
@@ -23,10 +23,7 @@ public class TestFixture {
                 "기본 정보",
                 "응답자의 기본 정보입니다.",
                 true,
-                List.of(
-                        createNameInputForm(),
-                        createAgeGroupInputForm()
-                )
+                createNameInputForm()
         );
     }
 
@@ -35,10 +32,7 @@ public class TestFixture {
                 "서비스 만족도",
                 "서비스에 대한 만족도를 평가해주세요.",
                 true,
-                List.of(
-                        createSatisfactionScoreInputForm(),
-                        createFeedbackInputForm()
-                )
+                createFeedbackInputForm()
         );
     }
 

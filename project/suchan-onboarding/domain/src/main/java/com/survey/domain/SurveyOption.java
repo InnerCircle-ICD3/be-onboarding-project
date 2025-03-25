@@ -5,9 +5,6 @@ import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
-import java.util.ArrayList;
-import java.util.List;
-
 @Entity
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @Getter
@@ -30,14 +27,14 @@ public class SurveyOption {
     @JoinColumn(name = "survey_id")
     private Survey survey;
 
-    @OneToMany(mappedBy = "surveyOption", cascade = CascadeType.ALL, orphanRemoval = true)
-    private List<InputForm> inputForms = new ArrayList<>();
+    @OneToOne(mappedBy = "surveyOption", cascade = CascadeType.ALL, orphanRemoval = true)
+    private InputForm inputForm;
 
-    public SurveyOption(String title, String description, boolean isNecessary, List<InputForm> inputForms) {
+    public SurveyOption(String title, String description, boolean isNecessary, InputForm inputForm) {
         this.title = title;
         this.description = description;
         this.isNecessary = isNecessary;
-        inputForms.forEach(this::addInputForm);
+        addInputForm(inputForm);
     }
 
     public void addSurvey(Survey survey) {
@@ -45,7 +42,7 @@ public class SurveyOption {
     }
 
     private void addInputForm(InputForm inputForm) {
-        this.inputForms.add(inputForm);
+        this.inputForm = inputForm;
         inputForm.addSurveyOption(this);
     }
 

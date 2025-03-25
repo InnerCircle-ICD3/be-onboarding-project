@@ -1,14 +1,10 @@
 package com.survey.application.dto;
 
 import com.survey.domain.SurveyOption;
-import jakarta.validation.constraints.NotEmpty;
 import jakarta.validation.constraints.NotNull;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
-
-import java.util.ArrayList;
-import java.util.List;
 
 @Getter
 @NoArgsConstructor
@@ -24,17 +20,16 @@ public class SurveyOptionDto {
     @NotNull
     private boolean isNecessary;
 
-    @NotEmpty
-    private List<InputFormDto> inputFormDtos = new ArrayList<>();
+    @NotNull
+    private InputFormDto inputFormDto;
 
     public SurveyOption create() {
         return new SurveyOption(
                 title,
                 description,
                 isNecessary,
-                inputFormDtos.stream()
-                        .map(InputFormDto::create)
-                        .toList()
+                inputFormDto.create()
         );
     }
+
 }
