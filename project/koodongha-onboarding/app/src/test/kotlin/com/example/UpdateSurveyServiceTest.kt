@@ -1,7 +1,7 @@
 package com.example
 
-import com.example.dto.AnswerRequest
-import com.example.dto.AnswerSubmitRequest
+import com.example.dto.AnswerDto
+import com.example.dto.AnswerSubmitDto
 import com.example.entity.*
 import com.example.repository.SurveyAnswerRepository
 import com.example.repository.SurveyRepository
@@ -35,9 +35,9 @@ class UpdateSurveyServiceTest {
 
         whenever(surveyRepository.findById(1L)).thenReturn(java.util.Optional.of(survey))
 
-        val request = AnswerSubmitRequest(
+        val request = AnswerSubmitDto(
             answers = listOf(
-                AnswerRequest(itemId = 1L, values = listOf("Kotlin"))
+                AnswerDto(itemId = 1L, values = listOf("Kotlin"))
             )
         )
 
@@ -45,16 +45,16 @@ class UpdateSurveyServiceTest {
             updateSurveyService.submitAnswer(1L, request)
         }
 
-        verify(surveyAnswerRepository).saveAll(any())
+        verify(surveyAnswerRepository).saveAll(any<List<SurveyAnswer>>())
     }
 
     @Test
     fun `설문이 존재하지 않으면 예외 발생`() {
         whenever(surveyRepository.findById(999L)).thenReturn(java.util.Optional.empty())
 
-        val request = AnswerSubmitRequest(
+        val request = AnswerSubmitDto(
             answers = listOf(
-                AnswerRequest(itemId = 1L, values = listOf("Kotlin"))
+                AnswerDto(itemId = 1L, values = listOf("Kotlin"))
             )
         )
 
@@ -84,9 +84,9 @@ class UpdateSurveyServiceTest {
 
         whenever(surveyRepository.findById(1L)).thenReturn(java.util.Optional.of(survey))
 
-        val request = AnswerSubmitRequest(
+        val request = AnswerSubmitDto(
             answers = listOf(
-                AnswerRequest(itemId = 999L, values = listOf("Kotlin"))
+                AnswerDto(itemId = 999L, values = listOf("Kotlin"))
             )
         )
 
@@ -116,9 +116,9 @@ class UpdateSurveyServiceTest {
 
         whenever(surveyRepository.findById(1L)).thenReturn(java.util.Optional.of(survey))
 
-        val request = AnswerSubmitRequest(
+        val request = AnswerSubmitDto(
             answers = listOf(
-                AnswerRequest(itemId = 1L, values = listOf("저는 백엔드 개발자이며, 코틀린과 자바를 주로 사용하고 있어요!"))
+                AnswerDto(itemId = 1L, values = listOf("저는 백엔드 개발자이며, 코틀린과 자바를 주로 사용하고 있어요!"))
             )
         )
 
@@ -126,7 +126,7 @@ class UpdateSurveyServiceTest {
             updateSurveyService.submitAnswer(1L, request)
         }
 
-        verify(surveyAnswerRepository).saveAll(any())
+        verify(surveyAnswerRepository).saveAll(any<List<SurveyAnswer>>())
     }
 
     @Test
@@ -150,9 +150,9 @@ class UpdateSurveyServiceTest {
 
         val longText = "a".repeat(300)
 
-        val request = AnswerSubmitRequest(
+        val request = AnswerSubmitDto(
             answers = listOf(
-                AnswerRequest(itemId = 1L, values = listOf(longText))
+                AnswerDto(itemId = 1L, values = listOf(longText))
             )
         )
 

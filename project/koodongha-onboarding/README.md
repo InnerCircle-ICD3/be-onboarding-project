@@ -3,4 +3,4 @@ Run :
 ./gradlew :app:bootRun
 
 Test :
-./gradlew test
+./gradlew clean test

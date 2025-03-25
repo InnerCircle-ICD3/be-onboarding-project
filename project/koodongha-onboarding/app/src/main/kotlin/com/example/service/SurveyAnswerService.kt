@@ -6,7 +6,7 @@ import com.example.repository.SurveyRepository
 import org.springframework.stereotype.Service
 
 @Service
-class UpdateSurveyService(
+class SurveyAnswerService(
     private val surveyRepository: SurveyRepository,
     private val surveyAnswerRepository: SurveyAnswerRepository
 ) {

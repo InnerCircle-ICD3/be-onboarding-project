@@ -36,6 +36,8 @@ dependencies {
 
 tasks.test {
     useJUnitPlatform()
+    systemProperty("file.encoding", "UTF-8")
+    jvmArgs("-Dfile.encoding=UTF-8")  
 }
 
 kotlin {

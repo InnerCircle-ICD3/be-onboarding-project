@@ -1,11 +1,12 @@
 package com.example
 
-import com.example.dto.AnswerRequest
-import com.example.dto.AnswerSubmitRequest
+import com.example.dto.AnswerDto
+import com.example.dto.AnswerSubmitDto
 import com.example.entity.InputType
 import com.example.entity.SelectionOption
 import com.example.entity.Survey
 import com.example.entity.SurveyItem
+import com.example.entity.SurveyAnswer
 import com.example.repository.SurveyAnswerRepository
 import com.example.repository.SurveyRepository
 import com.example.service.SurveyAnswerService
@@ -36,10 +37,10 @@ class SurveyAnswerServiceTest {
 
         whenever(surveyRepository.findById(1L)).thenReturn(java.util.Optional.of(survey))
 
-        val request = AnswerSubmitRequest(
+        val request = AnswerSubmitDto(
             answers = listOf(
-                AnswerRequest(1L, listOf("Kotlin")),
-                AnswerRequest(2L, listOf("3년"))
+                AnswerDto(1L, listOf("Kotlin")),
+                AnswerDto(2L, listOf("3년"))
             )
         )
 
@@ -47,7 +48,7 @@ class SurveyAnswerServiceTest {
             surveyAnswerService.submitAnswer(1L, request)
         }
 
-        verify(surveyAnswerRepository).saveAll(any())
+        verify(surveyAnswerRepository).saveAll(any<List<SurveyAnswer>>())
     }
 
     @Test
@@ -66,8 +67,8 @@ class SurveyAnswerServiceTest {
 
         whenever(surveyRepository.findById(1L)).thenReturn(java.util.Optional.of(survey))
 
-        val request = AnswerSubmitRequest(
-            answers = listOf(AnswerRequest(1L, listOf("Python")))
+        val request = AnswerSubmitDto(
+            answers = listOf(AnswerDto(1L, listOf("Python")))
         )
 
         val exception = assertThrows(IllegalArgumentException::class.java) {
@@ -81,8 +82,8 @@ class SurveyAnswerServiceTest {
     fun `존재하지 않는 설문일 경우 예외 발생`() {
         whenever(surveyRepository.findById(999L)).thenReturn(java.util.Optional.empty())
 
-        val request = AnswerSubmitRequest(
-            answers = listOf(AnswerRequest(1L, listOf("Kotlin")))
+        val request = AnswerSubmitDto(
+            answers = listOf(AnswerDto(1L, listOf("Kotlin")))
         )
 
         val exception = assertThrows(IllegalArgumentException::class.java) {
@@ -110,15 +111,15 @@ class SurveyAnswerServiceTest {
 
         whenever(surveyRepository.findById(1L)).thenReturn(java.util.Optional.of(survey))
 
-        val request = AnswerSubmitRequest(
-            answers = listOf(AnswerRequest(1L, listOf("Kotlin", "Java")))
+        val request = AnswerSubmitDto(
+            answers = listOf(AnswerDto(1L, listOf("Kotlin", "Java")))
         )
 
         assertDoesNotThrow {
             surveyAnswerService.submitAnswer(1L, request)
         }
 
-        verify(surveyAnswerRepository).saveAll(any())
+        verify(surveyAnswerRepository).saveAll(any<List<SurveyAnswer>>())
     }
 
     @Test
@@ -138,8 +139,8 @@ class SurveyAnswerServiceTest {
 
         whenever(surveyRepository.findById(1L)).thenReturn(java.util.Optional.of(survey))
 
-        val request = AnswerSubmitRequest(
-            answers = listOf(AnswerRequest(1L, listOf("Kotlin", "Scala")))
+        val request = AnswerSubmitDto(
+            answers = listOf(AnswerDto(1L, listOf("Kotlin", "Scala")))
         )
 
         val exception = assertThrows(IllegalArgumentException::class.java) {
