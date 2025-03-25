@@ -6,6 +6,7 @@ import com.example.repository.SurveyAnswerRepository
 import com.example.repository.SurveyRepository
 import com.example.service.GetSurveyService
 import org.junit.jupiter.api.Assertions.*
+import org.junit.jupiter.api.DisplayName
 import org.junit.jupiter.api.Test
 import org.mockito.kotlin.*
 import java.util.*
@@ -17,12 +18,13 @@ class GetSurveyServiceTest {
     private val service = GetSurveyService(surveyRepository, answerRepository)
 
     @Test
-    fun `존재하는 설문을 정상적으로 조회할 수 있다`() {
+    @DisplayName("Should return survey successfully when survey exists")
+    fun shouldReturnSurveyWhenExists() {
         val surveyId = 1L
-        val survey = Survey(surveyId, "테스트 설문", "설문 설명")
+        val survey = Survey(surveyId, "Test Survey", "Survey Description")
         val item = SurveyItem(
-            name = "언어 선택",
-            description = "언어를 골라주세요",
+            name = "Language Choice",
+            description = "Choose a language",
             inputType = InputType.SINGLE_CHOICE,
             isRequired = true,
             survey = survey
@@ -42,30 +44,32 @@ class GetSurveyServiceTest {
 
         val result: SurveyResponse = service.getSurvey(surveyId)
 
-        assertEquals("테스트 설문", result.title)
+        assertEquals("Test Survey", result.title)
         assertEquals(1, result.items.size)
-        assertEquals("언어 선택", result.items[0].name)
+        assertEquals("Language Choice", result.items[0].name)
         assertEquals("Kotlin", result.items[0].answers?.first())
     }
 
     @Test
-    fun `존재하지 않는 설문 조회 시 예외 발생`() {
+    @DisplayName("Should throw exception when survey does not exist")
+    fun shouldThrowExceptionWhenSurveyNotFound() {
         whenever(surveyRepository.findById(9999L)).thenReturn(Optional.empty())
 
         val exception = assertThrows(RuntimeException::class.java) {
             service.getSurvey(9999L)
         }
 
-        assertEquals("설문이 존재하지 않습니다.", exception.message)
+        assertEquals("Survey not found.", exception.message)
     }
 
     @Test
-    fun `설문 항목에 응답이 없을 경우 응답 리스트는 비어있다`() {
+    @DisplayName("Should return empty answer list when no answers exist for a survey item")
+    fun shouldReturnEmptyAnswerListWhenNoAnswersExist() {
         val surveyId = 2L
-        val survey = Survey(surveyId, "빈 응답 설문", "응답 없음")
+        val survey = Survey(surveyId, "Empty Answer Survey", "No responses")
         val item = SurveyItem(
-            name = "취미",
-            description = "취미를 입력하세요",
+            name = "Hobby",
+            description = "Enter your hobby",
             inputType = InputType.SHORT_TEXT,
             isRequired = false,
             survey = survey
@@ -77,18 +81,19 @@ class GetSurveyServiceTest {
 
         val result = service.getSurvey(surveyId)
 
-        assertEquals("빈 응답 설문", result.title)
+        assertEquals("Empty Answer Survey", result.title)
         assertEquals(1, result.items.size)
         assertTrue(result.items[0].answers?.isEmpty() == true)
     }
 
     @Test
-    fun `답변 필터링 - 특정 항목 이름과 응답 값이 일치하는 경우`() {
+    @DisplayName("Should filter answers by item name and answer value")
+    fun shouldFilterAnswersByItemNameAndAnswerValue() {
         val surveyId = 3L
-        val survey = Survey(surveyId, "필터 테스트", "특정 항목 필터")
+        val survey = Survey(surveyId, "Filter Test", "Filter by specific item")
         val item = SurveyItem(
-            name = "프레임워크",
-            description = "사용 프레임워크",
+            name = "Framework",
+            description = "Preferred framework",
             inputType = InputType.SINGLE_CHOICE,
             isRequired = true,
             survey = survey
@@ -101,21 +106,22 @@ class GetSurveyServiceTest {
         whenever(surveyRepository.findById(surveyId)).thenReturn(Optional.of(survey))
         whenever(answerRepository.findBySurveyId(surveyId)).thenReturn(listOf(answer1, answer2))
 
-        val result = service.getSurvey(surveyId, filterName = "프레임워크", filterAnswer = "Spring")
+        val result = service.getSurvey(surveyId, filterName = "Framework", filterAnswer = "Spring")
 
         assertEquals(1, result.items.size)
-        assertEquals("프레임워크", result.items[0].name)
+        assertEquals("Framework", result.items[0].name)
         assertTrue(result.items[0].answers!!.contains("Spring"))
         assertFalse(result.items[0].answers!!.contains("Django"))
     }
 
     @Test
-    fun `답변 필터링 - 필터 조건 불일치시 항목 제외`() {
+    @DisplayName("Should exclude items if filter conditions do not match")
+    fun shouldExcludeItemsWhenFilterConditionsDoNotMatch() {
         val surveyId = 4L
-        val survey = Survey(surveyId, "필터 제외 테스트", "조건 불일치")
+        val survey = Survey(surveyId, "Filter Exclude Test", "Condition mismatch")
         val item = SurveyItem(
             name = "OS",
-            description = "운영체제",
+            description = "Operating system",
             inputType = InputType.SINGLE_CHOICE,
             isRequired = false,
             survey = survey

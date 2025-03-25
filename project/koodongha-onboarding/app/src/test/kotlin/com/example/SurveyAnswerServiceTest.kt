@@ -11,6 +11,7 @@ import com.example.repository.SurveyAnswerRepository
 import com.example.repository.SurveyRepository
 import com.example.service.SurveyAnswerService
 import org.junit.jupiter.api.Assertions.*
+import org.junit.jupiter.api.DisplayName
 import org.junit.jupiter.api.Test
 import org.mockito.kotlin.*
 
@@ -21,17 +22,18 @@ class SurveyAnswerServiceTest {
     private val surveyAnswerService = SurveyAnswerService(surveyRepository, surveyAnswerRepository)
 
     @Test
-    fun `정상 응답 제출 시 저장 성공`() {
+    @DisplayName("Should save successfully when submitting valid answers")
+    fun shouldSaveSuccessfullyWhenSubmittingValidAnswers() {
         val survey = Survey(
             id = 1L,
-            title = "응답 테스트 설문",
-            description = "응답을 제출하고 조회하는 테스트",
+            title = "Answer Submission Test Survey",
+            description = "Test for submitting and retrieving responses",
             items = mutableListOf(
-                SurveyItem(1L, "언어 선택", "언어를 선택하세요", InputType.SINGLE_CHOICE, true, survey = mock(), options = mutableListOf(
+                SurveyItem(1L, "Language Choice", "Choose a language", InputType.SINGLE_CHOICE, true, survey = mock(), options = mutableListOf(
                     SelectionOption(value = "Kotlin", surveyItem = mock()),
                     SelectionOption(value = "Java", surveyItem = mock())
                 )),
-                SurveyItem(2L, "경력", "몇 년 하셨나요?", InputType.SHORT_TEXT, false, survey = mock())
+                SurveyItem(2L, "Experience", "How many years have you been doing it?", InputType.SHORT_TEXT, false, survey = mock())
             )
         )
 
@@ -40,7 +42,7 @@ class SurveyAnswerServiceTest {
         val request = AnswerSubmitDto(
             answers = listOf(
                 AnswerDto(1L, listOf("Kotlin")),
-                AnswerDto(2L, listOf("3년"))
+                AnswerDto(2L, listOf("3 years"))
             )
         )
 
@@ -52,13 +54,14 @@ class SurveyAnswerServiceTest {
     }
 
     @Test
-    fun `응답 값이 설문 항목의 선택지와 일치하지 않으면 예외 발생`() {
+    @DisplayName("Should throw exception when answer value does not match survey item options")
+    fun shouldThrowExceptionWhenAnswerValueDoesNotMatchSurveyItemOptions() {
         val survey = Survey(
             id = 1L,
-            title = "응답 값 일치 테스트",
-            description = "확인",
+            title = "Answer Value Match Test",
+            description = "Test if the answer matches the options",
             items = mutableListOf(
-                SurveyItem(1L, "언어 선택", "언어를 선택하세요", InputType.SINGLE_CHOICE, true, survey = mock(), options = mutableListOf(
+                SurveyItem(1L, "Language Choice", "Choose a language", InputType.SINGLE_CHOICE, true, survey = mock(), options = mutableListOf(
                     SelectionOption(value = "Kotlin", surveyItem = mock()),
                     SelectionOption(value = "Java", surveyItem = mock())
                 ))
@@ -75,11 +78,12 @@ class SurveyAnswerServiceTest {
             surveyAnswerService.submitAnswer(1L, request)
         }
 
-        assertEquals("선택형 항목에 적합한 응답 값을 입력해야 합니다.", exception.message)
+        assertEquals("You must enter a valid answer for the selected options.", exception.message)
     }
 
     @Test
-    fun `존재하지 않는 설문일 경우 예외 발생`() {
+    @DisplayName("Should throw exception when survey does not exist")
+    fun shouldThrowExceptionWhenSurveyDoesNotExist() {
         whenever(surveyRepository.findById(999L)).thenReturn(java.util.Optional.empty())
 
         val request = AnswerSubmitDto(
@@ -90,17 +94,18 @@ class SurveyAnswerServiceTest {
             surveyAnswerService.submitAnswer(999L, request)
         }
 
-        assertEquals("해당 설문이 존재하지 않습니다.", exception.message)
+        assertEquals("Survey not found.", exception.message)
     }
 
     @Test
-    fun `다중 선택 응답이 정상적으로 저장`() {
+    @DisplayName("Should save multiple choice answers correctly")
+    fun shouldSaveMultipleChoiceAnswersCorrectly() {
         val survey = Survey(
             id = 1L,
-            title = "프로그래밍 언어 설문",
-            description = "사용하는 언어를 모두 선택하세요",
+            title = "Programming Language Survey",
+            description = "Select all the languages you use",
             items = mutableListOf(
-                SurveyItem(1L, "언어 선택", "사용하는 언어들", InputType.MULTI_CHOICE, true, survey = mock(), options = mutableListOf(
+                SurveyItem(1L, "Language Choice", "Select all the languages you use", InputType.MULTI_CHOICE, true, survey = mock(), options = mutableListOf(
                     SelectionOption(value = "Kotlin", surveyItem = mock()),
                     SelectionOption(value = "Java", surveyItem = mock()),
                     SelectionOption(value = "Python", surveyItem = mock()),
@@ -123,13 +128,14 @@ class SurveyAnswerServiceTest {
     }
 
     @Test
-    fun `다중 선택 응답 중 하나라도 옵션에 없으면 예외 발생`() {
+    @DisplayName("Should throw exception when one or more choices are not valid options")
+    fun shouldThrowExceptionWhenChoiceIsNotValid() {
         val survey = Survey(
             id = 1L,
-            title = "언어 선택 설문",
-            description = "다중 선택 테스트",
+            title = "Language Selection Survey",
+            description = "Multiple choice test",
             items = mutableListOf(
-                SurveyItem(1L, "언어", "사용 언어", InputType.MULTI_CHOICE, true, survey = mock(), options = mutableListOf(
+                SurveyItem(1L, "Language", "Languages used", InputType.MULTI_CHOICE, true, survey = mock(), options = mutableListOf(
                     SelectionOption(value = "Kotlin", surveyItem = mock()),
                     SelectionOption(value = "Java", surveyItem = mock()),
                     SelectionOption(value = "Python", surveyItem = mock())
@@ -147,6 +153,6 @@ class SurveyAnswerServiceTest {
             surveyAnswerService.submitAnswer(1L, request)
         }
 
-        assertEquals("선택형 항목에 적합한 응답 값을 입력해야 합니다.", exception.message)
+        assertEquals("You must enter a valid answer for the selected options.", exception.message)
     }
 }

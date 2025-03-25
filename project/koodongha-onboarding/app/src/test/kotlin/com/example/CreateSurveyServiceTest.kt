@@ -4,8 +4,9 @@ import com.example.dto.CreateSurveyItemRequest
 import com.example.dto.CreateSurveyRequest
 import com.example.entity.InputType
 import com.example.repository.SurveyRepository
-import com.example.service.CreateSurveyService 
+import com.example.service.CreateSurveyService
 import org.junit.jupiter.api.Assertions.*
+import org.junit.jupiter.api.DisplayName
 import org.junit.jupiter.api.Test
 import org.mockito.kotlin.any
 import org.mockito.kotlin.mock
@@ -17,14 +18,15 @@ class CreateSurveyServiceTest {
     private val createSurveyService = CreateSurveyService(surveyRepository)
 
     @Test
-    fun `설문 항목이 1개 이상 10개 이하일 경우 생성 성공`() {
+    @DisplayName("Should create survey successfully when items are between 1 and 10")
+    fun shouldCreateSurveyWhenItemsBetween1And10() {
         val request = CreateSurveyRequest(
-            title = "타이틀",
-            description = "설명",
+            title = "Title",
+            description = "Description",
             items = (1..10).map {
                 CreateSurveyItemRequest(
-                    name = "질문$it",
-                    description = "설명$it",
+                    name = "Question$it",
+                    description = "Description$it",
                     inputType = InputType.SHORT_TEXT,
                     isRequired = true,
                     options = null
@@ -37,14 +39,15 @@ class CreateSurveyServiceTest {
     }
 
     @Test
-    fun `11개 초과 설문 항목일 경우 예외 발생`() {
+    @DisplayName("Should throw exception when items exceed 10")
+    fun shouldThrowExceptionWhenItemsExceed10() {
         val request = CreateSurveyRequest(
-            title = "타이틀",
-            description = "설명",
+            title = "Title",
+            description = "Description",
             items = (1..11).map {
                 CreateSurveyItemRequest(
-                    name = "질문$it",
-                    description = "설명$it",
+                    name = "Question$it",
+                    description = "Description$it",
                     inputType = InputType.SHORT_TEXT,
                     isRequired = true,
                     options = null
@@ -56,18 +59,19 @@ class CreateSurveyServiceTest {
             createSurveyService.createSurvey(request)
         }
 
-        assertEquals("설문 항목은 1개 이상 10개 이하만 가능합니다.", exception.message)
+        assertEquals("Survey items must be between 1 and 10.", exception.message)
     }
 
     @Test
-    fun `선택형인데 옵션이 null이면 예외 발생`() {
+    @DisplayName("Should throw exception when choice type option is null")
+    fun shouldThrowExceptionWhenChoiceTypeOptionIsNull() {
         val request = CreateSurveyRequest(
-            title = "타이틀",
-            description = "설명",
+            title = "Title",
+            description = "Description",
             items = listOf(
                 CreateSurveyItemRequest(
-                    name = "언어 선택",
-                    description = "옵션 없음",
+                    name = "Language Choice",
+                    description = "No options",
                     inputType = InputType.SINGLE_CHOICE,
                     isRequired = true,
                     options = null
@@ -79,18 +83,19 @@ class CreateSurveyServiceTest {
             createSurveyService.createSurvey(request)
         }
 
-        assertEquals("선택형 항목에는 옵션이 필수입니다.", exception.message)
+        assertEquals("Choice-type items must have options.", exception.message)
     }
 
     @Test
-    fun `선택형인데 옵션이 빈 리스트면 예외 발생`() {
+    @DisplayName("Should throw exception when choice type option is empty")
+    fun shouldThrowExceptionWhenChoiceTypeOptionIsEmpty() {
         val request = CreateSurveyRequest(
-            title = "타이틀",
-            description = "설명",
+            title = "Title",
+            description = "Description",
             items = listOf(
                 CreateSurveyItemRequest(
-                    name = "언어 선택",
-                    description = "빈 옵션 리스트",
+                    name = "Language Choice",
+                    description = "Empty options list",
                     inputType = InputType.MULTI_CHOICE,
                     isRequired = true,
                     options = emptyList()
@@ -102,18 +107,19 @@ class CreateSurveyServiceTest {
             createSurveyService.createSurvey(request)
         }
 
-        assertEquals("선택형 항목에는 옵션이 필수입니다.", exception.message)
+        assertEquals("Choice-type items must have options.", exception.message)
     }
 
     @Test
-    fun `항목 이름이 비어있을 경우 예외 발생`() {
+    @DisplayName("Should throw exception when item name is empty")
+    fun shouldThrowExceptionWhenItemNameIsEmpty() {
         val request = CreateSurveyRequest(
-            title = "타이틀",
-            description = "설명",
+            title = "Title",
+            description = "Description",
             items = listOf(
                 CreateSurveyItemRequest(
                     name = "",
-                    description = "설명",
+                    description = "Description",
                     inputType = InputType.SHORT_TEXT,
                     isRequired = true,
                     options = null
@@ -125,17 +131,18 @@ class CreateSurveyServiceTest {
             createSurveyService.createSurvey(request)
         }
 
-        assertEquals("항목 이름은 필수입니다.", exception.message)
+        assertEquals("Item name is required.", exception.message)
     }
 
     @Test
-    fun `항목 설명이 비어있을 경우 예외 발생`() {
+    @DisplayName("Should throw exception when item description is empty")
+    fun shouldThrowExceptionWhenItemDescriptionIsEmpty() {
         val request = CreateSurveyRequest(
-            title = "타이틀",
-            description = "설명",
+            title = "Title",
+            description = "Description",
             items = listOf(
                 CreateSurveyItemRequest(
-                    name = "질문 1",
+                    name = "Question 1",
                     description = "",
                     inputType = InputType.SHORT_TEXT,
                     isRequired = true,
@@ -148,18 +155,19 @@ class CreateSurveyServiceTest {
             createSurveyService.createSurvey(request)
         }
 
-        assertEquals("항목 설명은 필수입니다.", exception.message)
+        assertEquals("Item description is required.", exception.message)
     }
 
     @Test
-    fun `설문 제목이 비어있을 경우 예외 발생`() {
+    @DisplayName("Should throw exception when survey title is empty")
+    fun shouldThrowExceptionWhenTitleIsEmpty() {
         val request = CreateSurveyRequest(
             title = "",
-            description = "설명",
+            description = "Description",
             items = listOf(
                 CreateSurveyItemRequest(
-                    name = "질문 1",
-                    description = "설명",
+                    name = "Question 1",
+                    description = "Description",
                     inputType = InputType.SHORT_TEXT,
                     isRequired = true,
                     options = null
@@ -171,18 +179,19 @@ class CreateSurveyServiceTest {
             createSurveyService.createSurvey(request)
         }
 
-        assertEquals("설문 제목은 필수입니다.", exception.message)
+        assertEquals("Survey title is required.", exception.message)
     }
 
     @Test
-    fun `설문 설명이 비어있을 경우 예외 발생`() {
+    @DisplayName("Should throw exception when survey description is empty")
+    fun shouldThrowExceptionWhenDescriptionIsEmpty() {
         val request = CreateSurveyRequest(
-            title = "제목",
+            title = "Title",
             description = "",
             items = listOf(
                 CreateSurveyItemRequest(
-                    name = "질문 1",
-                    description = "설명",
+                    name = "Question 1",
+                    description = "Description",
                     inputType = InputType.SHORT_TEXT,
                     isRequired = true,
                     options = null
@@ -194,6 +203,6 @@ class CreateSurveyServiceTest {
             createSurveyService.createSurvey(request)
         }
 
-        assertEquals("설문 설명은 필수입니다.", exception.message)
+        assertEquals("Survey description is required.", exception.message)
     }
 }

@@ -7,6 +7,7 @@ import com.example.repository.SurveyAnswerRepository
 import com.example.repository.SurveyRepository
 import com.example.service.UpdateSurveyService
 import org.junit.jupiter.api.Assertions.*
+import org.junit.jupiter.api.DisplayName
 import org.junit.jupiter.api.Test
 import org.mockito.kotlin.*
 
@@ -17,16 +18,17 @@ class UpdateSurveyServiceTest {
     private val updateSurveyService = UpdateSurveyService(surveyRepository, surveyAnswerRepository)
 
     @Test
-    fun `정상 응답 제출 시 저장 성공`() {
+    @DisplayName("Should save successfully when submitting valid answers")
+    fun shouldSaveSuccessfullyWhenSubmittingValidAnswers() {
         val survey = Survey(
             id = 1L,
-            title = "설문",
-            description = "테스트"
+            title = "Survey",
+            description = "Test"
         )
         val item = SurveyItem(
             id = 1L,
-            name = "언어 선택",
-            description = "좋아하는 언어",
+            name = "Language Choice",
+            description = "Favorite Language",
             inputType = InputType.SINGLE_CHOICE,
             isRequired = true,
             survey = survey
@@ -49,7 +51,8 @@ class UpdateSurveyServiceTest {
     }
 
     @Test
-    fun `설문이 존재하지 않으면 예외 발생`() {
+    @DisplayName("Should throw exception when survey does not exist")
+    fun shouldThrowExceptionWhenSurveyDoesNotExist() {
         whenever(surveyRepository.findById(999L)).thenReturn(java.util.Optional.empty())
 
         val request = AnswerSubmitDto(
@@ -62,20 +65,21 @@ class UpdateSurveyServiceTest {
             updateSurveyService.submitAnswer(999L, request)
         }
 
-        assertEquals("해당 설문이 존재하지 않습니다.", exception.message)
+        assertEquals("Survey not found.", exception.message)
     }
 
     @Test
-    fun `응답 항목이 설문 항목과 일치하지 않으면 예외 발생`() {
+    @DisplayName("Should throw exception when answer item does not match survey item")
+    fun shouldThrowExceptionWhenAnswerItemDoesNotMatchSurveyItem() {
         val survey = Survey(
             id = 1L,
-            title = "설문",
-            description = "테스트"
+            title = "Survey",
+            description = "Test"
         )
         val item = SurveyItem(
             id = 1L,
-            name = "언어 선택",
-            description = "좋아하는 언어",
+            name = "Language Choice",
+            description = "Favorite Language",
             inputType = InputType.SINGLE_CHOICE,
             isRequired = true,
             survey = survey
@@ -94,20 +98,21 @@ class UpdateSurveyServiceTest {
             updateSurveyService.submitAnswer(1L, request)
         }
 
-        assertEquals("응답 값이 설문 항목과 일치하지 않습니다.", exception.message)
+        assertEquals("Answer value does not match survey item.", exception.message)
     }
 
     @Test
-    fun `입력 형태가 LONG_TEXT일 때 응답이 정상 저장된다`() {
+    @DisplayName("Should save successfully when input type is LONG_TEXT")
+    fun shouldSaveSuccessfullyWhenInputTypeIsLongText() {
         val survey = Survey(
             id = 1L,
-            title = "자기소개 설문",
-            description = "자기소개를 길게 작성해주세요"
+            title = "Self-Introduction Survey",
+            description = "Please write a detailed self-introduction"
         )
         val item = SurveyItem(
             id = 1L,
-            name = "자기소개",
-            description = "자세히 적어주세요",
+            name = "Self-Introduction",
+            description = "Please explain in detail",
             inputType = InputType.LONG_TEXT,
             isRequired = true,
             survey = survey
@@ -118,7 +123,7 @@ class UpdateSurveyServiceTest {
 
         val request = AnswerSubmitDto(
             answers = listOf(
-                AnswerDto(itemId = 1L, values = listOf("저는 백엔드 개발자이며, 코틀린과 자바를 주로 사용하고 있어요!"))
+                AnswerDto(itemId = 1L, values = listOf("I am a backend developer, primarily using Kotlin and Java!"))
             )
         )
 
@@ -130,16 +135,17 @@ class UpdateSurveyServiceTest {
     }
 
     @Test
-    fun `SHORT_TEXT 응답이 너무 길면 예외 발생`() {
+    @DisplayName("Should throw exception when SHORT_TEXT answer is too long")
+    fun shouldThrowExceptionWhenShortTextAnswerIsTooLong() {
         val survey = Survey(
             id = 1L,
-            title = "짧은 답변 테스트",
-            description = "최대 길이 체크"
+            title = "Short Answer Test",
+            description = "Check for maximum length"
         )
         val item = SurveyItem(
             id = 1L,
-            name = "한 줄 소개",
-            description = "한 줄로 소개해주세요",
+            name = "One Line Introduction",
+            description = "Please introduce yourself in one line",
             inputType = InputType.SHORT_TEXT,
             isRequired = true,
             survey = survey
@@ -160,6 +166,6 @@ class UpdateSurveyServiceTest {
             updateSurveyService.submitAnswer(1L, request)
         }
 
-        assertEquals("SHORT_TEXT 응답은 255자 이내여야 합니다.", exception.message)
+        assertEquals("SHORT_TEXT answers must be within 255 characters.", exception.message)
     }
 }
