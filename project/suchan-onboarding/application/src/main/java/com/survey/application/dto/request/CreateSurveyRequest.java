@@ -1,6 +1,6 @@
-package com.survey.application.request;
+package com.survey.application.dto.request;
 
-import com.survey.application.dto.SurveyOptionDto;
+import com.survey.application.dto.dto.CreateSurveyOptionDto;
 import com.survey.domain.Survey;
 import jakarta.validation.constraints.NotEmpty;
 import jakarta.validation.constraints.NotNull;
@@ -23,14 +23,14 @@ public class CreateSurveyRequest {
     private String description;
 
     @NotEmpty
-    private List<SurveyOptionDto> surveyOptionDtos = new ArrayList<>();
+    private List<CreateSurveyOptionDto> surveyOptionDtos = new ArrayList<>();
 
     public Survey create() {
         return new Survey(
                 title,
                 description,
                 surveyOptionDtos.stream()
-                        .map(SurveyOptionDto::create)
+                        .map(CreateSurveyOptionDto::create)
                         .toList()
         );
     }
