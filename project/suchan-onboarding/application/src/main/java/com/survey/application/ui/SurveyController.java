@@ -1,7 +1,7 @@
 package com.survey.application.ui;
 
-import com.survey.application.request.CreateSurveyRequest;
-import com.survey.application.request.UpdateSurveyRequest;
+import com.survey.application.dto.request.CreateSurveyRequest;
+import com.survey.application.dto.request.UpdateSurveyRequest;
 import com.survey.application.service.SurveyService;
 import jakarta.validation.Valid;
 import org.springframework.web.bind.annotation.*;

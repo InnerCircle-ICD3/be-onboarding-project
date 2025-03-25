@@ -1,10 +1,10 @@
 package com.survey.application.ui;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.survey.application.request.CreateSurveyRequest;
-import com.survey.application.dto.InputFormDto;
-import com.survey.application.dto.SurveyOptionDto;
-import com.survey.application.dto.TextInputFormDto;
+import com.survey.application.dto.request.CreateSurveyRequest;
+import com.survey.application.dto.dto.CreateInputFormDto;
+import com.survey.application.dto.dto.CreateSurveyOptionDto;
+import com.survey.application.dto.dto.CreateTextInputFormDto;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -56,7 +56,7 @@ class SurveyControllerTest {
     @DisplayName("도메인 규칙을 위반하는 요청은 IllegalArgumentException이 발생하고 400 Bad Request를 반환한다")
     void illegal_argument_exception() throws Exception {
         // given
-        List<SurveyOptionDto> tooManySurveyOptions = createInvalidSurveyOptions();
+        List<CreateSurveyOptionDto> tooManySurveyOptions = createInvalidSurveyOptions();
 
         CreateSurveyRequest invalidRequest = new CreateSurveyRequest(
                 "타이틀",
@@ -73,16 +73,16 @@ class SurveyControllerTest {
                 .andExpect(jsonPath("$.timestamp").exists());
     }
 
-    private List<SurveyOptionDto> createInvalidSurveyOptions() {
-        List<SurveyOptionDto> options = new ArrayList<>();
+    private List<CreateSurveyOptionDto> createInvalidSurveyOptions() {
+        List<CreateSurveyOptionDto> options = new ArrayList<>();
         for (int i = 0; i < 11; i++) {
-            InputFormDto inputFormDto = new InputFormDto(
+            CreateInputFormDto inputFormDto = new CreateInputFormDto(
                     "질문 " + i,
-                    new TextInputFormDto("단답형"),
+                    new CreateTextInputFormDto("단답형"),
                     null
             );
 
-            options.add(new SurveyOptionDto(
+            options.add(new CreateSurveyOptionDto(
                     "옵션 " + i,
                     "설명 " + i,
                     true,

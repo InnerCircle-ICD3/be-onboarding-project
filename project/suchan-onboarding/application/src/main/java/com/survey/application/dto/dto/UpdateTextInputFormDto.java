@@ -1,4 +1,4 @@
-package com.survey.application.dto;
+package com.survey.application.dto.dto;
 
 import com.survey.domain.TextInputForm;
 import com.survey.domain.TextType;
@@ -10,7 +10,7 @@ import lombok.NoArgsConstructor;
 @Getter
 @NoArgsConstructor
 @AllArgsConstructor
-public class TextInputFormDto {
+public class UpdateTextInputFormDto {
 
     @NotNull
     private String textType;

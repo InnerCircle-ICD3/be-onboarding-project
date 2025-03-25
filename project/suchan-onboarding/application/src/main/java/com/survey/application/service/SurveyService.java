@@ -1,7 +1,7 @@
 package com.survey.application.service;
 
-import com.survey.application.request.CreateSurveyRequest;
-import com.survey.application.request.UpdateSurveyRequest;
+import com.survey.application.dto.request.CreateSurveyRequest;
+import com.survey.application.dto.request.UpdateSurveyRequest;
 import com.survey.domain.Survey;
 import com.survey.domain.repository.SurveyRepository;
 import jakarta.validation.Valid;
