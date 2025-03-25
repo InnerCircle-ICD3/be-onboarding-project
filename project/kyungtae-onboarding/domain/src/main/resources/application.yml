@@ -11,6 +11,8 @@ spring:
     properties:
       hibernate:
         format_sql: true
+    physical-naming-strategy: org.springframework.boot.orm.jpa.hibernate.SpringPhysicalNamingStrategy
+    database-platform: org.hibernate.dialect.H2Dialect
   h2:
     console:
       enabled: true
