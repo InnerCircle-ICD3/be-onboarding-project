@@ -1,5 +1,6 @@
-package com.survey.application.dto;
+package com.survey.application.request;
 
+import com.survey.application.dto.SurveyOptionDto;
 import com.survey.domain.Survey;
 import jakarta.validation.constraints.NotEmpty;
 import jakarta.validation.constraints.NotNull;
@@ -13,7 +14,7 @@ import java.util.List;
 @Getter
 @NoArgsConstructor
 @AllArgsConstructor
-public class CreateSurveyRequest {
+public class UpdateSurveyRequest {
 
     @NotNull
     private String title;

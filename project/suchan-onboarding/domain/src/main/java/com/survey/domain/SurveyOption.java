@@ -48,4 +48,16 @@ public class SurveyOption {
         this.inputForms.add(inputForm);
         inputForm.addSurveyOption(this);
     }
+
+    public boolean isSameIdentity(Long identifier) {
+        return this.id.equals(identifier);
+    }
+
+    public void update(SurveyOption surveyOption) {
+        this.title = surveyOption.title;
+        this.description = surveyOption.description;
+        this.isNecessary = surveyOption.isNecessary;
+
+        // TODO
+    }
 }

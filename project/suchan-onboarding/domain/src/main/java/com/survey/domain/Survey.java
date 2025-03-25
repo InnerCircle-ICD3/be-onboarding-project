@@ -6,7 +6,9 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 @Entity
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
@@ -48,5 +50,26 @@ public class Survey {
 
     public void changeId(long idIndex) {
         this.id = idIndex;
+    }
+
+    public void update(Survey survey) {
+        validateSurveyOptionCnt(survey.getSurveyOptions());
+        this.title = survey.getTitle();
+        this.description = survey.getDescription();
+
+        Map<Long, SurveyOption> surveyOptionMap = new HashMap<>();
+        for (SurveyOption surveyOption : survey.getSurveyOptions()) {
+            surveyOptionMap.put(surveyOption.getId(), surveyOption);
+        }
+
+        surveyOptionMap.forEach((k, v) -> {
+            for (SurveyOption surveyOption : this.surveyOptions) {
+                if (surveyOption.isSameIdentity(k)) {
+                    surveyOption.update(v);
+                }
+            }
+        });
+
+
     }
 }
