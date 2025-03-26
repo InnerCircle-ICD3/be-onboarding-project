@@ -1,6 +1,7 @@
 package com.survey.application.dto.dto;
 
 import com.survey.domain.InputForm;
+import jakarta.validation.Valid;
 import jakarta.validation.constraints.NotNull;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -14,7 +15,11 @@ public class CreateInputFormDto {
 
     @NotNull
     private String question;
+
+    @Valid
     private CreateTextInputFormDto textInputFormDto;
+
+    @Valid
     private CreateChoiceInputFormDto createChoiceInputFormDto;
 
     public InputForm create() {

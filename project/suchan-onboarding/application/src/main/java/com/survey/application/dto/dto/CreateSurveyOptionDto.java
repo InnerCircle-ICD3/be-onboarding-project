@@ -1,6 +1,7 @@
 package com.survey.application.dto.dto;
 
 import com.survey.domain.SurveyOption;
+import jakarta.validation.Valid;
 import jakarta.validation.constraints.NotNull;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -21,6 +22,7 @@ public class CreateSurveyOptionDto {
     private boolean isNecessary;
 
     @NotNull
+    @Valid
     private CreateInputFormDto inputFormDto;
 
     public SurveyOption create() {
