@@ -18,7 +18,7 @@ class CreateSurveyService(
             description = request.description
         )
 
-        request.items.forEachIndexed { _, itemRequest ->
+        request.items.forEach { itemRequest ->
             val item = SurveyItem(
                 name = itemRequest.name,
                 description = itemRequest.description,
@@ -28,7 +28,7 @@ class CreateSurveyService(
             )
 
             if (item.inputType.isChoice()) {
-                itemRequest.options!!.forEach { option ->
+                itemRequest.options?.forEach { option ->
                     val selectionOption = SelectionOption(
                         value = option,
                         surveyItem = item
@@ -44,11 +44,11 @@ class CreateSurveyService(
     }
 
     private fun validate(request: CreateSurveyRequest) {
-        if (request.title?.isBlank() != false) {
+        if (request.title.isBlank()) {
             throw IllegalArgumentException("Survey title is required.")
         }
 
-        if (request.description?.isBlank() != false) {
+        if (request.description.isNullOrBlank()) {
             throw IllegalArgumentException("Survey description is required.")
         }
 
@@ -57,23 +57,20 @@ class CreateSurveyService(
         }
 
         request.items.forEach { item ->
-            if (item.name?.isBlank() != false) {
+            if (item.name.isBlank()) {
                 throw IllegalArgumentException("Item name is required.")
             }
 
-            if (item.description?.isBlank() != false) {
+            if (item.description.isNullOrBlank()) {
                 throw IllegalArgumentException("Item description is required.")
             }
 
-            if (item.inputType.isChoice()) {
-                if (item.options.isNullOrEmpty()) {
-                    throw IllegalArgumentException("Choice-type items must have options.")
-                }
+            if (item.inputType.isChoice() && item.options.isNullOrEmpty()) {
+                throw IllegalArgumentException("Choice-type items must have options.")
             }
         }
     }
 
-    private fun InputType.isChoice(): Boolean {
-        return this == InputType.SINGLE_CHOICE || this == InputType.MULTI_CHOICE
-    }
+    private fun InputType.isChoice(): Boolean =
+        this == InputType.SINGLE_CHOICE || this == InputType.MULTI_CHOICE
 }

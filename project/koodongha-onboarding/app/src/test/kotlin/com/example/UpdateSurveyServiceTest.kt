@@ -10,6 +10,7 @@ import org.junit.jupiter.api.Assertions.*
 import org.junit.jupiter.api.DisplayName
 import org.junit.jupiter.api.Test
 import org.mockito.kotlin.*
+import java.util.Optional
 
 class UpdateSurveyServiceTest {
 
@@ -20,28 +21,25 @@ class UpdateSurveyServiceTest {
     @Test
     @DisplayName("Should save successfully when submitting valid answers")
     fun shouldSaveSuccessfullyWhenSubmittingValidAnswers() {
-        val survey = Survey(
-            id = 1L,
-            title = "Survey",
-            description = "Test"
-        )
         val item = SurveyItem(
             id = 1L,
             name = "Language Choice",
             description = "Favorite Language",
             inputType = InputType.SINGLE_CHOICE,
             isRequired = true,
-            survey = survey
-        )
-        item.options.add(
-            SelectionOption(
-                value = "Kotlin",
-                surveyItem = item
+            survey = mock(),
+            options = mutableListOf(
+                SelectionOption(value = "Kotlin", surveyItem = mock())
             )
         )
-        survey.items.add(item)
+        val survey = Survey(
+            id = 1L,
+            title = "Survey",
+            description = "Test",
+            items = mutableListOf(item)
+        )
 
-        whenever(surveyRepository.findById(1L)).thenReturn(java.util.Optional.of(survey))
+        whenever(surveyRepository.findById(1L)).thenReturn(Optional.of(survey))
 
         val request = AnswerSubmitDto(
             answers = listOf(
@@ -59,7 +57,7 @@ class UpdateSurveyServiceTest {
     @Test
     @DisplayName("Should throw exception when survey does not exist")
     fun shouldThrowExceptionWhenSurveyDoesNotExist() {
-        whenever(surveyRepository.findById(999L)).thenReturn(java.util.Optional.empty())
+        whenever(surveyRepository.findById(999L)).thenReturn(Optional.empty())
 
         val request = AnswerSubmitDto(
             answers = listOf(
@@ -77,22 +75,22 @@ class UpdateSurveyServiceTest {
     @Test
     @DisplayName("Should throw exception when answer item does not match survey item")
     fun shouldThrowExceptionWhenAnswerItemDoesNotMatchSurveyItem() {
-        val survey = Survey(
-            id = 1L,
-            title = "Survey",
-            description = "Test"
-        )
         val item = SurveyItem(
             id = 1L,
             name = "Language Choice",
             description = "Favorite Language",
             inputType = InputType.SINGLE_CHOICE,
             isRequired = true,
-            survey = survey
+            survey = mock()
         )
-        survey.items.add(item)
+        val survey = Survey(
+            id = 1L,
+            title = "Survey",
+            description = "Test",
+            items = mutableListOf(item)
+        )
 
-        whenever(surveyRepository.findById(1L)).thenReturn(java.util.Optional.of(survey))
+        whenever(surveyRepository.findById(1L)).thenReturn(Optional.of(survey))
 
         val request = AnswerSubmitDto(
             answers = listOf(
@@ -110,22 +108,22 @@ class UpdateSurveyServiceTest {
     @Test
     @DisplayName("Should save successfully when input type is LONG_TEXT")
     fun shouldSaveSuccessfullyWhenInputTypeIsLongText() {
-        val survey = Survey(
-            id = 1L,
-            title = "Self-Introduction Survey",
-            description = "Please write a detailed self-introduction"
-        )
         val item = SurveyItem(
             id = 1L,
             name = "Self-Introduction",
             description = "Please explain in detail",
             inputType = InputType.LONG_TEXT,
             isRequired = true,
-            survey = survey
+            survey = mock()
         )
-        survey.items.add(item)
+        val survey = Survey(
+            id = 1L,
+            title = "Self-Introduction Survey",
+            description = "Please write a detailed self-introduction",
+            items = mutableListOf(item)
+        )
 
-        whenever(surveyRepository.findById(1L)).thenReturn(java.util.Optional.of(survey))
+        whenever(surveyRepository.findById(1L)).thenReturn(Optional.of(survey))
 
         val request = AnswerSubmitDto(
             answers = listOf(
@@ -143,22 +141,22 @@ class UpdateSurveyServiceTest {
     @Test
     @DisplayName("Should throw exception when SHORT_TEXT answer is too long")
     fun shouldThrowExceptionWhenShortTextAnswerIsTooLong() {
-        val survey = Survey(
-            id = 1L,
-            title = "Short Answer Test",
-            description = "Check for maximum length"
-        )
         val item = SurveyItem(
             id = 1L,
             name = "One Line Introduction",
             description = "Please introduce yourself in one line",
             inputType = InputType.SHORT_TEXT,
             isRequired = true,
-            survey = survey
+            survey = mock()
         )
-        survey.items.add(item)
+        val survey = Survey(
+            id = 1L,
+            title = "Short Answer Test",
+            description = "Check for maximum length",
+            items = mutableListOf(item)
+        )
 
-        whenever(surveyRepository.findById(1L)).thenReturn(java.util.Optional.of(survey))
+        whenever(surveyRepository.findById(1L)).thenReturn(Optional.of(survey))
 
         val longText = "a".repeat(300)
 

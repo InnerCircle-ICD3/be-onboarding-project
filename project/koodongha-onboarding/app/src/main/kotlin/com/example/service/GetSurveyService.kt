@@ -26,38 +26,41 @@ class GetSurveyService(
         val itemResponses = survey.items.map { item ->
             val itemAnswers = answers
                 .filter { it.surveyItem.id == item.id }
-                .mapNotNull { it.shortAnswer }
+                .flatMap { answer ->
+                    if (answer.selectedOptions.isNotEmpty()) {
+                        answer.selectedOptions.map { it.value }
+                    } else {
+                        listOfNotNull(answer.shortAnswer)
+                    }
+                }
 
             val filteredAnswers = if (
-                filterName != null && filterAnswer != null &&
-                item.name == filterName
+                filterName != null && filterAnswer != null && item.name == filterName
             ) {
-                itemAnswers.filter { ans ->
-                    ans.split(",").map { it.trim() }.contains(filterAnswer)
-                }
+                itemAnswers.filter { it.trim() == filterAnswer }
             } else {
                 itemAnswers
             }
 
             SurveyItemResponse(
-                id = item.id!!,
+                id = item.id,
                 name = item.name,
                 description = item.description,
                 inputType = item.inputType,
                 isRequired = item.isRequired,
-                answers = filteredAnswers,
+                answers = filteredAnswers.orEmpty(),
                 options = item.options.map { it.value }
             )
         }
 
         val filteredItems = if (filterName != null && filterAnswer != null) {
-            itemResponses.filter { it.answers.orEmpty().isNotEmpty() }
+            itemResponses.filterNot { it.answers.isNullOrEmpty() }
         } else {
             itemResponses
         }
 
         return SurveyResponse(
-            id = survey.id!!,
+            id = survey.id,
             title = survey.title,
             description = survey.description,
             items = filteredItems

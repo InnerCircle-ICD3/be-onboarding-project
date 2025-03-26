@@ -1,6 +1,5 @@
 package com.example.service
 
-import com.example.dto.AnswerDto
 import com.example.dto.AnswerSubmitDto
 import com.example.entity.InputType
 import com.example.entity.SurveyAnswer
@@ -24,32 +23,42 @@ class SurveyAnswerService(
             val item = itemMap[dto.itemId]
                 ?: throw IllegalArgumentException("Answer value does not match survey item.")
 
-            val inputType = item.inputType
+            val values = dto.values
 
-            dto.values.forEach { value ->
-                if (inputType.isChoice()) {
-                    val validOptions = item.options.map { it.value }
-                    if (!validOptions.contains(value)) {
+            if (item.inputType.isChoice()) {
+                val validOptions = item.options.map { it.value }
+                values.forEach { value ->
+                    if (value !in validOptions) {
                         throw IllegalArgumentException("You must enter a valid answer for the selected options.")
                     }
                 }
-
-                if (inputType == InputType.SHORT_TEXT && value.length > 255) {
-                    throw IllegalArgumentException("SHORT_TEXT answers must be within 255 characters.")
+            } else if (item.inputType == InputType.SHORT_TEXT) {
+                values.forEach { value ->
+                    if (value.length > 255) {
+                        throw IllegalArgumentException("SHORT_TEXT answers must be within 255 characters.")
+                    }
                 }
+            }
+
+            val selectedOptions = if (item.inputType.isChoice()) {
+                values.mapNotNull { value ->
+                    item.options.find { it.value == value }
+                }.toMutableList()
+            } else {
+                mutableListOf()
             }
 
             SurveyAnswer(
                 survey = survey,
                 surveyItem = item,
-                shortAnswer = dto.values.joinToString(",")
+                shortAnswer = if (item.inputType.isChoice()) null else values.joinToString(","),
+                selectedOptions = selectedOptions
             )
         }
 
         surveyAnswerRepository.saveAll(answers)
     }
 
-    private fun InputType.isChoice(): Boolean {
-        return this == InputType.SINGLE_CHOICE || this == InputType.MULTI_CHOICE
-    }
+    private fun InputType.isChoice(): Boolean =
+        this == InputType.SINGLE_CHOICE || this == InputType.MULTI_CHOICE
 }
