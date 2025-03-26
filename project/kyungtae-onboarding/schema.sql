@@ -56,7 +56,7 @@ engine
 default charset=utf8mb4
 collate=utf8mb4_unicode_ci;
 
-CREATE TABLE `SurveyQuestionResponse`
+CREATE TABLE `SurveyAnswer`
 (
     `id`                 BIGINT PRIMARY KEY NOT NULL COMMENT '설문 응답 식별자',
     `survey_question_id` BIGINT             NOT NULL COMMENT '설문 받을 항목 식별자',
@@ -74,12 +74,12 @@ engine
 default charset=utf8mb4
 collate=utf8mb4_unicode_ci;
 
-CREATE TABLE `SurveyQuestionOptionResponse`
+CREATE TABLE `SurveyAnswerOption`
 (
-    `survey_question_response_id` BIGINT NOT NULL COMMENT '설문 응답 식별자',
+    `survey_answer_id` BIGINT NOT NULL COMMENT '설문 응답 식별자',
     `survey_question_option_id`   BIGINT NOT NULL COMMENT '설문 받을 항목 옵션 식별자',
-    PRIMARY KEY (`survey_question_response_id`, `survey_question_option_id`),
-    FOREIGN KEY (`survey_question_response_id`) REFERENCES `SurveyQuestionResponse` (`id`),
+    PRIMARY KEY (`survey_answer_id`, `survey_question_option_id`),
+    FOREIGN KEY (`survey_answer_id`) REFERENCES `SurveyQuestionResponse` (`id`),
     FOREIGN KEY (`survey_question_option_id`) REFERENCES `SurveyQuestionOption` (`id`)
 ) COMMENT '설문 받을 항목 옵션 응답'
 engine=InnoDB
