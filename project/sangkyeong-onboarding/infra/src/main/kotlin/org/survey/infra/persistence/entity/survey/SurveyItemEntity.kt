@@ -3,7 +3,7 @@ package org.survey.infra.persistence.entity.survey
 import jakarta.persistence.*
 
 @Entity
-@Table(name = "survey-item")
+@Table(name = "survey_item")
 class SurveyItemEntity(
     surveyId: Long,
     title: String,
