@@ -19,13 +19,13 @@ public class SurveyService {
         this.surveyRepository = surveyRepository;
     }
 
-    public void registerSurvey(CreateSurveyRequest request) {
+    public Long registerSurvey(CreateSurveyRequest request) {
         Survey survey = request.create();
-        surveyRepository.save(survey);
+        return surveyRepository.save(survey).getId();
     }
 
     // 변경/추가/삭제 모두 처리
-    public void changeSurvey(@Valid UpdateSurveyRequest request) {
+    public void changeSurvey(UpdateSurveyRequest request) {
         Survey existingSurvey = surveyRepository.findById(request.getSurveyId())
                 .orElseThrow(() -> new IllegalArgumentException(SURVEY_NOT_FOUND_EXCEPTION));
         Survey updatedSurvey = request.create();

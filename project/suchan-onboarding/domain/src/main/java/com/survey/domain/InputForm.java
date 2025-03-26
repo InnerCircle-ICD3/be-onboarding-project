@@ -75,4 +75,12 @@ public class InputForm {
             choiceInputForm.addInputForm(this);
         }
     }
+
+    public boolean hasChoiceInputForm() {
+        return this.choiceInputForm != null;
+    }
+
+    public boolean hasTextInputForm() {
+        return this.textInputForm != null;
+    }
 }
