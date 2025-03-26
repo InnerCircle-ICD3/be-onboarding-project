@@ -10,7 +10,7 @@ spring-cloud = "2024.0.1"
 # Libraries
 jackson = "2.15.0"
 h2 = "2.2.224"
-springdoc-openapi = "2.4.0"
+springdoc-openapi = "2.8.5"
 
 [libraries]
 # Kotlin
