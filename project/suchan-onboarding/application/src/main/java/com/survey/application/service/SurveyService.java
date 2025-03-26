@@ -4,7 +4,6 @@ import com.survey.application.dto.request.CreateSurveyRequest;
 import com.survey.application.dto.request.UpdateSurveyRequest;
 import com.survey.domain.Survey;
 import com.survey.domain.repository.SurveyRepository;
-import jakarta.validation.Valid;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -26,7 +25,7 @@ public class SurveyService {
 
     // 변경/추가/삭제 모두 처리
     public void changeSurvey(UpdateSurveyRequest request) {
-        Survey existingSurvey = surveyRepository.findById(request.getSurveyId())
+        Survey existingSurvey = surveyRepository.findCompleteSurveyFetchJoin(request.getSurveyId())
                 .orElseThrow(() -> new IllegalArgumentException(SURVEY_NOT_FOUND_EXCEPTION));
         Survey updatedSurvey = request.create();
         existingSurvey.modify(updatedSurvey);

@@ -33,6 +33,18 @@ public class FakeSurveyRepository implements SurveyRepository {
         return Optional.ofNullable(storage.get(surveyId));
     }
 
+    @Override
+    public Optional<Survey> findCompleteSurveyFetchJoin(Long surveyId) {
+        callCounter++;
+        Survey survey = storage.get(surveyId);
+
+        if (survey == null) {
+            return Optional.empty();
+        }
+
+        return Optional.of(survey);
+    }
+
     public Survey findById(long id) {
         callCounter++;
         return storage.get(id);

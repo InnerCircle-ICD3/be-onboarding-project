@@ -9,4 +9,6 @@ public interface SurveyRepository {
     Survey save(Survey survey);
 
     Optional<Survey> findById(Long surveyId);
+
+    Optional<Survey> findCompleteSurveyFetchJoin(Long surveyId);
 }
