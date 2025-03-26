@@ -1,4 +1,4 @@
-package com.example.demo
+package com.innercircle.survey
 
 import org.springframework.boot.autoconfigure.SpringBootApplication
 import org.springframework.boot.runApplication
@@ -7,5 +7,5 @@ import org.springframework.boot.runApplication
 class SurveyApiApplication
 
 fun main(args: Array<String>) {
-	runApplication<DemoApplication>(*args)
+	runApplication<SurveyApiApplication>(*args)
 }
