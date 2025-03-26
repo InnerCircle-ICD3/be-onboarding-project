@@ -60,7 +60,7 @@ CREATE TABLE `SurveyQuestionResponse`
 (
     `id`                 BIGINT PRIMARY KEY NOT NULL COMMENT '설문 응답 식별자',
     `survey_question_id` BIGINT             NOT NULL COMMENT '설문 받을 항목 식별자',
-    `content`            VARCHAR(500)       NOT NULL COMMENT '내용',
+    `content`            VARCHAR(500) NULL COMMENT '내용 (주관식 답변)',
     `input_type`         ENUM('SHORT_ANSWER', 'LONG_ANSWER', 'SINGLE_CHOICE', 'MULTI_CHOICE') NOT NULL COMMENT '입력 유형',
     `created_at`         TIMESTAMP          NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT '생성일시',
     `updated_at`         TIMESTAMP NULL COMMENT '수정일시',
