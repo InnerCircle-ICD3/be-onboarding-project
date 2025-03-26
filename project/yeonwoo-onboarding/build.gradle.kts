@@ -20,26 +20,29 @@ repositories {
 }
 
 dependencies {
+    // Spring Boot JPA
     implementation("org.springframework.boot:spring-boot-starter-data-jpa")
+
+    // Spring Boot Web
     implementation("org.springframework.boot:spring-boot-starter-web")
+
+    // JSON 처리
     implementation("com.fasterxml.jackson.module:jackson-module-kotlin")
     implementation("org.jetbrains.kotlin:kotlin-reflect")
-    runtimeOnly("com.mysql:mysql-connector-j")
-    testImplementation("org.springframework.boot:spring-boot-starter-test")
-    
-    // Lombok
-    compileOnly("org.projectlombok:lombok")
-    annotationProcessor("org.projectlombok:lombok")
-    
-    // JPA
-    implementation("org.springframework.boot:spring-boot-starter-data-jpa")
-    
-    // Lombok
-    compileOnly("org.projectlombok:lombok")
-    annotationProcessor("org.projectlombok:lombok")
-    
-    // H2 Database
+
+    // ✅ DB 관련 설정 (H2 & MySQL)
     runtimeOnly("com.h2database:h2")
+    runtimeOnly("com.mysql:mysql-connector-j") // MySQL 드라이버 (선택)
+
+    // Lombok (선택적)
+    compileOnly("org.projectlombok:lombok")
+    annotationProcessor("org.projectlombok:lombok")
+
+    // ✅ JUnit 5 설정 (테스트 관련)
+    testImplementation("org.springframework.boot:spring-boot-starter-test") {
+        exclude(group = "org.junit.vintage", module = "junit-vintage-engine") // JUnit 4 제외
+    }
+    // testImplementation("org.junit.jupiter:junit-jupiter")
 }
 
 tasks.withType<KotlinCompile> {
@@ -50,5 +53,5 @@ tasks.withType<KotlinCompile> {
 }
 
 tasks.withType<Test> {
-    useJUnitPlatform()
+    useJUnitPlatform() // ✅ JUnit 5 플랫폼 사용 설정
 }
