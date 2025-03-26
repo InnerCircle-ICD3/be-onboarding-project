@@ -10,7 +10,9 @@ data class User(
     val id: Int = 0,
 
     val name: String? = null,
-    val userKey: String? = null,
     val password: String? = null,
-    val userType: String? = null
+
+    @Enumerated(EnumType.STRING)
+    @Column(name = "user_type")
+    val userType: UserType? = null  // Admin, User 구분용
 )
