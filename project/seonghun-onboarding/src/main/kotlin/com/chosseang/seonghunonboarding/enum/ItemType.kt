@@ -1,4 +1,4 @@
-package enum
+package com.chosseang.seonghunonboarding.enum
 
 enum class ItemType {
     ShortAnswer,

@@ -1,6 +1,6 @@
-package entity
+package com.chosseang.seonghunonboarding.entity
 
-import enum.ItemType
+import com.chosseang.seonghunonboarding.enum.ItemType
 import jakarta.persistence.CollectionTable
 import jakarta.persistence.ElementCollection
 import jakarta.persistence.Entity

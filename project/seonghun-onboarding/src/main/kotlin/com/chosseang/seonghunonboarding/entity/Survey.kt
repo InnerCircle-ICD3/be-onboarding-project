@@ -1,4 +1,4 @@
-package entity
+package com.chosseang.seonghunonboarding.entity
 
 import jakarta.persistence.CascadeType
 import jakarta.persistence.Entity
@@ -15,6 +15,6 @@ data class Survey(
     val name: String,
     val description: String,
 
-    @OneToMany(mappedBy = "survey", cascade = [CascadeType.ALL], orphanRemoval = true)
+    @OneToMany(cascade = [CascadeType.ALL], orphanRemoval = true)
     val items: List<Item>
 )

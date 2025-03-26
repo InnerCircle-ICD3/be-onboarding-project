@@ -1,9 +1,8 @@
-package entity
+package com.chosseang.seonghunonboarding.entity
 
 import jakarta.persistence.CollectionTable
 import jakarta.persistence.ElementCollection
 import jakarta.persistence.Entity
-import jakarta.persistence.FetchType
 import jakarta.persistence.GeneratedValue
 import jakarta.persistence.GenerationType
 import jakarta.persistence.Id
@@ -23,7 +22,7 @@ data class Answer(
     val items: List<String>,
 
     @ElementCollection
-    @CollectionTable( name = "answer_responses", joinColumns = [JoinColumn(name = "answer_id")])
+    @CollectionTable(name = "answer_responses", joinColumns = [JoinColumn(name = "answer_id")])
     val responses: List<String>,
 
     @ManyToOne
