@@ -9,8 +9,8 @@ spring:
 
   datasource:
     driver-class-name: org.h2.Driver
-    url: jdbc:h2:~/test
-    username: user
+    url: jdbc:h2:mem:testdb
+    username: sa
     password: demo
 
   jpa:
@@ -18,7 +18,6 @@ spring:
       ddl-auto: create # spring ? ??? ??? db ??
     properties:
       hibernate:
-        dialect: org.hibernate.dialect.H2Dialect
         format_sql: true
         show_sql: true
 
