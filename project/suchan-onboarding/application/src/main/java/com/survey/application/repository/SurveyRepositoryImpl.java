@@ -24,4 +24,9 @@ public class SurveyRepositoryImpl implements SurveyRepository {
     public Optional<Survey> findById(Long surveyId) {
         return jpaSurveyRepository.findById(surveyId);
     }
+
+    @Override
+    public Optional<Survey> findCompleteSurveyFetchJoin(Long surveyId) {
+        return jpaSurveyRepository.findCompleteSurveyFetchJoin(surveyId);
+    }
 }
