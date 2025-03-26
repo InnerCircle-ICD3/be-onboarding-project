@@ -2,6 +2,7 @@ package com.survey.application.dto.request;
 
 import com.survey.application.dto.dto.CreateSurveyOptionDto;
 import com.survey.domain.Survey;
+import jakarta.validation.Valid;
 import jakarta.validation.constraints.NotEmpty;
 import jakarta.validation.constraints.NotNull;
 import lombok.AllArgsConstructor;
@@ -23,6 +24,7 @@ public class CreateSurveyRequest {
     private String description;
 
     @NotEmpty
+    @Valid
     private List<CreateSurveyOptionDto> surveyOptionDtos = new ArrayList<>();
 
     public Survey create() {

@@ -1,8 +1,9 @@
 package com.survey.application.dto.request;
 
-import com.survey.application.dto.dto.CreateSurveyOptionDto;
 import com.survey.application.dto.dto.UpdateSurveyOptionDto;
 import com.survey.domain.Survey;
+import jakarta.validation.Valid;
+import jakarta.validation.constraints.NotEmpty;
 import jakarta.validation.constraints.NotNull;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -27,6 +28,8 @@ public class UpdateSurveyRequest {
     private String description;
 
     @NotNull
+    @NotEmpty
+    @Valid
     private List<UpdateSurveyOptionDto> surveyOptionDtos;
 
     public Survey create() {
