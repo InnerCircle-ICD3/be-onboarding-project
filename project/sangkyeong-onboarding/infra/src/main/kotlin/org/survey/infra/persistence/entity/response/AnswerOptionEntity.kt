@@ -5,14 +5,14 @@ import jakarta.persistence.*
 @Entity
 @Table(name = "answer_option")
 class AnswerOptionEntity(
-    responseAnswerId: Long,
+    answerId: Long,
     itemOptionId: Long,
 ) {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     val id: Long = 0
 
-    var responseAnswerId: Long = responseAnswerId
+    var answerId: Long = answerId
         protected set
 
     var itemOptionId: Long = itemOptionId
