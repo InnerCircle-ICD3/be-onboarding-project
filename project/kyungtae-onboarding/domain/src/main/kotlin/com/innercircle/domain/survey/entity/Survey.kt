@@ -51,22 +51,6 @@ class Survey private constructor(
     }
 
     companion object {
-        fun of(
-            name: String,
-            description: String,
-            startAt: LocalDateTime,
-            endAt: LocalDateTime,
-        ): Survey {
-            return Survey(
-                SurveyContext(
-                    name = name,
-                    description = description
-                ),
-                startAt = startAt,
-                endAt = endAt
-            )
-        }
-
         fun from(command: SurveyCreateCommand): Survey {
             val survey = Survey(
                 SurveyContext(

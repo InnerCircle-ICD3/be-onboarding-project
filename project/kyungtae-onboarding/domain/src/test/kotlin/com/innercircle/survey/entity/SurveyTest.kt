@@ -1,34 +1,43 @@
 package com.innercircle.survey.entity
 
+import com.innercircle.survey.entity.SurveyTestFixtures.survey
+import com.innercircle.survey.entity.SurveyTestFixtures.surveyCreateCommand
 import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.assertThrows
 import java.time.LocalDateTime
 
 class SurveyTest {
+
+    private val surveyName = "설문 이름"
+
+    private val surveyDescription = "설문 설명"
+
     private val now = LocalDateTime.now()
+
+    private val tomorrow = now.plusDays(1)
 
     @Test
     fun `Survey는 of 메서드로 생성되고 기본 상태는 READY이다`() {
         // given
-        val now = LocalDateTime.now()
-        val survey = Survey.of("설문 제목", "설문 설명", now, now.plusDays(1))
+        val survey = survey()
 
         // when & then
-        assertThat(survey.context.name).isEqualTo("설문 제목")
+        assertThat(survey.context.name).isEqualTo("설문 이름")
         assertThat(survey.context.description).isEqualTo("설문 설명")
         assertThat(survey.status).isEqualTo(SurveyStatus.READY)
     }
 
     @Test
     fun `startAt이 endAt보다 늦으면 예외가 발생한다`() {
-        // given
-        val start = LocalDateTime.of(2025, 1, 2, 10, 0)
-        val end = LocalDateTime.of(2025, 1, 1, 10, 0)
-
         // when & then
         val exception = assertThrows<IllegalArgumentException> {
-            Survey.of("제목", "설명", start, end)
+            surveyCreateCommand(
+                surveyName = surveyName,
+                surveyDescription = surveyDescription,
+                startAt = tomorrow,
+                endAt = now
+            ).let { Survey.from(it) }
         }
 
         assertThat(exception.message).isEqualTo("startAt must be before endAt")
@@ -37,7 +46,7 @@ class SurveyTest {
     @Test
     fun `READY 상태일 때 start()를 호출하면 IN_PROGRESS로 전이된다`() {
         // given
-        val survey = Survey.of("title", "desc", now, now.plusDays(1))
+        val survey = survey()
 
         // when
         survey.start()
@@ -50,7 +59,7 @@ class SurveyTest {
     @Test
     fun `IN_PROGRESS 상태일 때 end()를 호출하면 END로 전이된다`() {
         // given
-        val survey = Survey.of("title", "desc", now, now.plusDays(1))
+        val survey = survey()
         survey.start()
 
         // when
@@ -63,7 +72,7 @@ class SurveyTest {
     @Test
     fun `END 상태에서 다시 start()를 호출하면 예외가 발생한다`() {
         // given
-        val survey = Survey.of("title", "desc", now, now.plusDays(1))
+        val survey = survey()
         survey.start()
         survey.end()
 
@@ -78,7 +87,7 @@ class SurveyTest {
     @Test
     fun `READY 상태에서 바로 end()를 호출하면 예외가 발생한다`() {
         // given
-        val survey = Survey.of("title", "desc", now, now.plusDays(1))
+        val survey = survey()
 
         // when & then
         val exception = assertThrows<IllegalStateException> {
@@ -87,6 +96,4 @@ class SurveyTest {
 
         assertThat(exception.message).isEqualTo("Cannot transition from READY to END")
     }
-
-
 }

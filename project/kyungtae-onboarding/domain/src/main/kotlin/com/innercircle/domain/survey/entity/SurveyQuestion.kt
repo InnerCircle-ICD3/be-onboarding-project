@@ -35,17 +35,6 @@ class SurveyQuestion private constructor(
     @OneToMany(mappedBy = "surveyQuestion", fetch = FetchType.LAZY, cascade = [CascadeType.PERSIST])
     val options: MutableList<SurveyQuestionOption> = mutableListOf()
 
-    init {
-        when (this.questionType) {
-            QuestionType.SHORT_ANSWER -> check(options.isEmpty()) { "Short answer question should not have options" }
-            QuestionType.LONG_ANSWER -> check(options.isEmpty()) { "Long answer question should not have options" }
-            QuestionType.SINGLE_CHOICE -> check(options.isNotEmpty()) { "Single choice question should have options" }
-            QuestionType.MULTI_CHOICE -> check(options.isNotEmpty()) {
-                "Multi choice question should have options"
-            }
-        }
-    }
-
     companion object {
 
         fun of(survey: Survey, questionCommand: SurveyQuestionCreateCommand): SurveyQuestion {
@@ -59,9 +48,22 @@ class SurveyQuestion private constructor(
             ).apply {
                 survey.questions.add(this)
                 this.options.addAll(questionCommand.options.map { SurveyQuestionOption.of(this, it) }.toList())
+            }.also {
+                validateType(it)
             }
             surveyQuestion.required = questionCommand.required
             return surveyQuestion
+        }
+
+        private fun validateType(surveyQuestion: SurveyQuestion) {
+            when (surveyQuestion.questionType) {
+                QuestionType.SHORT_ANSWER -> check(surveyQuestion.options.isEmpty()) { "Short answer question should not have options" }
+                QuestionType.LONG_ANSWER -> check(surveyQuestion.options.isEmpty()) { "Long answer question should not have options" }
+                QuestionType.SINGLE_CHOICE -> check(surveyQuestion.options.isNotEmpty()) { "Single choice question should have options" }
+                QuestionType.MULTI_CHOICE -> check(surveyQuestion.options.isNotEmpty()) {
+                    "Multi choice question should have options"
+                }
+            }
         }
     }
 }

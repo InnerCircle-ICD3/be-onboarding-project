@@ -34,7 +34,7 @@ class SurveyAnswer private constructor(
 
     @Enumerated(EnumType.STRING)
     @Column(nullable = false)
-    val inputType: QuestionType,
+    val questionType: QuestionType,
 
     ) : BaseEntity() {
 
@@ -47,14 +47,6 @@ class SurveyAnswer private constructor(
 
     init {
         require(content.isNotBlank()) { "content must not be blank" }
-        when (this.surveyQuestion.questionType) {
-            QuestionType.SHORT_ANSWER -> check(options.isEmpty()) { "Short answer question should not have options" }
-            QuestionType.LONG_ANSWER -> check(options.isEmpty()) { "Long answer question should not have options" }
-            QuestionType.SINGLE_CHOICE -> check(options.isNotEmpty()) { "Single choice question should have options" }
-            QuestionType.MULTI_CHOICE -> check(options.isNotEmpty()) {
-                "Multi choice question should have options"
-            }
-        }
     }
 
     companion object {
@@ -68,8 +60,21 @@ class SurveyAnswer private constructor(
                 content = content,
                 surveyContext = surveyQuestion.survey.context,
                 surveyQuestionContext = surveyQuestion.context,
-                inputType = inputType
-            )
+                questionType = inputType
+            ).also {
+                validateType(it)
+            }
+        }
+
+        private fun validateType(surveyAnswer: SurveyAnswer) {
+            when (surveyAnswer.questionType) {
+                QuestionType.SHORT_ANSWER -> check(surveyAnswer.options.isEmpty()) { "Short answer question should not have options" }
+                QuestionType.LONG_ANSWER -> check(surveyAnswer.options.isEmpty()) { "Long answer question should not have options" }
+                QuestionType.SINGLE_CHOICE -> check(surveyAnswer.options.isNotEmpty()) { "Single choice question should have options" }
+                QuestionType.MULTI_CHOICE -> check(surveyAnswer.options.isNotEmpty()) {
+                    "Multi choice question should have options"
+                }
+            }
         }
     }
 }
