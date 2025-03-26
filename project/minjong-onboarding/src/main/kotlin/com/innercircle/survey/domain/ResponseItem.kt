@@ -1,7 +1,7 @@
 // src/main/kotlin/com/innercircle/survey/domain/ResponseItem.kt
 package com.innercircle.survey.domain
 
-import javax.persistence.*
+import jakarta.persistence.*
 
 @Entity
 @Table(name = "response_items")
