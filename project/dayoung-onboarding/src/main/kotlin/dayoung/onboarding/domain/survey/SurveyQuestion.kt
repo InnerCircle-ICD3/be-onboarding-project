@@ -1,4 +1,4 @@
-package dayoung.onboarding.domain
+package dayoung.onboarding.domain.survey
 
 import jakarta.persistence.*
 

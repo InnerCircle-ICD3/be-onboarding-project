@@ -1,5 +1,6 @@
-package dayoung.onboarding.domain
+package dayoung.onboarding.domain.survey
 
+import dayoung.onboarding.domain.user.User
 import jakarta.persistence.*
 import java.util.*
 
