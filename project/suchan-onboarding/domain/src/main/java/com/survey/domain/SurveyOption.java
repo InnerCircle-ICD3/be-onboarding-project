@@ -50,7 +50,7 @@ public class SurveyOption {
         return this.id.equals(identifier);
     }
 
-    public void update(SurveyOption surveyOption) {
+    public void modifyOption(SurveyOption surveyOption) {
         this.title = surveyOption.title;
         this.description = surveyOption.description;
         this.isNecessary = surveyOption.isNecessary;
