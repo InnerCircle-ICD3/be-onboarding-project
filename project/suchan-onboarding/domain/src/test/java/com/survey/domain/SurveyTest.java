@@ -46,4 +46,24 @@ class SurveyTest {
                 .hasMessage("설문 받을 항목은 1개 ~ 10개 사이여야 합니다.");
     }
 
+    @Test
+    @DisplayName("설문조사를 수정할 수 있다.")
+    void modify_survey() {
+        // given
+        Survey targetSurvey = TestFixture.createSurvey();
+        Survey diffSurvey = TestFixture.createDiffSurvey();
+
+        // when
+        targetSurvey.modify(diffSurvey);
+
+        // then
+        assertThat(targetSurvey.getTitle()).isEqualTo("다른 설문 조사");
+        assertThat(targetSurvey.getDescription()).isEqualTo("다른 설문 설명");
+        assertThat(targetSurvey.getSurveyOptions().size()).isEqualTo(3);
+
+        assertThat(targetSurvey.getSurveyOptions().get(0)).isEqualTo(diffSurvey.getSurveyOptions().get(0));
+        assertThat(targetSurvey.getSurveyOptions().get(1)).isEqualTo(diffSurvey.getSurveyOptions().get(1));
+        assertThat(targetSurvey.getSurveyOptions().get(2)).isEqualTo(diffSurvey.getSurveyOptions().get(2));
+    }
+
 }
