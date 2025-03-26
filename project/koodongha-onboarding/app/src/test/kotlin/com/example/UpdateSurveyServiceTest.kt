@@ -33,6 +33,12 @@ class UpdateSurveyServiceTest {
             isRequired = true,
             survey = survey
         )
+        item.options.add(
+            SelectionOption(
+                value = "Kotlin",
+                surveyItem = item
+            )
+        )
         survey.items.add(item)
 
         whenever(surveyRepository.findById(1L)).thenReturn(java.util.Optional.of(survey))
