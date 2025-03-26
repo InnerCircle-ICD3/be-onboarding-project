@@ -97,7 +97,7 @@ public class Survey {
 
     private void changeSurveyOption(SurveyOption newOption, Map<Long, SurveyOption> existingOptionsMap, List<SurveyOption> updatedOptions) {
         SurveyOption existingOption = existingOptionsMap.get(newOption.getId());
-        existingOption.update(newOption);
+        existingOption.modifyOption(newOption);
         updatedOptions.add(existingOption);
         existingOptionsMap.remove(newOption.getId());
     }
