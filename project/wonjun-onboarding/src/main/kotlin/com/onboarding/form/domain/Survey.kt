@@ -1,10 +1,6 @@
 package com.onboarding.form.domain
 
-import jakarta.persistence.Entity
-import jakarta.persistence.GeneratedValue
-import jakarta.persistence.GenerationType
-import jakarta.persistence.Id
-import jakarta.persistence.OneToMany
+import jakarta.persistence.*
 
 
 @Entity
@@ -13,6 +9,11 @@ class Survey (
     val id: Long? = null,
     val title: String,
     val description: String,
-    @OneToMany(mappedBy = "survey")
-    val item: List<Item>
-)
+    @OneToMany(mappedBy = "survey", cascade = [CascadeType.ALL], orphanRemoval = true)
+    val item: MutableList<Item> = mutableListOf()
+){
+    fun addItem(item: Item){
+        item.survey = this
+        this.item.add(item)
+    }
+}

@@ -7,9 +7,6 @@ class Item(
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     val id: Long? = null,
-    @ManyToOne
-    @JoinColumn(name = "survey_id")
-    val survey: Survey,
     val title: String,
     val description: String,
     @Enumerated(EnumType.STRING)
@@ -17,5 +14,10 @@ class Item(
     val isRequired: Boolean,
     @ElementCollection
     @CollectionTable
-    val options: MutableList<String> = mutableListOf()
-)
+    val options: List<String>?,
+    @ManyToOne
+    @JoinColumn(name = "SURVEY_ID")
+    var survey: Survey? = null
+){
+
+}
