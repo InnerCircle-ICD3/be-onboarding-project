@@ -20,7 +20,7 @@ public class CreateInputFormDto {
     private CreateTextInputFormDto textInputFormDto;
 
     @Valid
-    private CreateChoiceInputFormDto createChoiceInputFormDto;
+    private CreateChoiceInputFormDto choiceInputFormDto;
 
     public InputForm create() {
         if (textInputFormDto != null) {
@@ -30,10 +30,10 @@ public class CreateInputFormDto {
             );
         }
 
-        if (createChoiceInputFormDto != null) {
+        if (choiceInputFormDto != null) {
             return new InputForm(
                     question,
-                    createChoiceInputFormDto.create()
+                    choiceInputFormDto.create()
             );
         }
 

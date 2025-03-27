@@ -34,7 +34,7 @@ public class FakeSurveyRepository implements SurveyRepository {
     }
 
     @Override
-    public Optional<Survey> findCompleteSurveyFetchJoin(Long surveyId) {
+    public Optional<Survey> findCompleteSurvey(Long surveyId) {
         callCounter++;
         Survey survey = storage.get(surveyId);
 
