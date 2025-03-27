@@ -70,7 +70,7 @@ class SurveyServiceTest {
             surveyService.changeSurvey(request);
 
             // then
-            Survey updated = surveyRepository.findCompleteSurveyFetchJoin(existingSurveyId).orElseThrow(IllegalArgumentException::new);
+            Survey updated = surveyRepository.findCompleteSurvey(existingSurveyId).orElseThrow(IllegalArgumentException::new);
             Survey expected = request.create();
 
             assertThat(updated.getTitle()).isEqualTo(expected.getTitle());
@@ -87,7 +87,7 @@ class SurveyServiceTest {
             surveyService.changeSurvey(request);
 
             // then
-            Survey updated = surveyRepository.findCompleteSurveyFetchJoin(existingSurveyId).orElseThrow(IllegalArgumentException::new);
+            Survey updated = surveyRepository.findCompleteSurvey(existingSurveyId).orElseThrow(IllegalArgumentException::new);
             Survey expected = request.create();
 
             assertThat(updated.getSurveyOptions()).hasSameSizeAs(expected.getSurveyOptions());
@@ -113,7 +113,7 @@ class SurveyServiceTest {
             surveyService.changeSurvey(request);
 
             // then
-            Survey updated = surveyRepository.findCompleteSurveyFetchJoin(existingSurveyId).orElseThrow(IllegalArgumentException::new);
+            Survey updated = surveyRepository.findCompleteSurvey(existingSurveyId).orElseThrow(IllegalArgumentException::new);
             Survey expected = request.create();
 
             InputForm thirdInputForm = expected.getSurveyOptions().get(2).getInputForm();

@@ -10,5 +10,5 @@ public interface SurveyRepository {
 
     Optional<Survey> findById(Long surveyId);
 
-    Optional<Survey> findCompleteSurveyFetchJoin(Long surveyId);
+    Optional<Survey> findCompleteSurvey(Long surveyId);
 }

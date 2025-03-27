@@ -25,8 +25,9 @@ public class SurveyService {
 
     // 변경/추가/삭제 모두 처리
     public void changeSurvey(UpdateSurveyRequest request) {
-        Survey existingSurvey = surveyRepository.findCompleteSurveyFetchJoin(request.getSurveyId())
+        Survey existingSurvey = surveyRepository.findCompleteSurvey(request.getSurveyId())
                 .orElseThrow(() -> new IllegalArgumentException(SURVEY_NOT_FOUND_EXCEPTION));
+
         Survey updatedSurvey = request.create();
         existingSurvey.modify(updatedSurvey);
     }
