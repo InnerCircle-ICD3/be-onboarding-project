@@ -32,6 +32,14 @@ public class TextInputForm {
         this.inputForm = inputForm;
     }
 
+    public boolean isSameForm(TextInputForm textInputForm) {
+        return this.textType == textInputForm.textType;
+    }
+
+    public void modify(TextInputForm textInputForm) {
+        this.textType = textInputForm.textType;
+    }
+
     @Override
     public boolean equals(Object o) {
         if (o == null || getClass() != o.getClass()) return false;
@@ -43,4 +51,5 @@ public class TextInputForm {
     public int hashCode() {
         return Objects.hash(id, textType, inputForm);
     }
+
 }

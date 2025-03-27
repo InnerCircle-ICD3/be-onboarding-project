@@ -4,6 +4,7 @@ import jakarta.persistence.*;
 import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import org.hibernate.annotations.BatchSize;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -29,6 +30,7 @@ public class ChoiceInputForm {
             joinColumns = @JoinColumn(name = "choice_input_form_id")
     )
     @Column(nullable = false)
+    @BatchSize(size = 20)
     private List<InputOption> inputOptions = new ArrayList<>();
 
     @OneToOne
@@ -51,6 +53,15 @@ public class ChoiceInputForm {
         this.inputForm = inputForm;
     }
 
+    public boolean isSameForm(ChoiceInputForm choiceInputForm) {
+        return this.choiceType == choiceInputForm.choiceType && this.inputOptions.equals(choiceInputForm.inputOptions);
+    }
+
+    public void modify(ChoiceInputForm choiceInputForm) {
+        this.choiceType = choiceInputForm.choiceType;
+        this.inputOptions = choiceInputForm.inputOptions;
+    }
+
     @Override
     public boolean equals(Object o) {
         if (o == null || getClass() != o.getClass()) return false;
@@ -62,4 +73,5 @@ public class ChoiceInputForm {
     public int hashCode() {
         return Objects.hash(id, choiceType, inputOptions, inputForm);
     }
+
 }

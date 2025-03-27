@@ -83,4 +83,41 @@ public class InputForm {
     public boolean hasTextInputForm() {
         return this.textInputForm != null;
     }
+
+    private void clearTextInputRelation() {
+        this.textInputForm = null;
+    }
+
+    private void clearChoiceInputRelation() {
+        this.choiceInputForm = null;
+    }
+
+    public void modifyInputForm(InputForm newInputForm) {
+        this.question = newInputForm.getQuestion();
+        if (newInputForm.hasTextInputForm() && hasTextInputForm()) {
+            if (!this.textInputForm.isSameForm(newInputForm.getTextInputForm())) {
+                this.textInputForm.modify(newInputForm.getTextInputForm());
+            }
+        } else if (newInputForm.hasChoiceInputForm() && hasChoiceInputForm()) {
+            if (!this.choiceInputForm.isSameForm(newInputForm.getChoiceInputForm())) {
+                this.choiceInputForm.modify(newInputForm.getChoiceInputForm());
+            }
+        } else if (newInputForm.hasTextInputForm() && hasChoiceInputForm()) {
+            clearChoiceInputRelation();
+            addTextInputForm(newInputForm.getTextInputForm());
+        } else if (newInputForm.hasChoiceInputForm() && hasTextInputForm()) {
+            clearTextInputRelation();
+            addChoiceInputForm(newInputForm.getChoiceInputForm());
+        }
+    }
+
+    public boolean isNeededModify(InputForm newInputForm) {
+        if (newInputForm.hasTextInputForm() && hasTextInputForm()) {
+            return !this.textInputForm.isSameForm(newInputForm.getTextInputForm());
+        } else if (newInputForm.hasChoiceInputForm() && hasChoiceInputForm()) {
+            return !this.choiceInputForm.isSameForm(newInputForm.getChoiceInputForm());
+        } else if (newInputForm.hasTextInputForm() && hasChoiceInputForm()) {
+            return true;
+        } else return newInputForm.hasChoiceInputForm() && hasTextInputForm();
+    }
 }

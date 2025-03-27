@@ -1,5 +1,6 @@
 package com.survey.application.dto.dto;
 
+import com.fasterxml.jackson.annotation.JsonProperty;
 import com.survey.domain.SurveyOption;
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.NotNull;
@@ -11,7 +12,6 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @AllArgsConstructor
 public class UpdateSurveyOptionDto {
-    @NotNull
     private Long surveyOptionId;
 
     @NotNull
@@ -21,7 +21,8 @@ public class UpdateSurveyOptionDto {
     private String description;
 
     @NotNull
-    private boolean isNecessary;
+    @JsonProperty("isNecessary")
+    private Boolean isNecessary;
 
     @NotNull
     @Valid
@@ -29,6 +30,7 @@ public class UpdateSurveyOptionDto {
 
     public SurveyOption create() {
         return new SurveyOption(
+                surveyOptionId,
                 title,
                 description,
                 isNecessary,
