@@ -37,23 +37,29 @@ public class SurveyOption {
         addInputForm(inputForm);
     }
 
+    public SurveyOption(Long id, String title, String description, boolean isNecessary, InputForm inputForm) {
+        this.id = id;
+        this.title = title;
+        this.description = description;
+        this.isNecessary = isNecessary;
+        addInputForm(inputForm);
+    }
+
     public void addSurvey(Survey survey) {
         this.survey = survey;
-    }
-
-    private void addInputForm(InputForm inputForm) {
-        this.inputForm = inputForm;
-        inputForm.addSurveyOption(this);
-    }
-
-    public boolean isSameIdentity(Long identifier) {
-        return this.id.equals(identifier);
     }
 
     public void modifyOption(SurveyOption surveyOption) {
         this.title = surveyOption.title;
         this.description = surveyOption.description;
         this.isNecessary = surveyOption.isNecessary;
-        addInputForm(surveyOption.inputForm);
+        if (this.inputForm.isNeededModify(surveyOption.inputForm)) {
+            this.inputForm.modifyInputForm(surveyOption.inputForm);
+        }
+    }
+
+    private void addInputForm(InputForm inputForm) {
+        this.inputForm = inputForm;
+        inputForm.addSurveyOption(this);
     }
 }

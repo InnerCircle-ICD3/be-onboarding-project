@@ -3,7 +3,6 @@ package com.survey.application.dto.dto;
 import com.survey.domain.ChoiceInputForm;
 import com.survey.domain.ChoiceType;
 import com.survey.domain.InputOption;
-import jakarta.persistence.Id;
 import jakarta.validation.constraints.NotEmpty;
 import jakarta.validation.constraints.NotNull;
 import lombok.AllArgsConstructor;
@@ -16,7 +15,6 @@ import java.util.List;
 @NoArgsConstructor
 @AllArgsConstructor
 public class UpdateChoiceInputFormDto {
-
     @NotNull
     private String choiceType;
 

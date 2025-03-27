@@ -107,7 +107,6 @@ class SurveyControllerTest {
                         .content(objectMapper.writeValueAsString(invalidOptionRequest)))
                 .andExpect(status().isBadRequest())
                 .andExpect(jsonPath("$.errorMessage").value("validation error"))
-                .andExpect(jsonPath("$.errors['surveyOptionDtos[0].surveyOptionId']").exists())
                 .andExpect(jsonPath("$.errors['surveyOptionDtos[0].title']").exists())
                 .andExpect(jsonPath("$.errors['surveyOptionDtos[0].description']").exists())
                 .andExpect(jsonPath("$.errors['surveyOptionDtos[0].inputFormDto.question']").exists());

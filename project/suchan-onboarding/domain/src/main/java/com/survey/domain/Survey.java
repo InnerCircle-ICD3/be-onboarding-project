@@ -80,8 +80,14 @@ public class Survey {
             }
         }
 
-        this.surveyOptions.clear();
-        this.surveyOptions.addAll(updatedOptions);
+        List<SurveyOption> optionsToRemove = new ArrayList<>();
+        for (SurveyOption surveyOption : this.surveyOptions) {
+            if (!updatedOptions.contains(surveyOption)) {
+                optionsToRemove.add(surveyOption);
+            }
+        }
+
+        this.surveyOptions.removeAll(optionsToRemove);
     }
 
     private boolean shouldSkipModification(Survey survey) {
@@ -99,11 +105,10 @@ public class Survey {
         SurveyOption existingOption = existingOptionsMap.get(newOption.getId());
         existingOption.modifyOption(newOption);
         updatedOptions.add(existingOption);
-        existingOptionsMap.remove(newOption.getId());
     }
 
     private void registerSurveyOption(SurveyOption newOption, List<SurveyOption> updatedOptions) {
-        newOption.addSurvey(this);
+        addSurveyOption(newOption);
         updatedOptions.add(newOption);
     }
 }
