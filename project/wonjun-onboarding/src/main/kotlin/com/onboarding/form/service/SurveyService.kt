@@ -1,8 +1,9 @@
 package com.onboarding.form.service
 
-import com.onboarding.form.domain.Item
-import com.onboarding.form.domain.Survey
+import com.onboarding.form.domain.*
 import com.onboarding.form.repository.SurveyRepository
+import com.onboarding.form.request.CreateSelectQuestionDto
+import com.onboarding.form.request.CreateStandardQuestionDto
 import com.onboarding.form.request.CreateSurveyDto
 import org.springframework.stereotype.Service
 
@@ -19,13 +20,31 @@ class SurveyService(
 
         surveyDto.item.forEach {
             survey.addItem(
-                Item(
-                    title = it.title,
-                    description = it.description,
-                    type = it.itemType,
-                    isRequired = it.isRequired,
-                    options = it.options,
-                )
+                when (it) {
+                    is CreateStandardQuestionDto -> when (it.type) {
+                        QuestionType.SHORT -> ShortQuestion(null, it.title, it.description, it.isRequired)
+                        QuestionType.LONG -> LongQuestion(null, it.title, it.description, it.isRequired)
+                        else -> throw IllegalArgumentException("Question type ${it.type} not supported")
+                    }
+                    is CreateSelectQuestionDto -> when (it.type) {
+                        QuestionType.SINGLE_SELECT -> SingleSelectQuestion(
+                            null,
+                            it.title,
+                            it.description,
+                            it.isRequired,
+                            it.answerList
+                        )
+
+                        QuestionType.MULTI_SELECT -> MultiSelectQuestion(
+                            null,
+                            it.title,
+                            it.description,
+                            it.isRequired,
+                            it.answerList
+                        )
+                        else -> throw IllegalArgumentException("Question type ${it.type} not supported")
+                    }
+                }
             )
         }
 
