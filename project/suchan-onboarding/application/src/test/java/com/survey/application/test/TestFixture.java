@@ -132,4 +132,53 @@ public class TestFixture {
         );
     }
 
+    public static UpdateSurveyRequest updateSurveyWithAdditionalTwoSurveyOptionsRequest(Long surveyId) {
+        return new UpdateSurveyRequest(
+                surveyId,
+                "개선된 고객 만족도 조사",
+                "저희 서비스 이용 경험에 대한 귀하의 소중한 의견을 들려주세요. (2025년 3월 업데이트)",
+                List.of(
+                        updateSameBasicInfoSurveyOption(),
+                        updateSameSatisfactionSurveyOption(),
+                        updatedImprovementOption(),
+                        updatedRecommendationOption()
+                )
+        );
+    }
+
+    private static UpdateSurveyOptionDto updateSameBasicInfoSurveyOption() {
+        return new UpdateSurveyOptionDto(
+                1L,
+                "기본 정보",
+                "응답자의 기본 정보입니다.",
+                true,
+                updateNameInputForm()
+        );
+    }
+
+    private static UpdateSurveyOptionDto updateSameSatisfactionSurveyOption() {
+        return new UpdateSurveyOptionDto(
+                2L,
+                "서비스 만족도",
+                "서비스에 대한 만족도를 평가해주세요.",
+                true,
+                updateFeedbackInputForm()
+        );
+    }
+
+    private static UpdateInputFormDto updateNameInputForm() {
+        return new UpdateInputFormDto(
+                "이름을 입력해주세요.",
+                new UpdateTextInputFormDto("단답형"),
+                null
+        );
+    }
+
+    private static UpdateInputFormDto updateFeedbackInputForm() {
+        return new UpdateInputFormDto(
+                "개선을 위한 의견을 자유롭게 작성해주세요.",
+                new UpdateTextInputFormDto("장문형"),
+                null
+        );
+    }
 }
