@@ -5,14 +5,14 @@ import com.survey.application.dto.request.UpdateSurveyRequest;
 import com.survey.application.repository.FakeSurveyRepository;
 import com.survey.application.test.TestFixture;
 import com.survey.application.test.TestSurveyEntityComparator;
-import com.survey.domain.*;
+import com.survey.domain.Survey;
+import com.survey.domain.SurveyOption;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
 
 import java.util.HashMap;
-import java.util.List;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
