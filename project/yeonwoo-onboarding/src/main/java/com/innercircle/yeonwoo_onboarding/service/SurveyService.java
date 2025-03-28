@@ -30,6 +30,8 @@ public class SurveyService {
 
     @Transactional
     public void deleteSurvey(String id) {
+        Survey survey = surveyRepository.findById(id)
+            .orElseThrow(() -> new IllegalArgumentException("Survey not found with id: " + id));
         surveyRepository.deleteById(id);
     }
 }
