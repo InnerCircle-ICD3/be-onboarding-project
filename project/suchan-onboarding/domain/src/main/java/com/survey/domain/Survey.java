@@ -46,7 +46,7 @@ public class Survey {
     }
 
     private void validateSurveyOptionCnt(List<SurveyOption> surveyOptions) {
-        if (surveyOptions.isEmpty() || surveyOptions.size() > 10) {
+        if (surveyOptions == null || surveyOptions.isEmpty() || surveyOptions.size() > 10) {
             throw new IllegalArgumentException(SURVEY_OPTIONS_CNT_EXCEPTION_MESSAGE);
         }
     }
@@ -61,8 +61,7 @@ public class Survey {
     }
 
     public void modify(Survey survey) {
-        if (shouldSkipModification(survey)) return;
-
+        validateSurveyOptionCnt(survey.getSurveyOptions());
         this.title = survey.getTitle();
         this.description = survey.getDescription();
 
@@ -88,17 +87,6 @@ public class Survey {
         }
 
         this.surveyOptions.removeAll(optionsToRemove);
-    }
-
-    private boolean shouldSkipModification(Survey survey) {
-        if (survey.getSurveyOptions() == null || survey.getSurveyOptions().isEmpty()) {
-            return true;
-        }
-
-        if (survey.getSurveyOptions().size() > 10) {
-            throw new IllegalArgumentException(SURVEY_OPTIONS_CNT_EXCEPTION_MESSAGE);
-        }
-        return false;
     }
 
     private void changeSurveyOption(SurveyOption newOption, Map<Long, SurveyOption> existingOptionsMap, List<SurveyOption> updatedOptions) {
