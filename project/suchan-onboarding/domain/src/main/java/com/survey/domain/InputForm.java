@@ -75,4 +75,72 @@ public class InputForm {
             choiceInputForm.addInputForm(this);
         }
     }
+
+    public boolean hasChoiceInputForm() {
+        return this.choiceInputForm != null;
+    }
+
+    public boolean hasTextInputForm() {
+        return this.textInputForm != null;
+    }
+
+    public boolean isNeededModify(InputForm newInputForm) {
+        if (newInputForm.hasTextInputForm() && hasTextInputForm()) {
+            return !this.textInputForm.isSameForm(newInputForm.getTextInputForm());
+        } else if (newInputForm.hasChoiceInputForm() && hasChoiceInputForm()) {
+            return !this.choiceInputForm.isSameForm(newInputForm.getChoiceInputForm());
+        } else {
+            return true;
+        }
+    }
+
+    public void modifyInputForm(InputForm newInputForm) {
+        this.question = newInputForm.getQuestion();
+        if (newInputForm.hasTextInputForm() && hasTextInputForm()) {
+            updateTextInputFormIfNeeded(newInputForm);
+        } else if (newInputForm.hasChoiceInputForm() && hasChoiceInputForm()) {
+            updateChoiceInputFormIfNeeded(newInputForm);
+        } else if (newInputForm.hasTextInputForm() && hasChoiceInputForm()) {
+            replaceChoiceWithTextInputForm(newInputForm);
+        } else if (newInputForm.hasChoiceInputForm() && hasTextInputForm()) {
+            replaceTextWithChoiceInputForm(newInputForm);
+        }
+    }
+
+    private void updateTextInputFormIfNeeded(InputForm newInputForm) {
+        if (!this.textInputForm.isSameForm(newInputForm.getTextInputForm())) {
+            this.textInputForm.modify(newInputForm.getTextInputForm());
+        }
+    }
+
+    private void updateChoiceInputFormIfNeeded(InputForm newInputForm) {
+        if (!this.choiceInputForm.isSameForm(newInputForm.getChoiceInputForm())) {
+            this.choiceInputForm.modify(newInputForm.getChoiceInputForm());
+        }
+    }
+
+    private void replaceChoiceWithTextInputForm(InputForm newInputForm) {
+        clearChoiceInputRelation();
+        addTextInputForm(newInputForm.getTextInputForm());
+    }
+
+    private void replaceTextWithChoiceInputForm(InputForm newInputForm) {
+        clearTextInputRelation();
+        addChoiceInputForm(newInputForm.getChoiceInputForm());
+    }
+
+    private void clearTextInputRelation() {
+        if (this.textInputForm != null) {
+            this.textInputForm.addInputForm(null);
+            this.textInputForm = null;
+        }
+    }
+
+    private void clearChoiceInputRelation() {
+        if (this.choiceInputForm != null) {
+            this.choiceInputForm.addInputForm(null);
+            this.choiceInputForm = null;
+        }
+    }
+
 }

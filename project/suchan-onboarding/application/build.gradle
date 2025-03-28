@@ -8,4 +8,5 @@ dependencies {
 
     implementation project(':suchan-onboarding:common')
     implementation project(':suchan-onboarding:domain')
+    testImplementation testFixtures(project(':suchan-onboarding:domain'))
 }

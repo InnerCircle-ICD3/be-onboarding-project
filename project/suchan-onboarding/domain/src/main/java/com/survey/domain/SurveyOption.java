@@ -37,8 +37,25 @@ public class SurveyOption {
         addInputForm(inputForm);
     }
 
+    public SurveyOption(Long id, String title, String description, boolean isNecessary, InputForm inputForm) {
+        this.id = id;
+        this.title = title;
+        this.description = description;
+        this.isNecessary = isNecessary;
+        addInputForm(inputForm);
+    }
+
     public void addSurvey(Survey survey) {
         this.survey = survey;
+    }
+
+    public void modifyOption(SurveyOption surveyOption) {
+        this.title = surveyOption.title;
+        this.description = surveyOption.description;
+        this.isNecessary = surveyOption.isNecessary;
+        if (this.inputForm.isNeededModify(surveyOption.inputForm)) {
+            this.inputForm.modifyInputForm(surveyOption.inputForm);
+        }
     }
 
     private void addInputForm(InputForm inputForm) {
