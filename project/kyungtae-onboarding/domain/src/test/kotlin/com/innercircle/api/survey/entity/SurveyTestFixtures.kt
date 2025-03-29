@@ -1,6 +1,7 @@
-package com.innercircle.survey.entity
+package com.innercircle.api.survey.entity
 
 import com.innercircle.domain.survey.command.dto.SurveyCreateCommand
+import com.innercircle.survey.entity.Survey
 import java.time.LocalDateTime
 
 object SurveyTestFixtures {

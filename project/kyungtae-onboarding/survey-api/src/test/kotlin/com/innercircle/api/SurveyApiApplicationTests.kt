@@ -1,4 +1,4 @@
-package com.innercircle.survey
+package com.innercircle.api
 
 import org.junit.jupiter.api.Test
 import org.springframework.boot.test.context.SpringBootTest

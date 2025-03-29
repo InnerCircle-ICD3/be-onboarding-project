@@ -1,4 +1,4 @@
-package com.innercircle.survey.common
+package com.innercircle.api.common
 
 import jakarta.persistence.EntityManager
 import jakarta.persistence.PersistenceContext

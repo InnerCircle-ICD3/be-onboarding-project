@@ -1,7 +1,9 @@
-package com.innercircle.survey.entity
+package com.innercircle.api.survey.entity
 
-import com.innercircle.survey.entity.SurveyTestFixtures.survey
-import com.innercircle.survey.entity.SurveyTestFixtures.surveyCreateCommand
+import com.innercircle.api.survey.entity.SurveyTestFixtures.survey
+import com.innercircle.api.survey.entity.SurveyTestFixtures.surveyCreateCommand
+import com.innercircle.survey.entity.Survey
+import com.innercircle.survey.entity.SurveyStatus
 import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.assertThrows
@@ -23,8 +25,8 @@ class SurveyTest {
         val survey = survey()
 
         // when & then
-        assertThat(survey.context.name).isEqualTo("설문 이름")
-        assertThat(survey.context.description).isEqualTo("설문 설명")
+        assertThat(survey.context.name).isEqualTo(surveyName)
+        assertThat(survey.context.description).isEqualTo(surveyDescription)
         assertThat(survey.status).isEqualTo(SurveyStatus.READY)
     }
 

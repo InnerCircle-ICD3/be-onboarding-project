@@ -1,4 +1,4 @@
-package com.innercircle.survey.common
+package com.innercircle.api.common
 
 import io.restassured.RestAssured
 import org.springframework.boot.web.servlet.context.ServletWebServerInitializedEvent

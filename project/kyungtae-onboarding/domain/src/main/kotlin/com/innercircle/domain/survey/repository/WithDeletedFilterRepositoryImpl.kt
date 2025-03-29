@@ -6,9 +6,9 @@ import org.springframework.stereotype.Repository
 
 
 @Repository
-class SurveyWithFilterRepositoryImpl(
+class WithDeletedFilterRepositoryImpl(
     private val entityManager: EntityManager
-) : SurveyWithFilterRepositoryCustom {
+) : WithDeletedFilterRepositoryCustom {
 
     override fun enableDeletedFilter(showDeleted: Boolean) {
         val session = entityManager.unwrap(Session::class.java)

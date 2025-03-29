@@ -1,4 +1,4 @@
-package com.innercircle.survey.common
+package com.innercircle.api.common
 
 import com.fasterxml.jackson.databind.ObjectMapper
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule

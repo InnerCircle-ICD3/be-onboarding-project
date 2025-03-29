@@ -19,7 +19,7 @@ abstract class BaseEntity {
     @LastModifiedDate
     var updatedAt: LocalDateTime? = null
 
-    @Column(name = "is_deleted", nullable = false, columnDefinition = "tinyint(1) DEFAULT 0")
+    @Column(name = "is_deleted", nullable = false)
     var deleted = false
 
     var deletedAt: LocalDateTime? = null

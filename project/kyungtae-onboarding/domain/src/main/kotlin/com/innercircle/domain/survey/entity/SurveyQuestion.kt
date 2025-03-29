@@ -6,7 +6,7 @@ import com.innercircle.domain.survey.entity.SurveyQuestionContext
 import jakarta.persistence.*
 
 @Entity
-@Table(name = "SurveyQuestion")
+@Table(name = "survey_question")
 class SurveyQuestion private constructor(
 
     @JoinColumn(name = "survey_id", nullable = false)
@@ -26,7 +26,7 @@ class SurveyQuestion private constructor(
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     val id: Long? = null
 
-    @Column(nullable = false, columnDefinition = "tinyint(1) DEFAULT 1")
+    @Column(nullable = false)
     var required: Boolean = true
         set(value) {
             field = value
