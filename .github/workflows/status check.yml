@@ -24,10 +24,14 @@ jobs:
           echo "projects=$(echo $projects | jq -R 'split(" ")' -c)" >> $GITHUB_OUTPUT
           echo "Found projects: $(echo $projects | jq -R 'split(" ")' -c)"
 
-  build-all:
+  parallel-builds:
     needs: find-projects
     runs-on: ubuntu-latest
-    name: build
+    strategy:
+      matrix:
+        project: ${{ fromJson(needs.find-projects.outputs.projects) }}
+      fail-fast: false
+
     steps:
       - uses: actions/checkout@v3
 
@@ -37,39 +41,17 @@ jobs:
           java-version: '17'
           distribution: 'temurin'
 
-      - name: Get all projects
-        run: |
-          echo "Building projects:"
-          echo '${{ needs.find-projects.outputs.projects }}'
+      - name: Make gradlew executable
+        run: chmod +x ./project/${{ matrix.project }}/gradlew
 
-      - name: Make all gradlew files executable
-        run: |
-          for project in $(echo '${{ needs.find-projects.outputs.projects }}' | jq -r '.[]'); do
-            echo "Making gradlew executable for $project"
-            chmod +x ./project/$project/gradlew
-          done
+      - name: Build with Gradle
+        working-directory: ./project/${{ matrix.project }}
+        run: ./gradlew clean build
 
-      - name: Build all projects
-        id: build
-        run: |
-          success=true
-          failed_projects=()
-          
-          for project in $(echo '${{ needs.find-projects.outputs.projects }}' | jq -r '.[]'); do
-            echo "Building $project..."
-          
-            cd $GITHUB_WORKSPACE/project/$project
-            if ./gradlew clean build; then
-              echo "✅ Build succeeded for $project"
-            else
-              echo "❌ Build failed for $project"
-              failed_projects+=("$project")
-              success=false
-            fi
-            cd $GITHUB_WORKSPACE
-          done
-          
-          if [ "$success" = false ]; then
-            echo "::error::Failed projects: ${failed_projects[@]}"
-            exit 1
-          fi
+  build-status:
+    name: build
+    needs: parallel-builds
+    runs-on: ubuntu-latest
+    steps:
+      - name: Build Status Check
+        run: echo "All projects built successfully"
