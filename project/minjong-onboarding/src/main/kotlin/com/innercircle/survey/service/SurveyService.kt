@@ -45,7 +45,7 @@ class SurveyService(
                 
                 questionRequest.options?.forEachIndexed { optIndex, optionRequest ->
                     val option = Option(
-                        value = optionRequest.value,
+                        optionValue = optionRequest.optionValue,
                         position = optionRequest.position.takeIf { it > 0 } ?: optIndex
                     )
                     question.addOption(option)
@@ -112,7 +112,7 @@ class SurveyService(
                     
                     questionRequest.options?.forEachIndexed { optIndex, optionRequest ->
                         val option = Option(
-                            value = optionRequest.value,
+                            optionValue = optionRequest.optionValue,
                             position = optionRequest.position.takeIf { it > 0 } ?: optIndex
                         )
                         newQuestion.addOption(option)
@@ -139,7 +139,7 @@ class SurveyService(
                         
                         questionRequest.options?.forEachIndexed { optIndex, optionRequest ->
                             val option = Option(
-                                value = optionRequest.value,
+                                optionValue = optionRequest.optionValue,
                                 position = optionRequest.position.takeIf { it > 0 } ?: optIndex
                             )
                             question.addOption(option)
@@ -178,7 +178,7 @@ class SurveyService(
                                   .map { option ->
                                       OptionResponse(
                                           id = option.id!!,
-                                          value = option.value,
+                                          optionValue = option.optionValue,
                                           position = option.position
                                       )
                                   },

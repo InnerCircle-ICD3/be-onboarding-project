@@ -41,7 +41,7 @@ data class CreateQuestionRequest(
 // 선택지 생성 요청 DTO
 data class CreateOptionRequest(
     @field:NotBlank(message = "선택지 값은 필수입니다")
-    val value: String,
+    val optionValue: String,
     
     val position: Int = 0
 )
@@ -86,7 +86,7 @@ data class UpdateOptionRequest(
     val id: Long?, // 기존 선택지 ID (신규 선택지는 null)
     
     @field:NotBlank(message = "선택지 값은 필수입니다")
-    val value: String,
+    val optionValue: String,
     
     val position: Int = 0
 )

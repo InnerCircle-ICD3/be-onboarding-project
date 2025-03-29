@@ -11,7 +11,7 @@ class Option(
     val id: Long? = null,
 
     @Column(nullable = false)
-    var value: String,
+    var optionValue: String,
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "question_id")

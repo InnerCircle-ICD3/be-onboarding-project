@@ -29,7 +29,7 @@ data class QuestionResponse(
 // 선택지 응답 DTO
 data class OptionResponse(
     val id: Long,
-    val value: String,
+    val optionValue: String,
     val position: Int
 )
 
