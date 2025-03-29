@@ -1,4 +1,4 @@
-name: Build Projects
+name: PR Build Check
 
 on:
   pull_request:
@@ -24,13 +24,14 @@ jobs:
           echo "projects=$(echo $projects | jq -R 'split(" ")' -c)" >> $GITHUB_OUTPUT
           echo "Found projects: $(echo $projects | jq -R 'split(" ")' -c)"
 
-  build:
+  build-check:
     needs: find-projects
     runs-on: ubuntu-latest
     strategy:
       matrix:
         project: ${{ fromJson(needs.find-projects.outputs.projects) }}
       fail-fast: false
+    name: build
 
     steps:
       - uses: actions/checkout@v3
