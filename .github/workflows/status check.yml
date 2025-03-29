@@ -1,0 +1,48 @@
+name: Build Projects
+
+on:
+  push:
+    branches: [ main ]
+  pull_request:
+    branches: [ main ]
+  workflow_dispatch:
+
+jobs:
+  find-projects:
+    runs-on: ubuntu-latest
+    outputs:
+      projects: ${{ steps.set-projects.outputs.projects }}
+    steps:
+      - uses: actions/checkout@v3
+
+      - name: Find projects with gradlew
+        id: set-projects
+        shell: bash
+        run: |
+          PROJECTS=$(find ./project -name "gradlew" -type f | sed -e 's/\/gradlew$//' -e 's/^\.\/project\///')
+          PROJECTS_JSON=$(echo "$PROJECTS" | jq -R . | jq -s .)
+          echo "projects=$PROJECTS_JSON" >> $GITHUB_OUTPUT
+          echo "Found projects: $PROJECTS_JSON"
+
+  build:
+    needs: find-projects
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        project: ${{ fromJson(needs.find-projects.outputs.projects) }}
+      fail-fast: false
+
+    steps:
+      - uses: actions/checkout@v3
+
+      - name: Set up JDK 17
+        uses: actions/setup-java@v3
+        with:
+          java-version: '17'
+          distribution: 'temurin'
+
+      - name: Make gradlew executable
+        run: chmod +x ./project/${{ matrix.project }}/gradlew
+
+      - name: Build with Gradle
+        run: ./project/${{ matrix.project }}/gradlew -p ./project/${{ matrix.project }} clean build
