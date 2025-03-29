@@ -63,6 +63,14 @@ class SurveyDomainService(
     }
 
     private fun validateSurveyItems(items: List<SurveyItemData>) {
+        if (items.isEmpty()) {
+            throw IllegalArgumentException("설문 항목이 최소 1개 이상 필요하다.")
+        }
+
+        if (items.size > 10) {
+            throw IllegalArgumentException("설문 항목은 최대 10개까지 가능하다.")
+        }
+
         items.forEach { item ->
             if (item.inputType !in listOf("SINGLE_CHOICE", "MULTIPLE_CHOICE") && !item.options.isNullOrEmpty()) {
                 throw IllegalArgumentException("선택형 질문이 아니면 선택지가 없어야 한다.")
