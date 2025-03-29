@@ -12,7 +12,7 @@ class Survey (
     @OneToMany(mappedBy = "survey", cascade = [CascadeType.ALL], orphanRemoval = true)
     val questions: MutableList<Question> = mutableListOf()
 ){
-    fun addItem(question: Question){
+    fun addQuestion(question: Question){
         check(questions.size < MAX_QUESTION_SIZE) { "The number of questions cannot exceed $MAX_QUESTION_SIZE" }
         question.survey = this
         this.questions.add(question)
