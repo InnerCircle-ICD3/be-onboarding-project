@@ -1,0 +1,57 @@
+name: PR Build Check
+
+on:
+  pull_request:
+    branches: [ main ]
+  workflow_dispatch:
+
+jobs:
+  find-projects:
+    runs-on: ubuntu-latest
+    outputs:
+      projects: ${{ steps.set-projects.outputs.projects }}
+    steps:
+      - uses: actions/checkout@v3
+
+      - name: Find projects with gradlew
+        id: set-projects
+        shell: bash
+        run: |
+          # Find all gradlew files and extract their paths
+          projects=$(find ./project -name "gradlew" -type f -exec dirname {} \; | sed 's|^./project/||')
+          
+          # Create proper JSON array
+          echo "projects=$(echo $projects | jq -R 'split(" ")' -c)" >> $GITHUB_OUTPUT
+          echo "Found projects: $(echo $projects | jq -R 'split(" ")' -c)"
+
+  parallel-builds:
+    needs: find-projects
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        project: ${{ fromJson(needs.find-projects.outputs.projects) }}
+      fail-fast: false
+
+    steps:
+      - uses: actions/checkout@v3
+
+      - name: Set up JDK 17
+        uses: actions/setup-java@v3
+        with:
+          java-version: '17'
+          distribution: 'temurin'
+
+      - name: Make gradlew executable
+        run: chmod +x ./project/${{ matrix.project }}/gradlew
+
+      - name: Build with Gradle
+        working-directory: ./project/${{ matrix.project }}
+        run: ./gradlew clean build
+
+  build-status:
+    name: build
+    needs: parallel-builds
+    runs-on: ubuntu-latest
+    steps:
+      - name: Build Status Check
+        run: echo "All projects built successfully"
