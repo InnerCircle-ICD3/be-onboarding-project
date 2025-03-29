@@ -1,4 +1,4 @@
-package dayoung.onboarding
+package onboarding.data
 
 import org.springframework.boot.autoconfigure.SpringBootApplication
 import org.springframework.boot.runApplication
