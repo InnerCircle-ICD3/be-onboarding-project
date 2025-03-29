@@ -1,4 +1,4 @@
-package com.example.api.exception
+package com.example.common.exception
 
 data class ErrorResponse(
     val status: Int,

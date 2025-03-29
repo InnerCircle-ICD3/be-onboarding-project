@@ -1,5 +1,7 @@
 package com.example
 
+import com.example.common.exception.InvalidSurveyRequestException
+import com.example.common.exception.SurveyNotFoundException
 import com.example.dto.AnswerDto
 import com.example.dto.AnswerSubmitDto
 import com.example.entity.*
@@ -65,11 +67,11 @@ class UpdateSurveyServiceTest {
             )
         )
 
-        val exception = assertThrows(IllegalArgumentException::class.java) {
+        val exception = assertThrows(SurveyNotFoundException::class.java) {
             updateSurveyService.submitAnswer(999L, request)
         }
 
-        assertEquals("Survey not found.", exception.message)
+        assertEquals("설문을 찾을 수 없습니다.", exception.message)
     }
 
     @Test
@@ -98,7 +100,7 @@ class UpdateSurveyServiceTest {
             )
         )
 
-        val exception = assertThrows(IllegalArgumentException::class.java) {
+        val exception = assertThrows(InvalidSurveyRequestException::class.java) {
             updateSurveyService.submitAnswer(1L, request)
         }
 
@@ -166,7 +168,7 @@ class UpdateSurveyServiceTest {
             )
         )
 
-        val exception = assertThrows(IllegalArgumentException::class.java) {
+        val exception = assertThrows(InvalidSurveyRequestException::class.java) {
             updateSurveyService.submitAnswer(1L, request)
         }
 

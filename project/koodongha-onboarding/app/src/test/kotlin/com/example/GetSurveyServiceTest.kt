@@ -56,13 +56,13 @@ class GetSurveyServiceTest {
     @DisplayName("Should throw exception when survey does not exist")
     fun shouldThrowExceptionWhenSurveyNotFound() {
         whenever(surveyRepository.findById(9999L)).thenReturn(Optional.empty())
-
+    
         val exception = assertThrows(SurveyNotFoundException::class.java) {
             service.getSurvey(9999L)
         }
-
-        assertEquals("설문을 찾을 수 없습니다.", exception.message)
-    }
+    
+        assertEquals(SurveyNotFoundException().message, exception.message)
+    }    
 
     @Test
     @DisplayName("Should return empty answer list when no answers exist for a survey item")

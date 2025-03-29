@@ -1,4 +1,4 @@
-package com.example.api.exception
+package com.example.common.exception
 
 open class BusinessException(
     val errorCode: ErrorCode,

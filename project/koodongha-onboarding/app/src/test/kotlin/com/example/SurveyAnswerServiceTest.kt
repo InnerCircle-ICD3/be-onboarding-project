@@ -82,7 +82,7 @@ class SurveyAnswerServiceTest {
             surveyAnswerService.submitAnswer(1L, request)
         }
 
-        assertEquals("You must enter a valid answer for the selected options.", exception.message)
+        assertEquals(InvalidSurveyRequestException("You must enter a valid answer for the selected options.").message, exception.message)
     }
 
     @Test
@@ -98,7 +98,7 @@ class SurveyAnswerServiceTest {
             surveyAnswerService.submitAnswer(999L, request)
         }
 
-        assertEquals("설문을 찾을 수 없습니다.", exception.message)
+        assertEquals(SurveyNotFoundException().message, exception.message)
     }
 
     @Test
@@ -157,6 +157,6 @@ class SurveyAnswerServiceTest {
             surveyAnswerService.submitAnswer(1L, request)
         }
 
-        assertEquals("You must enter a valid answer for the selected options.", exception.message)
+        assertEquals(InvalidSurveyRequestException("You must enter a valid answer for the selected options.").message, exception.message)
     }
 }
