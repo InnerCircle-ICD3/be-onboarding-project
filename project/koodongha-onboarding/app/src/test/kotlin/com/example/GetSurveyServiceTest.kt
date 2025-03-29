@@ -5,6 +5,7 @@ import com.example.entity.*
 import com.example.repository.SurveyAnswerRepository
 import com.example.repository.SurveyRepository
 import com.example.service.GetSurveyService
+import com.example.common.exception.SurveyNotFoundException
 import org.junit.jupiter.api.Assertions.*
 import org.junit.jupiter.api.DisplayName
 import org.junit.jupiter.api.Test
@@ -56,11 +57,11 @@ class GetSurveyServiceTest {
     fun shouldThrowExceptionWhenSurveyNotFound() {
         whenever(surveyRepository.findById(9999L)).thenReturn(Optional.empty())
 
-        val exception = assertThrows(RuntimeException::class.java) {
+        val exception = assertThrows(SurveyNotFoundException::class.java) {
             service.getSurvey(9999L)
         }
 
-        assertEquals("Survey not found.", exception.message)
+        assertEquals("설문을 찾을 수 없습니다.", exception.message)
     }
 
     @Test

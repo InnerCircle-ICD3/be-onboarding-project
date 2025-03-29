@@ -6,6 +6,8 @@ import com.example.entity.*
 import com.example.repository.SurveyAnswerRepository
 import com.example.repository.SurveyRepository
 import com.example.service.SurveyAnswerService
+import com.example.common.exception.InvalidSurveyRequestException
+import com.example.common.exception.SurveyNotFoundException
 import org.junit.jupiter.api.Assertions.*
 import org.junit.jupiter.api.DisplayName
 import org.junit.jupiter.api.Test
@@ -76,7 +78,7 @@ class SurveyAnswerServiceTest {
             answers = listOf(AnswerDto(1L, listOf("Python")))
         )
 
-        val exception = assertThrows(IllegalArgumentException::class.java) {
+        val exception = assertThrows(InvalidSurveyRequestException::class.java) {
             surveyAnswerService.submitAnswer(1L, request)
         }
 
@@ -92,11 +94,11 @@ class SurveyAnswerServiceTest {
             answers = listOf(AnswerDto(1L, listOf("Kotlin")))
         )
 
-        val exception = assertThrows(IllegalArgumentException::class.java) {
+        val exception = assertThrows(SurveyNotFoundException::class.java) {
             surveyAnswerService.submitAnswer(999L, request)
         }
 
-        assertEquals("Survey not found.", exception.message)
+        assertEquals("설문을 찾을 수 없습니다.", exception.message)
     }
 
     @Test
@@ -151,7 +153,7 @@ class SurveyAnswerServiceTest {
             answers = listOf(AnswerDto(1L, listOf("Kotlin", "Scala")))
         )
 
-        val exception = assertThrows(IllegalArgumentException::class.java) {
+        val exception = assertThrows(InvalidSurveyRequestException::class.java) {
             surveyAnswerService.submitAnswer(1L, request)
         }
 

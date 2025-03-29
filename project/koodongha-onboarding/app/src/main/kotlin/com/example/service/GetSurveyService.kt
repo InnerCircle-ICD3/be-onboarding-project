@@ -5,6 +5,7 @@ import com.example.dto.SurveyResponse
 import com.example.entity.SurveyAnswer
 import com.example.repository.SurveyAnswerRepository
 import com.example.repository.SurveyRepository
+import com.example.common.exception.SurveyNotFoundException
 import org.springframework.stereotype.Service
 
 @Service
@@ -19,7 +20,7 @@ class GetSurveyService(
         filterAnswer: String? = null
     ): SurveyResponse {
         val survey = surveyRepository.findById(surveyId)
-            .orElseThrow { RuntimeException("Survey not found.") }
+            .orElseThrow { SurveyNotFoundException() }
 
         val answers: List<SurveyAnswer> = answerRepository.findBySurveyId(surveyId)
 

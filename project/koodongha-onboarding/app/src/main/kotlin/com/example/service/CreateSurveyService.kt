@@ -3,6 +3,7 @@ package com.example.service
 import com.example.dto.CreateSurveyRequest
 import com.example.entity.*
 import com.example.repository.SurveyRepository
+import com.example.common.exception.InvalidSurveyRequestException
 import org.springframework.stereotype.Service
 
 @Service
@@ -45,28 +46,28 @@ class CreateSurveyService(
 
     private fun validate(request: CreateSurveyRequest) {
         if (request.title.isBlank()) {
-            throw IllegalArgumentException("Survey title is required.")
+            throw InvalidSurveyRequestException("Survey title is required.")
         }
 
         if (request.description.isNullOrBlank()) {
-            throw IllegalArgumentException("Survey description is required.")
+            throw InvalidSurveyRequestException("Survey description is required.")
         }
 
         if (request.items.isEmpty() || request.items.size > 10) {
-            throw IllegalArgumentException("Survey items must be between 1 and 10.")
+            throw InvalidSurveyRequestException("Survey items must be between 1 and 10.")
         }
 
         request.items.forEach { item ->
             if (item.name.isBlank()) {
-                throw IllegalArgumentException("Item name is required.")
+                throw InvalidSurveyRequestException("Item name is required.")
             }
 
             if (item.description.isNullOrBlank()) {
-                throw IllegalArgumentException("Item description is required.")
+                throw InvalidSurveyRequestException("Item description is required.")
             }
 
             if (item.inputType.isChoice() && item.options.isNullOrEmpty()) {
-                throw IllegalArgumentException("Choice-type items must have options.")
+                throw InvalidSurveyRequestException("Choice-type items must have options.")
             }
         }
     }

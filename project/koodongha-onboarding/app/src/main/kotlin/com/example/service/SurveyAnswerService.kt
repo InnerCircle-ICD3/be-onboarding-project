@@ -5,6 +5,8 @@ import com.example.entity.InputType
 import com.example.entity.SurveyAnswer
 import com.example.repository.SurveyAnswerRepository
 import com.example.repository.SurveyRepository
+import com.example.common.exception.InvalidSurveyRequestException
+import com.example.common.exception.SurveyNotFoundException
 import org.springframework.stereotype.Service
 
 @Service
@@ -15,13 +17,13 @@ class SurveyAnswerService(
 
     fun submitAnswer(surveyId: Long, request: AnswerSubmitDto) {
         val survey = surveyRepository.findById(surveyId)
-            .orElseThrow { IllegalArgumentException("Survey not found.") }
+            .orElseThrow { SurveyNotFoundException() }
 
         val itemMap = survey.items.associateBy { it.id }
 
         val answers = request.answers.map { dto ->
             val item = itemMap[dto.itemId]
-                ?: throw IllegalArgumentException("Answer value does not match survey item.")
+                ?: throw InvalidSurveyRequestException("Answer value does not match survey item.")
 
             val values = dto.values
 
@@ -29,13 +31,13 @@ class SurveyAnswerService(
                 val validOptions = item.options.map { it.value }
                 values.forEach { value ->
                     if (value !in validOptions) {
-                        throw IllegalArgumentException("You must enter a valid answer for the selected options.")
+                        throw InvalidSurveyRequestException("You must enter a valid answer for the selected options.")
                     }
                 }
             } else if (item.inputType == InputType.SHORT_TEXT) {
                 values.forEach { value ->
                     if (value.length > 255) {
-                        throw IllegalArgumentException("SHORT_TEXT answers must be within 255 characters.")
+                        throw InvalidSurveyRequestException("SHORT_TEXT answers must be within 255 characters.")
                     }
                 }
             }
