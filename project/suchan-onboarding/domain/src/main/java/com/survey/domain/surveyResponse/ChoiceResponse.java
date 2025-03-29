@@ -10,6 +10,7 @@ import java.util.List;
 @Entity
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 public class ChoiceResponse {
+    private static final String SELECTED_OPTION_EMPTY_EXCEPTION_MESSAGE = "선택된 항목이 비어있습니다.";
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -25,4 +26,19 @@ public class ChoiceResponse {
     @OneToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "survey_option_response_id")
     private SurveyOptionResponse surveyOptionResponse;
+
+    public ChoiceResponse(List<String> selectedOptions) {
+        validateSelectedOptions(selectedOptions);
+        this.selectedOptions = selectedOptions;
+    }
+
+    private void validateSelectedOptions(List<String> selectedOptions) {
+        if (selectedOptions == null || selectedOptions.isEmpty()) {
+            throw new IllegalArgumentException(SELECTED_OPTION_EMPTY_EXCEPTION_MESSAGE);
+        }
+    }
+
+    public void addSurveyOptionResponse(SurveyOptionResponse surveyOptionResponse) {
+        this.surveyOptionResponse = surveyOptionResponse;
+    }
 }
