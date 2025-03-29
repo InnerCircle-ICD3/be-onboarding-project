@@ -1,0 +1,6 @@
+{
+    "kotlin.languageServer.enabled": true,
+    "files.encoding": "utf8",
+    "terminal.integrated.defaultEncoding": "utf8"
+  }
+  
