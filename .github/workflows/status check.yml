@@ -33,8 +33,8 @@ jobs:
       fail-fast: false
 
     outputs:
-      build_success: ${{ steps.set-result.outputs.success }}
-      failed_projects: ${{ steps.set-result.outputs.failed_projects }}
+      build_status: ${{ steps.build_result.outputs.status }}
+      failed_projects: ${{ steps.build_result.outputs.failed_projects }}
 
     steps:
       - uses: actions/checkout@v3
@@ -49,21 +49,31 @@ jobs:
         run: chmod +x ./project/${{ matrix.project }}/gradlew
 
       - name: Build with Gradle
-        id: build
-        continue-on-error: true
+        id: gradle_build
         working-directory: ./project/${{ matrix.project }}
-        run: ./gradlew clean build
+        run: |
+          set +e  # Allow command to fail without exiting the script
+          ./gradlew clean build
+          EXIT_CODE=$?
+          set -e  # Re-enable exit on error
+          
+          echo "exit_code=$EXIT_CODE" >> $GITHUB_OUTPUT
+          
+          if [ $EXIT_CODE -ne 0 ]; then
+            echo "::error::Build failed for ${{ matrix.project }} with exit code $EXIT_CODE"
+            exit 1
+          fi
 
-      - name: Set result
-        id: set-result
+      - name: Set build result
+        id: build_result
         if: always()
         run: |
-          if [ "${{ steps.build.outcome }}" == "success" ]; then
-            echo "success=true" >> $GITHUB_OUTPUT
-            echo "failed_projects=" >> $GITHUB_OUTPUT
-          else
-            echo "success=false" >> $GITHUB_OUTPUT
+          if [[ "${{ steps.gradle_build.outcome }}" == "failure" || "${{ steps.gradle_build.outputs.exit_code }}" != "0" ]]; then
+            echo "status=failure" >> $GITHUB_OUTPUT
             echo "failed_projects=${{ matrix.project }}" >> $GITHUB_OUTPUT
+          else
+            echo "status=success" >> $GITHUB_OUTPUT
+            echo "failed_projects=" >> $GITHUB_OUTPUT
           fi
 
   build:
@@ -73,8 +83,8 @@ jobs:
     steps:
       - name: Check build results
         run: |
-          if [[ "${{ needs.parallel-builds.outputs.build_success }}" == "false" ]]; then
-            echo "::error::The following projects failed to build: ${{ needs.parallel-builds.outputs.failed_projects }}"
+          if [[ "${{ needs.parallel-builds.result }}" != "success" || "${{ needs.parallel-builds.outputs.build_status }}" == "failure" ]]; then
+            echo "::error::Build failed for projects: ${{ needs.parallel-builds.outputs.failed_projects }}"
             exit 1
           else
             echo "All projects built successfully"
