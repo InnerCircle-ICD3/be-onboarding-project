@@ -4,8 +4,10 @@ import com.innercircle.presurveyapi.common.logger
 import org.junit.jupiter.api.Test
 import org.slf4j.MDC
 import org.springframework.boot.test.context.SpringBootTest
+import org.springframework.test.context.ActiveProfiles
 
 @SpringBootTest
+@ActiveProfiles("test")
 class PresurveyApiApplicationTests {
 
 	private val log = logger()
@@ -15,7 +17,7 @@ class PresurveyApiApplicationTests {
 	test 확인을 위한 mdc 수동 테스트
 	 */
 	@Test
-	fun `로깅 수동 테스트`() {
+	fun 로깅_수동_테스트() {
 		MDC.put("traceId", "test-trace-id")
 		MDC.put("method", "TEST")
 		MDC.put("uri", "/test-endpoint")
