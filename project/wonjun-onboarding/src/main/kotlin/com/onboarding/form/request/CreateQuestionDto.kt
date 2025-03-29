@@ -29,7 +29,7 @@ data class CreateStandardQuestionDto(
     override val description: String,
     override val type: QuestionType,
     override val isRequired: Boolean,
-): CreateQuestionDto(title, description, type, isRequired)
+) : CreateQuestionDto(title, description, type, isRequired)
 
 data class CreateSelectQuestionDto(
     override val title: String,
@@ -37,4 +37,4 @@ data class CreateSelectQuestionDto(
     override val type: QuestionType,
     override val isRequired: Boolean,
     val answerList: List<String>
-): CreateQuestionDto(title, description, type, isRequired)
+) : CreateQuestionDto(title, description, type, isRequired)

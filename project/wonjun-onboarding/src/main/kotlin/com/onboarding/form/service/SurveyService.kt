@@ -18,7 +18,7 @@ class SurveyService(
             description = surveyDto.description,
         )
 
-        surveyDto.item.forEach {
+        surveyDto.questions.forEach {
             survey.addItem(
                 when (it) {
                     is CreateStandardQuestionDto -> when (it.type) {
@@ -26,6 +26,7 @@ class SurveyService(
                         QuestionType.LONG -> LongQuestion(null, it.title, it.description, it.isRequired)
                         else -> throw IllegalArgumentException("Question type ${it.type} not supported")
                     }
+
                     is CreateSelectQuestionDto -> when (it.type) {
                         QuestionType.SINGLE_SELECT -> SingleSelectQuestion(
                             null,
@@ -42,6 +43,7 @@ class SurveyService(
                             it.isRequired,
                             it.answerList
                         )
+
                         else -> throw IllegalArgumentException("Question type ${it.type} not supported")
                     }
                 }
