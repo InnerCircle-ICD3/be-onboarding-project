@@ -133,7 +133,8 @@ public class FormField {
 ## ERD
 * 스키마에 도메인이 설명되므로 관계 테이블에만 해당 도메인의 접두어를 명시한다
 * `order`와 같이 `h2`의 예약어인 경우만 접두어를 붙인다 
-![img_1.png](img.png)
+
+![img_1.png](erd.png)
 
 # Ref
 
