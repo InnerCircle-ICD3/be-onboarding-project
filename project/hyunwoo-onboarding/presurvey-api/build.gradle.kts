@@ -48,3 +48,13 @@ kotlin {
 tasks.withType<Test> {
 	useJUnitPlatform()
 }
+
+
+tasks.withType<JavaCompile> {
+	options.encoding = "UTF-8" // 소스 코드 컴파일 인코딩 설정
+}
+
+tasks.withType<Test> {
+	useJUnitPlatform()
+	systemProperty("file.encoding", "UTF-8") // 테스트 실행 시 인코딩 설정
+}
