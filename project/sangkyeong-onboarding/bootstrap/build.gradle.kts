@@ -10,3 +10,7 @@ dependencies {
 tasks.withType<BootJar> {
     enabled = true
 }
+
+tasks.withType<Jar> {
+    enabled = false
+}

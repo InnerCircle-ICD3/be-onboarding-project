@@ -13,11 +13,6 @@ allprojects {
         enabled = false
     }
 
-    tasks.withType<Jar> {
-        enabled = false
-    }
-
-
     repositories {
         mavenCentral()
     }
@@ -65,4 +60,8 @@ subprojects {
     tasks.withType<Test> {
         useJUnitPlatform()
     }
+}
+
+tasks.withType<Jar> {
+    enabled = false
 }
