@@ -19,10 +19,12 @@ jobs:
         id: set-projects
         shell: bash
         run: |
-          PROJECTS=$(find ./project -name "gradlew" -type f | sed -e 's/\/gradlew$//' -e 's/^\.\/project\///')
-          PROJECTS_JSON=$(echo "$PROJECTS" | jq -R . | jq -s .)
-          echo "projects=$PROJECTS_JSON" >> $GITHUB_OUTPUT
-          echo "Found projects: $PROJECTS_JSON"
+          # Find all gradlew files and extract their paths
+          projects=$(find ./project -name "gradlew" -type f -exec dirname {} \; | sed 's|^./project/||')
+          
+          # Create proper JSON array
+          echo "projects=$(echo $projects | jq -R 'split(" ")' -c)" >> $GITHUB_OUTPUT
+          echo "Found projects: $(echo $projects | jq -R 'split(" ")' -c)"
 
   build:
     needs: find-projects
@@ -45,4 +47,5 @@ jobs:
         run: chmod +x ./project/${{ matrix.project }}/gradlew
 
       - name: Build with Gradle
-        run: ./project/${{ matrix.project }}/gradlew -p ./project/${{ matrix.project }} clean build
+        working-directory: ./project/${{ matrix.project }}
+        run: ./gradlew clean build
