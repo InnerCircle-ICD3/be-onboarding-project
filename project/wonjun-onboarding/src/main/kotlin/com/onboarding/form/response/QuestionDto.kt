@@ -11,10 +11,36 @@ sealed class QuestionDto(
     companion object {
         fun of(question: Question): QuestionDto {
             return when (question) {
-                is LongQuestion -> StandardQuestionDto(question.title, question.description, question.getType(), question.isRequired)
-                is ShortQuestion -> StandardQuestionDto(question.title, question.description, question.getType(), question.isRequired)
-                is MultiSelectQuestion -> SelectQuestionDto(question.title, question.description, question.getType(), question.isRequired, question.answerList)
-                is SingleSelectQuestion -> SelectQuestionDto(question.title, question.description, question.getType(), question.isRequired, question.answerList)
+                is LongQuestion -> StandardQuestionDto(
+                    question.title,
+                    question.description,
+                    question.getType(),
+                    question.isRequired
+                )
+
+                is ShortQuestion -> StandardQuestionDto(
+                    question.title,
+                    question.description,
+                    question.getType(),
+                    question.isRequired
+                )
+
+                is MultiSelectQuestion -> SelectQuestionDto(
+                    question.title,
+                    question.description,
+                    question.getType(),
+                    question.isRequired,
+                    question.answerList
+                )
+
+                is SingleSelectQuestion -> SelectQuestionDto(
+                    question.title,
+                    question.description,
+                    question.getType(),
+                    question.isRequired,
+                    question.answerList
+                )
+
                 else -> throw IllegalArgumentException("Invalid question type")
             }
         }
