@@ -58,16 +58,20 @@ collate=utf8mb4_unicode_ci;
 
 CREATE TABLE `SurveyAnswer`
 (
-    `id`                 BIGINT PRIMARY KEY NOT NULL COMMENT '설문 응답 식별자',
-    `survey_question_id` BIGINT             NOT NULL COMMENT '설문 받을 항목 식별자',
-    `content`            VARCHAR(500) NULL COMMENT '내용 (주관식 답변)',
-    `input_type`         ENUM('SHORT_ANSWER', 'LONG_ANSWER', 'SINGLE_CHOICE', 'MULTI_CHOICE') NOT NULL COMMENT '입력 유형',
-    `created_at`         TIMESTAMP          NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT '생성일시',
-    `updated_at`         TIMESTAMP NULL COMMENT '수정일시',
-    `is_deleted`         TINYINT(1) NOT NULL DEFAULT 0 COMMENT '삭제여부',
-    `deleted_at`         TIMESTAMP NULL COMMENT '삭제일시',
+    `id`                          BIGINT PRIMARY KEY NOT NULL COMMENT '설문 응답 식별자',
+    `survey_question_id`          BIGINT             NOT NULL COMMENT '설문 받을 항목 식별자',
+    `survey_name`                 VARCHAR(100)       NOT NULL COMMENT '설문 이름',
+    `survey_description`          VARCHAR(500)       NOT NULL COMMENT '설문 설명',
+    `survey_question_name`        VARCHAR(100)       NOT NULL COMMENT '설문 받을 항목 이름',
+    `survey_question_description` VARCHAR(500)       NOT NULL COMMENT '설문 받을 항목 설명',
+    `content`                     VARCHAR(500) NULL COMMENT '내용 (주관식 답변)',
+    `input_type`                  ENUM('SHORT_ANSWER', 'LONG_ANSWER', 'SINGLE_CHOICE', 'MULTI_CHOICE') NOT NULL COMMENT '입력 유형',
+    `created_at`                  TIMESTAMP          NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT '생성일시',
+    `updated_at`                  TIMESTAMP NULL COMMENT '수정일시',
+    `is_deleted`                  TINYINT(1) NOT NULL DEFAULT 0 COMMENT '삭제여부',
+    `deleted_at`                  TIMESTAMP NULL COMMENT '삭제일시',
     FOREIGN KEY (`survey_question_id`) REFERENCES `SurveyQuestion` (`id`),
-    INDEX                `IDX_SurveyQuestionResponse_content` (`content`)
+    INDEX                         `IDX_SurveyQuestionResponse_content` (`content`)
 ) COMMENT '설문 응답';
 engine
 =InnoDB
@@ -76,8 +80,10 @@ collate=utf8mb4_unicode_ci;
 
 CREATE TABLE `SurveyAnswerOption`
 (
-    `survey_answer_id` BIGINT NOT NULL COMMENT '설문 응답 식별자',
-    `survey_question_option_id`   BIGINT NOT NULL COMMENT '설문 받을 항목 옵션 식별자',
+    `id`                             VARCHAR(255) NOT NULL,
+    `survey_answer_id`               bigint       NOT NULL COMMENT '설문 받을 항목 옵션 식별자',
+    `survey_question_option_id`      bigint       NOT NULL COMMENT '설문 응답 식별자',
+    `survey_question_option_content` varchar(100) NOT NULL COMMENT '설문 받을 항목 옵션 내용',
     PRIMARY KEY (`survey_answer_id`, `survey_question_option_id`),
     FOREIGN KEY (`survey_answer_id`) REFERENCES `SurveyQuestionResponse` (`id`),
     FOREIGN KEY (`survey_question_option_id`) REFERENCES `SurveyQuestionOption` (`id`)
