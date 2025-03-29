@@ -22,7 +22,7 @@ class SurveyController(
                 id = survey.id!!,
                 title = survey.title,
                 description = survey.description,
-                item = survey.question.map {
+                item = survey.questions.map {
                     QuestionDto.of(it)
                 }.toList()
             )

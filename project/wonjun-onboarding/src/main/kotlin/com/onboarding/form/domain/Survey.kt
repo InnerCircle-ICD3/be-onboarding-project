@@ -10,10 +10,10 @@ class Survey (
     val title: String,
     val description: String,
     @OneToMany(mappedBy = "survey", cascade = [CascadeType.ALL], orphanRemoval = true)
-    val question: MutableList<Question> = mutableListOf()
+    val questions: MutableList<Question> = mutableListOf()
 ){
     fun addItem(question: Question){
         question.survey = this
-        this.question.add(question)
+        this.questions.add(question)
     }
 }
