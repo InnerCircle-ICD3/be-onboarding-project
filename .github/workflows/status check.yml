@@ -32,6 +32,10 @@ jobs:
         project: ${{ fromJson(needs.find-projects.outputs.projects) }}
       fail-fast: false
 
+    outputs:
+      build_success: ${{ steps.set-result.outputs.success }}
+      failed_projects: ${{ steps.set-result.outputs.failed_projects }}
+
     steps:
       - uses: actions/checkout@v3
 
@@ -45,13 +49,33 @@ jobs:
         run: chmod +x ./project/${{ matrix.project }}/gradlew
 
       - name: Build with Gradle
+        id: build
+        continue-on-error: true
         working-directory: ./project/${{ matrix.project }}
         run: ./gradlew clean build
 
-  build-status:
-    name: build
+      - name: Set result
+        id: set-result
+        if: always()
+        run: |
+          if [ "${{ steps.build.outcome }}" == "success" ]; then
+            echo "success=true" >> $GITHUB_OUTPUT
+            echo "failed_projects=" >> $GITHUB_OUTPUT
+          else
+            echo "success=false" >> $GITHUB_OUTPUT
+            echo "failed_projects=${{ matrix.project }}" >> $GITHUB_OUTPUT
+          fi
+
+  build:
     needs: parallel-builds
     runs-on: ubuntu-latest
+    if: always()
     steps:
-      - name: Build Status Check
-        run: echo "All projects built successfully"
+      - name: Check build results
+        run: |
+          if [[ "${{ needs.parallel-builds.outputs.build_success }}" == "false" ]]; then
+            echo "::error::The following projects failed to build: ${{ needs.parallel-builds.outputs.failed_projects }}"
+            exit 1
+          else
+            echo "All projects built successfully"
+          fi
