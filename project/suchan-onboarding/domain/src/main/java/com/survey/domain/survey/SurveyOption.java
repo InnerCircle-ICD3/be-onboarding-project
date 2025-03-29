@@ -1,4 +1,4 @@
-package com.survey.domain;
+package com.survey.domain.survey;
 
 import jakarta.persistence.*;
 import lombok.AccessLevel;

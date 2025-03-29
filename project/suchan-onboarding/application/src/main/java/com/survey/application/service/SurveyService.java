@@ -2,8 +2,8 @@ package com.survey.application.service;
 
 import com.survey.application.dto.request.CreateSurveyRequest;
 import com.survey.application.dto.request.UpdateSurveyRequest;
-import com.survey.domain.Survey;
-import com.survey.domain.repository.SurveyRepository;
+import com.survey.domain.survey.Survey;
+import com.survey.domain.survey.repository.SurveyRepository;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 

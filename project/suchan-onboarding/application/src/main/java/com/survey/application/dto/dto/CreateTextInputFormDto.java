@@ -1,7 +1,7 @@
 package com.survey.application.dto.dto;
 
-import com.survey.domain.TextInputForm;
-import com.survey.domain.TextType;
+import com.survey.domain.survey.TextInputForm;
+import com.survey.domain.survey.TextType;
 import jakarta.validation.constraints.NotNull;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
