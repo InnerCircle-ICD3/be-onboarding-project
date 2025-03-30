@@ -5,6 +5,7 @@ import com.example.dto.CreateSurveyRequest
 import com.example.entity.InputType
 import com.example.repository.SurveyRepository
 import com.example.service.CreateSurveyService
+import com.example.common.exception.InvalidSurveyRequestException
 import org.junit.jupiter.api.Assertions.*
 import org.junit.jupiter.api.DisplayName
 import org.junit.jupiter.api.Test
@@ -55,7 +56,7 @@ class CreateSurveyServiceTest {
             }
         )
 
-        val exception = assertThrows(IllegalArgumentException::class.java) {
+        val exception = assertThrows(InvalidSurveyRequestException::class.java) {
             createSurveyService.createSurvey(request)
         }
 
@@ -79,7 +80,7 @@ class CreateSurveyServiceTest {
             )
         )
 
-        val exception = assertThrows(IllegalArgumentException::class.java) {
+        val exception = assertThrows(InvalidSurveyRequestException::class.java) {
             createSurveyService.createSurvey(request)
         }
 
@@ -103,7 +104,7 @@ class CreateSurveyServiceTest {
             )
         )
 
-        val exception = assertThrows(IllegalArgumentException::class.java) {
+        val exception = assertThrows(InvalidSurveyRequestException::class.java) {
             createSurveyService.createSurvey(request)
         }
 
@@ -127,7 +128,7 @@ class CreateSurveyServiceTest {
             )
         )
 
-        val exception = assertThrows(IllegalArgumentException::class.java) {
+        val exception = assertThrows(InvalidSurveyRequestException::class.java) {
             createSurveyService.createSurvey(request)
         }
 
@@ -151,7 +152,7 @@ class CreateSurveyServiceTest {
             )
         )
 
-        val exception = assertThrows(IllegalArgumentException::class.java) {
+        val exception = assertThrows(InvalidSurveyRequestException::class.java) {
             createSurveyService.createSurvey(request)
         }
 
@@ -175,7 +176,7 @@ class CreateSurveyServiceTest {
             )
         )
 
-        val exception = assertThrows(IllegalArgumentException::class.java) {
+        val exception = assertThrows(InvalidSurveyRequestException::class.java) {
             createSurveyService.createSurvey(request)
         }
 
@@ -199,7 +200,7 @@ class CreateSurveyServiceTest {
             )
         )
 
-        val exception = assertThrows(IllegalArgumentException::class.java) {
+        val exception = assertThrows(InvalidSurveyRequestException::class.java) {
             createSurveyService.createSurvey(request)
         }
 

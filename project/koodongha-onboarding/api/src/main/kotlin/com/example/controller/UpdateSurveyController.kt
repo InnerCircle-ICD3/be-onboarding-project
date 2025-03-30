@@ -1,22 +1,22 @@
 package com.example.api.controller
 
 import com.example.dto.AnswerSubmitDto
-import com.example.service.SurveyAnswerService
+import com.example.service.UpdateSurveyService
 import org.springframework.http.ResponseEntity
 import org.springframework.web.bind.annotation.*
 
 @RestController
 @RequestMapping("/surveys")
-class SurveyAnswerController(
-    private val surveyAnswerService: SurveyAnswerService
+class UpdateSurveyController(
+    private val updateSurveyService: UpdateSurveyService
 ) {
 
-    @PostMapping("/{id}/answers")
-    fun submitAnswer(
+    @PutMapping("/{id}/answers")
+    fun updateAnswer(
         @PathVariable id: Long,
         @RequestBody request: AnswerSubmitDto
     ): ResponseEntity<Void> {
-        surveyAnswerService.submitAnswer(id, request)
+        updateSurveyService.submitAnswer(id, request)
         return ResponseEntity.ok().build()
     }
 }
