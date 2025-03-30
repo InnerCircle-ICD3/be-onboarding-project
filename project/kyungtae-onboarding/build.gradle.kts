@@ -1,43 +1,33 @@
 plugins {
-	java
-	id("org.springframework.boot") version "3.4.4"
-	id("io.spring.dependency-management") version "1.1.7"
+	kotlin("jvm") version "1.9.25" apply false
+	kotlin("plugin.spring") version "1.9.25" apply false
+	kotlin("plugin.jpa") version "1.9.25" apply false
+	id("org.springframework.boot") version "3.4.4" apply false
+	id("io.spring.dependency-management") version "1.1.7" apply false
 }
 
-group = "com.innercircle"
-version = "0.0.1-SNAPSHOT"
-
-java {
-	toolchain {
-		languageVersion.set(JavaLanguageVersion.of(17))
+allprojects {
+	group = "com.innercircle"
+	version = "0.0.1-SNAPSHOT"
+	repositories {
+		mavenCentral()
 	}
 }
 
-configurations {
-	compileOnly {
-		extendsFrom(configurations.annotationProcessor.get())
+subprojects {
+	apply(plugin = "org.jetbrains.kotlin.jvm")
+	apply(plugin = "org.jetbrains.kotlin.plugin.spring")
+	apply(plugin = "io.spring.dependency-management")
+
+	configurations.named("compileOnly") {
+		extendsFrom(configurations.getByName("annotationProcessor"))
 	}
-}
 
-repositories {
-	mavenCentral()
-}
+	repositories {
+		mavenCentral()
+	}
 
-dependencies {
-	implementation("org.springframework.boot:spring-boot-starter-data-jpa")
-	implementation("org.springframework.boot:spring-boot-starter-validation")
-	implementation("org.springframework.boot:spring-boot-starter-web")
-
-	compileOnly("org.projectlombok:lombok")
-	annotationProcessor("org.projectlombok:lombok")
-
-	runtimeOnly("com.h2database:h2")
-
-	testImplementation("org.springframework.boot:spring-boot-starter-test")
-	testImplementation("io.rest-assured:rest-assured:5.5.1")
-	testRuntimeOnly("org.junit.platform:junit-platform-launcher")
-}
-
-tasks.test {
-	useJUnitPlatform()
+	tasks.withType<Test> {
+		useJUnitPlatform()
+	}
 }
