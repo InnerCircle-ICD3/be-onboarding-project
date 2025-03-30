@@ -56,3 +56,6 @@
 [rest-assured](https://github.com/rest-assured/rest-assured)
 - BDD 스타일의 API 테스트를 위한 라이브러리로 E2E 테스트를 위해 추가하였습니다. given/when/then 구문을 사용한 메서드 체이닝 방식으로 가독성이 좋은 장점이 있습니다.
 - 해당 라이브러리는 E2E뿐 아니라 Unit Test에서도 사용할 수 있고 BDD 스타일 구문을 활용하기 때문에 API 테스트를 위한 학습 곡선이 낮다고 판단하였습니다.
+
+### ERD
+![survey_erd.png](./survey_erd.png)
