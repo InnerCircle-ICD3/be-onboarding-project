@@ -19,6 +19,7 @@ subprojects {
     apply(plugin = "org.springframework.boot")
     apply(plugin = "org.jetbrains.kotlin.plugin.spring")
     apply(plugin = "kotlin")
+    apply(plugin = "org.jetbrains.kotlin.plugin.jpa")
 
     group = "org.innercircle"
     version = "0.0.1-SNAPSHOT"
