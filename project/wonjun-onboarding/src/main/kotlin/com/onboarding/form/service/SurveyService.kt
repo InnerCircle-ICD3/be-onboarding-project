@@ -1,10 +1,11 @@
 package com.onboarding.form.service
 
-import com.onboarding.form.domain.*
+import com.onboarding.form.domain.Question
+import com.onboarding.form.domain.Survey
 import com.onboarding.form.repository.SurveyRepository
-import com.onboarding.form.request.CreateSelectQuestionDto
-import com.onboarding.form.request.CreateStandardQuestionDto
 import com.onboarding.form.request.CreateSurveyDto
+import jakarta.transaction.Transactional
+import org.springframework.data.repository.findByIdOrNull
 import org.springframework.stereotype.Service
 
 
@@ -18,37 +19,17 @@ class SurveyService(
             description = surveyDto.description,
         )
 
-        surveyDto.questions.forEach {
-            survey.addQuestion(
-                when (it) {
-                    is CreateStandardQuestionDto -> when (it.type) {
-                        QuestionType.SHORT -> ShortQuestion(null, it.title, it.description, it.isRequired)
-                        QuestionType.LONG -> LongQuestion(null, it.title, it.description, it.isRequired)
-                        else -> throw IllegalArgumentException("Question type ${it.type} not supported")
-                    }
+        surveyDto.questions.forEach { survey.addQuestion(Question.of(it)) }
 
-                    is CreateSelectQuestionDto -> when (it.type) {
-                        QuestionType.SINGLE_SELECT -> SingleSelectQuestion(
-                            null,
-                            it.title,
-                            it.description,
-                            it.isRequired,
-                            it.answerList
-                        )
+        surveyRepository.save(survey)
+        return survey
+    }
 
-                        QuestionType.MULTI_SELECT -> MultiSelectQuestion(
-                            null,
-                            it.title,
-                            it.description,
-                            it.isRequired,
-                            it.answerList
-                        )
+    @Transactional
+    fun updateSurveyDto(id: Long, surveyDto: CreateSurveyDto): Survey {
+        val survey = requireNotNull(surveyRepository.findByIdOrNull(id)) { "Survey not found" }
 
-                        else -> throw IllegalArgumentException("Question type ${it.type} not supported")
-                    }
-                }
-            )
-        }
+        survey.update(surveyDto.title, surveyDto.description, surveyDto.questions.map { Question.of(it) }.toList())
 
         surveyRepository.save(survey)
         return survey

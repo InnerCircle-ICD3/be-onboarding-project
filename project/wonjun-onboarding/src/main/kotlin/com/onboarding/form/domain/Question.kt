@@ -1,5 +1,8 @@
 package com.onboarding.form.domain
 
+import com.onboarding.form.request.CreateQuestionDto
+import com.onboarding.form.request.CreateSelectQuestionDto
+import com.onboarding.form.request.CreateStandardQuestionDto
 import jakarta.persistence.*
 
 
@@ -9,7 +12,7 @@ import jakarta.persistence.*
     name = "type",
     discriminatorType = DiscriminatorType.STRING
 )
-@Table(name = "question")
+@Table(name = "questions")
 abstract class Question(
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -22,6 +25,38 @@ abstract class Question(
     var survey: Survey? = null
 ) {
     abstract fun getType(): QuestionType
+
+    companion object {
+        fun of(question: CreateQuestionDto): Question {
+            return when (question) {
+                is CreateStandardQuestionDto -> when (question.type) {
+                    QuestionType.SHORT -> ShortQuestion(null, question.title, question.description, question.isRequired)
+                    QuestionType.LONG -> LongQuestion(null, question.title, question.description, question.isRequired)
+                    else -> throw IllegalArgumentException("Question type ${question.type} not supported")
+                }
+
+                is CreateSelectQuestionDto -> when (question.type) {
+                    QuestionType.SINGLE_SELECT -> SingleSelectQuestion(
+                        null,
+                        question.title,
+                        question.description,
+                        question.isRequired,
+                        question.answerList
+                    )
+
+                    QuestionType.MULTI_SELECT -> MultiSelectQuestion(
+                        null,
+                        question.title,
+                        question.description,
+                        question.isRequired,
+                        question.answerList
+                    )
+
+                    else -> throw IllegalArgumentException("Question type ${question.type} not supported")
+                }
+            }
+        }
+    }
 }
 
 
