@@ -30,7 +30,7 @@ dependencies {
     implementation("com.fasterxml.jackson.module:jackson-module-kotlin")
     implementation("org.jetbrains.kotlin:kotlin-reflect")
 
-    // DB 관련 설정 (H2 & MySQL)
+    //DB 관련 설정 (H2 & MySQL)
     runtimeOnly("com.h2database:h2")
     runtimeOnly("com.mysql:mysql-connector-j") // MySQL 드라이버 (선택)
 
@@ -38,7 +38,7 @@ dependencies {
     compileOnly("org.projectlombok:lombok")
     annotationProcessor("org.projectlombok:lombok")
 
-    // JUnit 5 설정 (테스트 관련)
+    //JUnit 5 설정 (테스트 관련)
     testImplementation("org.springframework.boot:spring-boot-starter-test") {
         exclude(group = "org.junit.vintage", module = "junit-vintage-engine") // JUnit 4 제외
     }
