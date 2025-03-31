@@ -1,4 +1,4 @@
-package dayoung.onboarding.domain.survey
+package onboarding.survey.data.survey.entity
 
 import jakarta.persistence.*
 
@@ -7,11 +7,11 @@ import jakarta.persistence.*
 data class SurveyQuestionSelectList(
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    val selectId: Int = 0,
+    val selectId: Int,
 
-    val listValue: String? = null,
+    val listValue: String = "",
 
     @ManyToOne
     @JoinColumn(name = "question_id")
-    val question: SurveyQuestion? = null
+    val question: SurveyQuestion
 )

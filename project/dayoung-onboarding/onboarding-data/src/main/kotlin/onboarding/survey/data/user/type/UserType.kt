@@ -1,4 +1,4 @@
-package dayoung.onboarding.domain.user
+package onboarding.survey.data.user.type
 
 enum class UserType {
     ADMIN,

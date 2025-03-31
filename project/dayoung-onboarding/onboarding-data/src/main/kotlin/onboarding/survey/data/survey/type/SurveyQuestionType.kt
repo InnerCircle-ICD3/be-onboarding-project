@@ -1,4 +1,4 @@
-package dayoung.onboarding.domain.survey
+package onboarding.survey.data.survey.type
 
 enum class SurveyQuestionType {
     SHORT_TEXT, // 단답형
