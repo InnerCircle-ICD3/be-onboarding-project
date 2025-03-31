@@ -9,7 +9,7 @@
 
 ## 사용된 기술스택
 
-- JAVA 17
+- JAVA 19
 - Spring Boot
 - Gradle
 - JPA
