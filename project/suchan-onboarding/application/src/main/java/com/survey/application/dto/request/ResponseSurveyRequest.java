@@ -48,6 +48,8 @@ public class ResponseSurveyRequest {
     @NoArgsConstructor
     @AllArgsConstructor
     static class SurveyOptionResponseDto {
+        private static final String WRONG_SURVEY_OPTION_RESPONSE_TYPE_EXCEPTION_MESSAGE = "잘못된 타입의 설문 받을 항목의 응답입니다.";
+
         @NotNull
         private Long surveyOptionId;
 
@@ -60,8 +62,11 @@ public class ResponseSurveyRequest {
         public SurveyOptionResponse create() {
             if (textResponseDto != null) {
                 return new SurveyOptionResponse(surveyOptionId, textResponseDto.create());
+            } else if (choiceResponseDto != null) {
+                return new SurveyOptionResponse(surveyOptionId, choiceResponseDto.create());
+            } else {
+                throw new IllegalStateException(WRONG_SURVEY_OPTION_RESPONSE_TYPE_EXCEPTION_MESSAGE);
             }
-            return new SurveyOptionResponse(surveyOptionId, choiceResponseDto.create());
         }
     }
 

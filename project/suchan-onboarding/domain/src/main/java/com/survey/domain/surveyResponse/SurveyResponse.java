@@ -47,10 +47,10 @@ public class SurveyResponse {
 
         List<Long> surveyOptionIds = new ArrayList<>();
         for (SurveyOptionResponse surveyOptionRes : surveyOptionResponses) {
-            if (surveyOptionIds.contains(surveyOptionRes.getId())) {
+            if (surveyOptionIds.contains(surveyOptionRes.getSurveyOptionId())) {
                 throw new IllegalArgumentException(DUPLICATE_SURVEY_OPTION_RESPONSE_EXCEPTION_MESSAGE);
             }
-            surveyOptionIds.add(surveyOptionRes.getId());
+            surveyOptionIds.add(surveyOptionRes.getSurveyOptionId());
         }
     }
 
