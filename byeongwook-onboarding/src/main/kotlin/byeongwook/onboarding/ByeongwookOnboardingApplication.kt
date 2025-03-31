@@ -1,11 +1,11 @@
-package dayoung.onboarding
+package byeongwook.onboarding
 
 import org.springframework.boot.autoconfigure.SpringBootApplication
 import org.springframework.boot.runApplication
 
 @SpringBootApplication
-class OnboardingApplication
+class ByeongwookOnboardingApplication
 
 fun main(args: Array<String>) {
-    runApplication<OnboardingApplication>(*args)
+    runApplication<ByeongwookOnboardingApplication>(*args)
 }

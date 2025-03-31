@@ -1,10 +1,10 @@
-package dayoung.onboarding
+package byeongwook.onboarding
 
 import org.junit.jupiter.api.Test
 import org.springframework.boot.test.context.SpringBootTest
 
 @SpringBootTest
-class OnboardingApplicationTests {
+class ByeongwookOnboardingApplicationTests {
 
     @Test
     fun contextLoads() {
