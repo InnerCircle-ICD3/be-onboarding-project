@@ -62,4 +62,10 @@ public class SurveyOption {
         this.inputForm = inputForm;
         inputForm.addSurveyOption(this);
     }
+
+    public static SurveyOption createTestSurveyOption(Long id, String title, String description, boolean isNecessary, InputForm inputForm) {
+        SurveyOption surveyOption = new SurveyOption(title, description, isNecessary, inputForm);
+        surveyOption.id = id;
+        return surveyOption;
+    }
 }

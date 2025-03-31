@@ -103,4 +103,11 @@ public class Survey {
         addSurveyOption(newOption);
         updatedOptions.add(newOption);
     }
+
+    public static Survey createTestSurvey(Long id, Long version, String title, String description, List<SurveyOption> surveyOptions) {
+        Survey survey = new Survey(id, title, description, surveyOptions);
+        survey.id = id;
+        survey.version = version;
+        return survey;
+    }
 }
