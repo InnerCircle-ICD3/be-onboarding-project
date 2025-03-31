@@ -78,6 +78,10 @@ shared-common -> api -> application -> domain <- data
 - data: domain
 
 ---
+## ERD
+<img src="./erd/설문조사 시스템 ERD.png" width="600"> <img src="./erd/설문조사 시스템 ERD 상세.png" width="800">
+
+---
 
 ## 기술 스택
 
