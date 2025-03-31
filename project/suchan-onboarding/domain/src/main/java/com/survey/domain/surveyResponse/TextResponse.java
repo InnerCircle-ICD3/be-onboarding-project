@@ -1,5 +1,6 @@
 package com.survey.domain.surveyResponse;
 
+import com.survey.domain.survey.TextType;
 import jakarta.persistence.*;
 import lombok.AccessLevel;
 import lombok.NoArgsConstructor;
@@ -14,14 +15,19 @@ public class TextResponse {
     private Long id;
 
     @Column(nullable = false)
+    @Enumerated(EnumType.STRING)
+    private TextType textType;
+
+    @Column(nullable = false)
     private String answer;
 
     @OneToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "survey_option_response_id")
     private SurveyOptionResponse surveyOptionResponse;
 
-    public TextResponse(String answer) {
+    public TextResponse(TextType textType, String answer) {
         validateAnswer(answer);
+        this.textType = textType;
         this.answer = answer;
     }
 

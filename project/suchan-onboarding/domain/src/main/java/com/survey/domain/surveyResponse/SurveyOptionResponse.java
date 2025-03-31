@@ -17,7 +17,7 @@ public class SurveyOptionResponse {
     private Long id;
 
     @Column(nullable = false)
-    private Long surveyId;
+    private Long surveyOptionId;
 
     @JoinColumn(name = "survey_response_id")
     @ManyToOne(fetch = FetchType.LAZY)
@@ -29,13 +29,13 @@ public class SurveyOptionResponse {
     @OneToOne(mappedBy = "surveyOptionResponse", cascade = CascadeType.ALL, orphanRemoval = true)
     private ChoiceResponse choiceResponse;
 
-    public SurveyOptionResponse(Long surveyId, TextResponse textResponse) {
-        this.surveyId = surveyId;
+    public SurveyOptionResponse(Long surveyOptionId, TextResponse textResponse) {
+        this.surveyOptionId = surveyOptionId;
         addTextResponse(textResponse);
     }
 
-    public SurveyOptionResponse(Long surveyId, ChoiceResponse choiceResponse) {
-        this.surveyId = surveyId;
+    public SurveyOptionResponse(Long surveyOptionId, ChoiceResponse choiceResponse) {
+        this.surveyOptionId = surveyOptionId;
         addChoiceResponse(choiceResponse);
     }
 
@@ -63,11 +63,11 @@ public class SurveyOptionResponse {
         }
     }
 
-    private boolean hasTextResponse() {
+    public boolean hasTextResponse() {
         return textResponse != null;
     }
 
-    private boolean hasChoiceResponse() {
+    public boolean hasChoiceResponse() {
         return choiceResponse != null;
     }
 

@@ -20,6 +20,10 @@ public class Survey {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
+    @Version
+    @Column(nullable = false)
+    private Long version;
+
     @Column(nullable = false)
     private String title;
 
@@ -61,6 +65,7 @@ public class Survey {
     }
 
     public void modify(Survey survey) {
+        incrementVersion();
         validateSurveyOptionCnt(survey.getSurveyOptions());
         this.title = survey.getTitle();
         this.description = survey.getDescription();
@@ -87,6 +92,10 @@ public class Survey {
         }
 
         this.surveyOptions.removeAll(optionsToRemove);
+    }
+
+    private void incrementVersion() {
+        this.version++;
     }
 
     private void changeSurveyOption(SurveyOption newOption, Map<Long, SurveyOption> existingOptionsMap, List<SurveyOption> updatedOptions) {
