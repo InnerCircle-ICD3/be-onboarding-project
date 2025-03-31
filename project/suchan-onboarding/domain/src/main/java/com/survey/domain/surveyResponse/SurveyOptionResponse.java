@@ -9,8 +9,8 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @Getter
 public class SurveyOptionResponse {
-    private static final String DOUBLE_RESPONSE_TYPE_EXCEPTION_MESSAGE = "하나의 응답에 텍스트와 선택형 응답이 모두 존재할 수 없습니다.";
-    private static final String RESPONSE_EMPTY_EXCEPTION_MESSAGE = "응답 값이 존재하지 않습니다.";
+//    private static final String DOUBLE_RESPONSE_TYPE_EXCEPTION_MESSAGE = "하나의 응답에 텍스트와 선택형 응답이 모두 존재할 수 없습니다.";
+//    private static final String RESPONSE_EMPTY_EXCEPTION_MESSAGE = "응답 값이 존재하지 않습니다.";
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -53,15 +53,15 @@ public class SurveyOptionResponse {
         this.surveyResponse = surveyResponse;
     }
 
-    public void validateResponseType() {
-        if (hasTextResponse() && hasChoiceResponse()) {
-            throw new IllegalArgumentException(DOUBLE_RESPONSE_TYPE_EXCEPTION_MESSAGE);
-        }
-
-        if (!hasTextResponse() && !hasChoiceResponse()) {
-            throw new IllegalArgumentException(RESPONSE_EMPTY_EXCEPTION_MESSAGE);
-        }
-    }
+//    public void validateResponseType() {
+//        if (hasTextResponse() && hasChoiceResponse()) {
+//            throw new IllegalArgumentException(DOUBLE_RESPONSE_TYPE_EXCEPTION_MESSAGE);
+//        }
+//
+//        if (!hasTextResponse() && !hasChoiceResponse()) {
+//            throw new IllegalArgumentException(RESPONSE_EMPTY_EXCEPTION_MESSAGE);
+//        }
+//    }
 
     public boolean hasTextResponse() {
         return textResponse != null;
