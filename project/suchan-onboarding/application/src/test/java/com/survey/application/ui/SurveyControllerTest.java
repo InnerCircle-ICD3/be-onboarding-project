@@ -4,6 +4,9 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.survey.application.dto.dto.UpdateInputFormDto;
 import com.survey.application.dto.dto.UpdateSurveyOptionDto;
 import com.survey.application.dto.request.CreateSurveyRequest;
+import com.survey.application.dto.request.ResponseSurveyRequest;
+import com.survey.application.dto.request.ResponseSurveyRequest.ChoiceResponseDto;
+import com.survey.application.dto.request.ResponseSurveyRequest.SurveyOptionResponseDto;
 import com.survey.application.dto.request.UpdateSurveyRequest;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -13,6 +16,7 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
 
+import java.time.LocalDateTime;
 import java.util.Collections;
 import java.util.List;
 
@@ -110,6 +114,57 @@ class SurveyControllerTest {
                 .andExpect(jsonPath("$.errors['surveyOptionDtos[0].title']").exists())
                 .andExpect(jsonPath("$.errors['surveyOptionDtos[0].description']").exists())
                 .andExpect(jsonPath("$.errors['surveyOptionDtos[0].inputFormDto.question']").exists());
+    }
+
+    @Test
+    @DisplayName("ResponseSurveyRequest 의 유효성 검사 실패 시 적절한 오류 메시지를 반환한다")
+    void response_validation_exception() throws Exception {
+        // given
+        ResponseSurveyRequest request = new ResponseSurveyRequest(
+                null,
+                null,
+                LocalDateTime.now(),
+                List.of(new SurveyOptionResponseDto(
+                        1L,
+                        null,
+                        new ChoiceResponseDto("단일", List.of())
+                ))
+        );
+
+        // when // then
+        mockMvc.perform(post("/api/survey/response")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(objectMapper.writeValueAsString(request)))
+                .andExpect(status().isBadRequest())
+                .andExpect(jsonPath("$.errorMessage").value("validation error"))
+                .andExpect(jsonPath("$.errors.surveyId").value("must not be null"))
+                .andExpect(jsonPath("$.errors.surveyVersion").value("must not be null"));
+    }
+
+
+    @Test
+    @DisplayName("SurveyOptionResponseDtos 의 유효성 검사 실패 시 적절한 오류 메시지를 반환한다")
+    void SurveyOptionResponseDtos_validation_exception() throws Exception {
+        // given
+        ResponseSurveyRequest request = new ResponseSurveyRequest(
+                1L,
+                2L,
+                LocalDateTime.now(),
+                List.of(new SurveyOptionResponseDto(
+                        null,
+                        null,
+                        new ChoiceResponseDto("단일", List.of())
+                ))
+        );
+
+        // when // then
+        mockMvc.perform(post("/api/survey/response")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(objectMapper.writeValueAsString(request)))
+                .andExpect(status().isBadRequest())
+                .andExpect(jsonPath("$.errorMessage").value("validation error"))
+                .andExpect(jsonPath("$.errors['surveyOptionResponseDtos[0].surveyOptionId']").exists())
+                .andExpect(jsonPath("$.errors['surveyOptionResponseDtos[0].choiceResponseDto.selectedOptions']").exists());
     }
 
 }

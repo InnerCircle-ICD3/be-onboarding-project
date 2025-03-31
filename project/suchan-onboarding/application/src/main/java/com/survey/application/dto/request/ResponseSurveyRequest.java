@@ -32,14 +32,14 @@ public class ResponseSurveyRequest {
     @NotNull
     @NotEmpty
     @Valid
-    private List<SurveyOptionResponseDto> optionResponses;
+    private List<SurveyOptionResponseDto> surveyOptionResponseDtos;
 
     public SurveyResponse create() {
         return new SurveyResponse(
                 surveyId,
                 surveyVersion,
                 submittedAt,
-                optionResponses.stream()
+                surveyOptionResponseDtos.stream()
                         .map(SurveyOptionResponseDto::create)
                         .toList());
     }
@@ -47,7 +47,7 @@ public class ResponseSurveyRequest {
     @Getter
     @NoArgsConstructor
     @AllArgsConstructor
-    static class SurveyOptionResponseDto {
+    public static class SurveyOptionResponseDto {
         private static final String WRONG_SURVEY_OPTION_RESPONSE_TYPE_EXCEPTION_MESSAGE = "잘못된 타입의 설문 받을 항목의 응답입니다.";
 
         @NotNull
@@ -73,7 +73,7 @@ public class ResponseSurveyRequest {
     @Getter
     @NoArgsConstructor
     @AllArgsConstructor
-    static class TextResponseDto {
+    public static class TextResponseDto {
         @NotNull
         private String textType;
 
@@ -88,7 +88,7 @@ public class ResponseSurveyRequest {
     @Getter
     @NoArgsConstructor
     @AllArgsConstructor
-    static class ChoiceResponseDto {
+    public static class ChoiceResponseDto {
         @NotNull
         private String choiceType;
 
