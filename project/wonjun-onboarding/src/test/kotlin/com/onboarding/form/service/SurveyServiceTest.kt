@@ -104,7 +104,7 @@ class SurveyServiceTest {
 
 
         assertThrows<IllegalArgumentException>{
-            surveyService.updateSurveyDto(1, updateSurveyDto)
+            surveyService.updateSurveyDto(0, updateSurveyDto)
         }
     }
 
