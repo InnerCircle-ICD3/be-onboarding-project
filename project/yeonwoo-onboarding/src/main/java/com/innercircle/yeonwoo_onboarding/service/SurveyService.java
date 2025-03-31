@@ -29,6 +29,17 @@ public class SurveyService {
     }
 
     @Transactional
+    public Survey updateSurvey(String id, Survey updatedSurvey) {
+        Survey existingSurvey = surveyRepository.findById(id)
+                .orElseThrow(() -> new IllegalArgumentException("Survey not found with id: " + id));
+        
+        existingSurvey.setName(updatedSurvey.getName());
+        existingSurvey.setDescription(updatedSurvey.getDescription());
+        
+        return surveyRepository.save(existingSurvey);
+    }
+
+    @Transactional
     public void deleteSurvey(String id) {
         Survey survey = surveyRepository.findById(id)
             .orElseThrow(() -> new IllegalArgumentException("Survey not found with id: " + id));

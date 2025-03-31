@@ -108,7 +108,49 @@ class SurveyServiceTest {
     }
 
     @Test
-    @DisplayName("Should successfully delete survey")
+    @DisplayName("Should successfully update existing survey")
+    void updateSurvey_WithValidId_ShouldUpdateAndReturnSurvey() {
+        // Given
+        String surveyId = "test-id";
+        Survey updatedSurvey = new Survey();
+        updatedSurvey.setName("Updated Survey");
+        updatedSurvey.setDescription("Updated Description");
+        
+        when(surveyRepository.findById(surveyId)).thenReturn(Optional.of(testSurvey));
+        when(surveyRepository.save(any(Survey.class))).thenReturn(updatedSurvey);
+
+        // When
+        Survey result = surveyService.updateSurvey(surveyId, updatedSurvey);
+
+        // Then
+        assertThat(result).isNotNull();
+        assertThat(result.getName()).isEqualTo("Updated Survey");
+        assertThat(result.getDescription()).isEqualTo("Updated Description");
+        verify(surveyRepository).findById(surveyId);
+        verify(surveyRepository).save(any(Survey.class));
+    }
+
+    @Test
+    @DisplayName("Should throw exception when updating non-existent survey")
+    void updateSurvey_WithInvalidId_ShouldThrowException() {
+        // Given
+        String invalidId = "invalid-id";
+        Survey updatedSurvey = new Survey();
+        when(surveyRepository.findById(invalidId)).thenReturn(Optional.empty());
+
+        // When & Then
+        IllegalArgumentException exception = assertThrows(IllegalArgumentException.class,
+                () -> surveyService.updateSurvey(invalidId, updatedSurvey));
+        
+        assertThat(exception)
+            .hasMessageContaining("Survey not found")
+            .hasMessageContaining(invalidId);
+        verify(surveyRepository).findById(invalidId);
+        verify(surveyRepository, never()).save(any(Survey.class));
+    }
+
+    @Test
+    @DisplayName("Should throw exception when deleting non-existent survey")
     void deleteSurvey_ShouldDeleteSurvey() {
         // Given
         String surveyId = "test-id";

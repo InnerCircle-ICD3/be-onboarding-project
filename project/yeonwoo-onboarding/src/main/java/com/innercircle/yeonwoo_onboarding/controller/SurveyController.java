@@ -29,6 +29,11 @@ public class SurveyController {
         return ResponseEntity.ok(surveyService.createSurvey(survey));
     }
 
+    @PutMapping("/{id}")
+    public ResponseEntity<Survey> updateSurvey(@PathVariable String id, @RequestBody Survey survey) {
+        return ResponseEntity.ok(surveyService.updateSurvey(id, survey));
+    }
+
     @DeleteMapping("/{id}")
     public ResponseEntity<Void> deleteSurvey(@PathVariable String id) {
         surveyService.deleteSurvey(id);
