@@ -1,0 +1,91 @@
+name: PR Build Check
+
+on:
+  pull_request:
+    branches: [ main ]
+  workflow_dispatch:
+
+jobs:
+  find-projects:
+    runs-on: ubuntu-latest
+    outputs:
+      projects: ${{ steps.set-projects.outputs.projects }}
+    steps:
+      - uses: actions/checkout@v3
+
+      - name: Find projects with gradlew
+        id: set-projects
+        shell: bash
+        run: |
+          # Find all gradlew files and extract their paths
+          projects=$(find ./project -name "gradlew" -type f -exec dirname {} \; | sed 's|^./project/||')
+          
+          # Create proper JSON array
+          echo "projects=$(echo $projects | jq -R 'split(" ")' -c)" >> $GITHUB_OUTPUT
+          echo "Found projects: $(echo $projects | jq -R 'split(" ")' -c)"
+
+  parallel-builds:
+    needs: find-projects
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        project: ${{ fromJson(needs.find-projects.outputs.projects) }}
+      fail-fast: false
+
+    outputs:
+      build_status: ${{ steps.build_result.outputs.status }}
+      failed_projects: ${{ steps.build_result.outputs.failed_projects }}
+
+    steps:
+      - uses: actions/checkout@v3
+
+      - name: Set up JDK 21
+        uses: actions/setup-java@v3
+        with:
+          java-version: '21'
+          distribution: 'temurin'
+
+      - name: Make gradlew executable
+        run: chmod +x ./project/${{ matrix.project }}/gradlew
+
+      - name: Build with Gradle
+        id: gradle_build
+        working-directory: ./project/${{ matrix.project }}
+        run: |
+          set +e  # Allow command to fail without exiting the script
+          ./gradlew clean build
+          EXIT_CODE=$?
+          set -e  # Re-enable exit on error
+          
+          echo "exit_code=$EXIT_CODE" >> $GITHUB_OUTPUT
+          
+          if [ $EXIT_CODE -ne 0 ]; then
+            echo "::error::Build failed for ${{ matrix.project }} with exit code $EXIT_CODE"
+            exit 1
+          fi
+
+      - name: Set build result
+        id: build_result
+        if: always()
+        run: |
+          if [[ "${{ steps.gradle_build.outcome }}" == "failure" || "${{ steps.gradle_build.outputs.exit_code }}" != "0" ]]; then
+            echo "status=failure" >> $GITHUB_OUTPUT
+            echo "failed_projects=${{ matrix.project }}" >> $GITHUB_OUTPUT
+          else
+            echo "status=success" >> $GITHUB_OUTPUT
+            echo "failed_projects=" >> $GITHUB_OUTPUT
+          fi
+
+  build:
+    needs: parallel-builds
+    runs-on: ubuntu-latest
+    if: always()
+    steps:
+      - name: Check build results
+        run: |
+          if [[ "${{ needs.parallel-builds.result }}" != "success" || "${{ needs.parallel-builds.outputs.build_status }}" == "failure" ]]; then
+            echo "::error::Build failed for projects: ${{ needs.parallel-builds.outputs.failed_projects }}"
+            exit 1
+          else
+            echo "All projects built successfully"
+          fi
