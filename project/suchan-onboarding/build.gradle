@@ -1,14 +1,68 @@
+buildscript {
+    ext {
+        springBootVersion = '3.4.3'
+        springDependencyManagementVersion = '1.1.7'
+        javaVersion = JavaVersion.VERSION_21
+
+        lombokVersion = '1.18.32'
+        junitVersion = '5.10.2'
+    }
+    repositories {
+        mavenCentral()
+    }
+    dependencies {
+        classpath("org.springframework.boot:spring-boot-gradle-plugin:${springBootVersion}")
+        classpath("io.spring.gradle:dependency-management-plugin:${springDependencyManagementVersion}")
+    }
+}
+
 plugins {
     id 'java'
 }
 
-dependencies {
-    implementation project(':suchan-onboarding:domain')
-    implementation project(':suchan-onboarding:application')
-    implementation project(':suchan-onboarding:common')
+allprojects {
+    group = 'com.survey'
+    version = '0.0.1-SNAPSHOT'
+
+    repositories {
+        mavenCentral()
+    }
 }
 
 subprojects {
+    apply plugin: 'java'
+    apply plugin: 'org.springframework.boot'
+    apply plugin: 'io.spring.dependency-management'
+
+    sourceCompatibility = javaVersion
+    targetCompatibility = javaVersion
+
+    configurations {
+        compileOnly {
+            extendsFrom annotationProcessor
+        }
+    }
+
+    dependencies {
+        // spring
+        implementation 'org.springframework.boot:spring-boot-starter'
+
+        // lombok
+        compileOnly "org.projectlombok:lombok:${lombokVersion}"
+        annotationProcessor "org.projectlombok:lombok:${lombokVersion}"
+
+        // test
+        testImplementation 'org.springframework.boot:spring-boot-starter-test'
+        testRuntimeOnly 'org.junit.platform:junit-platform-launcher'
+    }
+
+    test {
+        useJUnitPlatform()
+    }
+
+    tasks.getByName("bootJar") { enabled = false }
+    tasks.getByName("jar") { enabled = true }
+
     if (name == 'application') {
         bootJar {
             enabled = true
