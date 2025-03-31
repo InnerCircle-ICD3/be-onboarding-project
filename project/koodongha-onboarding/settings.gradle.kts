@@ -12,3 +12,9 @@ plugins {
 rootProject.name = "koodongha-onboarding"
 include(":app")
 project(":app").projectDir = file("app")
+
+include(":api")
+project(":api").projectDir = file("api")
+
+include(":common")
+project(":common").projectDir = file("common")

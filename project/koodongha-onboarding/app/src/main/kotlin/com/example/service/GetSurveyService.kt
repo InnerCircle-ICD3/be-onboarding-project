@@ -1,32 +1,70 @@
 package com.example.service
 
-import com.example.dto.SurveyDetailResponse
 import com.example.dto.SurveyItemResponse
-import com.example.entity.InputType
+import com.example.dto.SurveyResponse
+import com.example.entity.SurveyAnswer
+import com.example.repository.SurveyAnswerRepository
 import com.example.repository.SurveyRepository
+import com.example.common.exception.SurveyNotFoundException
 import org.springframework.stereotype.Service
 
 @Service
 class GetSurveyService(
-    private val surveyRepository: SurveyRepository
+    private val surveyRepository: SurveyRepository,
+    private val answerRepository: SurveyAnswerRepository
 ) {
-    fun getSurvey(id: Long): SurveyDetailResponse {
-        val survey = surveyRepository.findById(id).orElseThrow { RuntimeException("설문 없음!") }
 
-        return SurveyDetailResponse(
+    fun getSurvey(
+        surveyId: Long,
+        filterName: String? = null,
+        filterAnswer: String? = null
+    ): SurveyResponse {
+        val survey = surveyRepository.findById(surveyId)
+            .orElseThrow { SurveyNotFoundException() }
+
+        val answers: List<SurveyAnswer> = answerRepository.findBySurveyId(surveyId)
+
+        val itemResponses = survey.items.map { item ->
+            val itemAnswers = answers
+                .filter { it.surveyItem.id == item.id }
+                .flatMap { answer ->
+                    if (answer.selectedOptions.isNotEmpty()) {
+                        answer.selectedOptions.map { it.value }
+                    } else {
+                        listOfNotNull(answer.shortAnswer)
+                    }
+                }
+
+            val filteredAnswers = if (
+                filterName != null && filterAnswer != null && item.name == filterName
+            ) {
+                itemAnswers.filter { it.trim() == filterAnswer }
+            } else {
+                itemAnswers
+            }
+
+            SurveyItemResponse(
+                id = item.id,
+                name = item.name,
+                description = item.description,
+                inputType = item.inputType,
+                isRequired = item.isRequired,
+                answers = filteredAnswers.orEmpty(),
+                options = item.options.map { it.value }
+            )
+        }
+
+        val filteredItems = if (filterName != null && filterAnswer != null) {
+            itemResponses.filterNot { it.answers.isNullOrEmpty() }
+        } else {
+            itemResponses
+        }
+
+        return SurveyResponse(
             id = survey.id,
             title = survey.title,
             description = survey.description,
-            items = survey.items.map { item ->
-                SurveyItemResponse(
-                    id = item.id,
-                    name = item.name,
-                    description = item.description,
-                    inputType = item.inputType,
-                    isRequired = item.isRequired,
-                    options = item.options.map { it.value }
-                )
-            }
+            items = filteredItems
         )
     }
 }
