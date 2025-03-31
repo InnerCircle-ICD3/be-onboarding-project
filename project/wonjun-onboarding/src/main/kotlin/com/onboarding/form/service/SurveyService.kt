@@ -19,7 +19,7 @@ class SurveyService(
         )
 
         surveyDto.questions.forEach {
-            survey.addItem(
+            survey.addQuestion(
                 when (it) {
                     is CreateStandardQuestionDto -> when (it.type) {
                         QuestionType.SHORT -> ShortQuestion(null, it.title, it.description, it.isRequired)

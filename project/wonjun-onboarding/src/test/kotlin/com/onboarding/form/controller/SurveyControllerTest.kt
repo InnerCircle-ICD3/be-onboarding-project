@@ -71,4 +71,29 @@ class SurveyControllerTest{
                 jsonPath("$.title").value(createSurveyDto.title)
             )
     }
+
+    @Test
+    @DisplayName("Survey에 Question을 10개이상 입력한 경우 에러 응답이 정상적으로 내려오는지 테스트")
+    fun createSurveyFail(){
+        val createSurveyDto = CreateSurveyDto(
+            title = "testTitle",
+            description = "testDescription",
+            questions = (0 until 11).map { CreateStandardQuestionDto(
+                title = "testTitle",
+                description = "testDescription",
+                type = QuestionType.LONG,
+                isRequired = true,
+            ) }.toList()
+        )
+
+        mockMvc.perform(
+            MockMvcRequestBuilders.post("/surveys")
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(objectMapper.writeValueAsString(createSurveyDto))
+        ).andExpect(status().isBadRequest)
+            .andExpect(MockMvcResultMatchers.content().contentType(MediaType.APPLICATION_JSON))
+            .andExpect(
+                jsonPath("$.message").value("The number of questions cannot exceed 10")
+            )
+    }
 }

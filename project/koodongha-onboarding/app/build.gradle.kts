@@ -19,13 +19,9 @@ repositories {
 }
 
 dependencies {
-    implementation("org.springframework.boot:spring-boot-starter")
-    implementation("org.springframework.boot:spring-boot-starter-web")
+    implementation(project(":common"))
     implementation("org.springframework.boot:spring-boot-starter-data-jpa")
     implementation("org.jetbrains.kotlin:kotlin-reflect")
-    implementation("com.fasterxml.jackson.module:jackson-module-kotlin")
-    implementation("org.springdoc:springdoc-openapi-starter-webmvc-ui:2.5.0")
-
     runtimeOnly("com.h2database:h2")
 
     testImplementation("org.springframework.boot:spring-boot-starter-test")
@@ -37,7 +33,7 @@ dependencies {
 tasks.test {
     useJUnitPlatform()
     systemProperty("file.encoding", "UTF-8")
-    jvmArgs("-Dfile.encoding=UTF-8")  
+    jvmArgs("-Dfile.encoding=UTF-8")
 }
 
 kotlin {
