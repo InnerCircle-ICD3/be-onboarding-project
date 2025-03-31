@@ -1,0 +1,26 @@
+spring:
+  application:
+    name: hjpark-onboarding
+  datasource:
+    url: jdbc:h2:mem:form;MODE=MySQL;DATABASE_TO_LOWER=TRUE
+    username: dev
+    password: 123
+    driverClassName: org.h2.Driver
+  jpa:
+    open-in-view: false
+    hibernate:
+      ddl-auto: create
+    properties:
+      hibernate:
+        format_sql: true
+        highlight_sql: true
+  h2:
+    console:
+      enabled: true
+
+
+logging:
+  level:
+    root: debug
+    org.hibernate.SQL: debug
+    org.hibernate.orm.jdbc.bind: trace
