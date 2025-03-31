@@ -1,6 +1,7 @@
 package com.survey.application.ui;
 
 import com.survey.application.dto.request.CreateSurveyRequest;
+import com.survey.application.dto.request.ResponseSurveyRequest;
 import com.survey.application.dto.request.UpdateSurveyRequest;
 import com.survey.application.service.SurveyService;
 import jakarta.validation.Valid;
@@ -24,5 +25,10 @@ public class SurveyController {
     @PutMapping
     public void updateSurvey(@Valid @RequestBody UpdateSurveyRequest request) {
         surveyService.changeSurvey(request);
+    }
+
+    @PostMapping("/response")
+    public void responseSurvey(@Valid @RequestBody ResponseSurveyRequest request) {
+        surveyService.responseSurvey(request);
     }
 }

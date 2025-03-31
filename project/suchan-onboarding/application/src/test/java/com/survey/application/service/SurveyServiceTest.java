@@ -6,6 +6,8 @@ import com.survey.application.repository.FakeSurveyRepository;
 import com.survey.application.test.TestFixture;
 import com.survey.domain.survey.Survey;
 import com.survey.domain.survey.SurveyOption;
+import com.survey.domain.surveyResponse.repository.SurveyResponseRepository;
+import com.survey.domain.surveyResponse.service.SurveyResponseValidationService;
 import com.survey.test.TestSurveyEntityComparator;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
@@ -22,11 +24,15 @@ class SurveyServiceTest {
     private SurveyService surveyService;
     private FakeSurveyRepository surveyRepository;
     private TestSurveyEntityComparator comparator;
+    private SurveyResponseValidationService surveyResponseValidationService;
+    private SurveyResponseRepository surveyResponseRepository;
 
     @BeforeEach
     void setUp() {
         surveyRepository = new FakeSurveyRepository(new HashMap<>());
-        surveyService = new SurveyService(surveyRepository);
+        surveyResponseRepository = new FakeSurveyResponseRepository(new HashMap<>());
+        surveyResponseValidationService = new SurveyResponseValidationService(surveyRepository);
+        surveyService = new SurveyService(surveyRepository, surveyResponseValidationService, surveyResponseRepository);
         comparator = new TestSurveyEntityComparator();
     }
 
