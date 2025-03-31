@@ -1,5 +1,3 @@
-import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
-
 plugins {
     alias(libs.plugins.kotlin.jvm)
     alias(libs.plugins.kotlin.spring) apply false
@@ -28,13 +26,6 @@ subprojects {
         implementation(rootProject.libs.bundles.kotlin.base)
         implementation(rootProject.libs.jackson.module.kotlin)
         testImplementation(rootProject.libs.bundles.testing)
-    }
-    tasks.named<KotlinCompile>("compileKotlin") {
-        compilerOptions {
-            freeCompilerArgs.add("-Xjsr305=strict")
-            jvmTarget.set(org.jetbrains.kotlin.gradle.dsl.JvmTarget.JVM_17)
-
-        }
     }
 
     if (project.name != "api") {
