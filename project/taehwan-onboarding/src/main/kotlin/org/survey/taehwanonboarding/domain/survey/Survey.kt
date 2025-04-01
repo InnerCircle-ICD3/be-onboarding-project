@@ -24,19 +24,26 @@ class Survey(
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     val id: Long? = null,
+
     @Column(nullable = false)
     var title: String,
+
     @Column
     var description: String? = null,
+
     @Version
     var version: Long = 0,
+
     @CreatedDate
     @Column(updatable = false)
     var createdAt: LocalDateTime? = null,
+
     @LastModifiedDate
     var updatedAt: LocalDateTime? = null,
+
     @Enumerated(EnumType.STRING)
     var status: SurveyStatus = SurveyStatus.DRAFT,
+
     @OneToMany(mappedBy = "survey", cascade = [CascadeType.ALL], orphanRemoval = true)
     var items: MutableList<SurveyItem> = mutableListOf(),
 ) {

@@ -11,6 +11,7 @@ class ShortAnswerItem(
     description: String? = null,
     required: Boolean = false,
     orderNumber: Int = 0,
+
     @Column
     var maxLength: Int? = 255,
 ) : SurveyItem(

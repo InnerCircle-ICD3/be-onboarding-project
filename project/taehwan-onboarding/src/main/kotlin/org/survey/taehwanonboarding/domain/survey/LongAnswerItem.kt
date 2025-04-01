@@ -13,6 +13,7 @@ class LongAnswerItem(
     orderNumber: Int = 0,
     @Column
     var maxLength: Int? = 1000,
+
 ) : SurveyItem(
         title = title,
         description = description,

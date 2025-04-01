@@ -26,19 +26,25 @@ class SurveyResponse(
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     val id: Long? = null,
+
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "survey_id", nullable = false)
     val survey: Survey,
+
     // todo: 익명 응답 고려
     @Column
     var respondentId: String? = null,
+
     @Version
     var version: Long = 0,
+
     @CreatedDate
     @Column(updatable = false)
     var responseAt: LocalDateTime? = null,
+
     @Enumerated(EnumType.STRING)
     var status: ResponseStatus = ResponseStatus.SUBMITTED,
+
     // todo: cascade 고려
     @OneToMany(mappedBy = "response")
     var items: MutableList<SurveyResponseItem> = mutableListOf(),

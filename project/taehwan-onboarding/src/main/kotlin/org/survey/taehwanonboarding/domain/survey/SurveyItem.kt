@@ -28,21 +28,29 @@ abstract class SurveyItem(
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     val id: Long? = null,
+
     @Column(nullable = false)
     var title: String,
+
     @Column
     var description: String? = null,
+
     @Column(nullable = false)
     var required: Boolean = false,
+
     @Column(nullable = false)
     var orderNumber: Int = 0,
+
     @Version
     var version: Long = 0,
+
     @CreatedDate
     @Column(updatable = false)
     var createdAt: LocalDateTime? = null,
+
     @LastModifiedDate
     var updatedAt: LocalDateTime? = null,
+
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "survey_id")
     var survey: Survey? = null,

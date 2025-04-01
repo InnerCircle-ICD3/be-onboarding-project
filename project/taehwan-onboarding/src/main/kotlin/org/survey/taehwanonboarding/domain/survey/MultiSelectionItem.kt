@@ -15,15 +15,19 @@ class MultiSelectionItem(
     description: String? = null,
     required: Boolean = false,
     orderNumber: Int = 0,
+
     @ElementCollection
     @CollectionTable(
         name = "item_option",
         joinColumns = [JoinColumn(name = "survey_item_id")],
     )
+
     @OrderColumn(name = "order")
     var options: MutableList<String> = mutableListOf(),
+
     @Column
     var minSelections: Int? = null,
+
     @Column
     var maxSelections: Int? = null,
 ) : SurveyItem(

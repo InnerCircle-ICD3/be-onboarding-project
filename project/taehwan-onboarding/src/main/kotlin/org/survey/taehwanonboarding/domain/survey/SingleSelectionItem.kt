@@ -14,11 +14,13 @@ class SingleSelectionItem(
     description: String? = null,
     required: Boolean = false,
     orderNumber: Int = 0,
+
     @ElementCollection
     @CollectionTable(
         name = "survey_item_options",
         joinColumns = [JoinColumn(name = "survey_item_id")],
     )
+
     @OrderColumn(name = "order")
     var options: MutableList<String> = mutableListOf(),
 ) : SurveyItem(
