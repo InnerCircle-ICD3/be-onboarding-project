@@ -19,9 +19,9 @@ https://github.com/InnerCircle-ICD3/be-onboarding-project/tree/ranyoung-onboardi
 - [✔️] 설문 생성 API 구현
 - [✔️] 설문 조회 API 구현
 - [✔️] 설문 응답 제출 API구현
-- [ ] 설문 응답 조회 API구현
-- [ ] 설문조사 서비스 API 가이드 작성
-- [ ] 예외 처리 구조 설계 및 적용
+- [✔️] 설문 응답 조회 API구현
+- [✔️] 설문조사 서비스 API 가이드 작성
+- [✔️] 예외 처리 구조 설계 및 적용
 - [ ] 단위/통합 테스트 작성
 - [ ] README 작성(API 명세 및 오픈소스 명시 포함
 
