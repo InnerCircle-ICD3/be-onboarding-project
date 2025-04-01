@@ -1,13 +1,13 @@
-package hjpark.onboarding
+package com.hjpark.survey
 
 import org.junit.jupiter.api.Test
 import org.springframework.boot.test.context.SpringBootTest
 
 @SpringBootTest
-class HjparkOnboardingApplicationTests {
+class SurveyApplicationTest {
 
     @Test
     fun contextLoads() {
     }
 
-}
+} 
