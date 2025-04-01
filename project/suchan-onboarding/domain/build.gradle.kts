@@ -7,5 +7,5 @@ dependencies {
     runtimeOnly("com.mysql:mysql-connector-j")
     implementation("org.springframework.boot:spring-boot-starter-data-jpa")
 
-    implementation(project(":suchan-onboarding:common"))
+    implementation(project(":common"))
 }

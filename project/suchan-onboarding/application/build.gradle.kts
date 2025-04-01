@@ -6,7 +6,7 @@ dependencies {
 
     runtimeOnly("com.h2database:h2")
 
-    implementation(project(":suchan-onboarding:common"))
-    implementation(project(":suchan-onboarding:domain"))
-    testImplementation(testFixtures(project(":suchan-onboarding:domain")))
+    implementation(project(":common"))
+    implementation(project(":domain"))
+    testImplementation(testFixtures(project(":domain")))
 }
