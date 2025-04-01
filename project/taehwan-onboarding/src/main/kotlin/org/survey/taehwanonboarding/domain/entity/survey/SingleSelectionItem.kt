@@ -1,4 +1,4 @@
-package org.survey.taehwanonboarding.domain.survey
+package org.survey.taehwanonboarding.domain.entity.survey
 
 import jakarta.persistence.CollectionTable
 import jakarta.persistence.DiscriminatorValue

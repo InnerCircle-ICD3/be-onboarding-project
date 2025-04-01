@@ -1,4 +1,4 @@
-package org.survey.taehwanonboarding.domain.response
+package org.survey.taehwanonboarding.domain.entity.response
 
 import jakarta.persistence.Column
 import jakarta.persistence.Entity
@@ -16,7 +16,7 @@ import jakarta.persistence.Table
 import jakarta.persistence.Version
 import org.springframework.data.annotation.CreatedDate
 import org.springframework.data.jpa.domain.support.AuditingEntityListener
-import org.survey.taehwanonboarding.domain.survey.Survey
+import org.survey.taehwanonboarding.domain.entity.survey.Survey
 import java.time.LocalDateTime
 
 @EntityListeners(AuditingEntityListener::class)

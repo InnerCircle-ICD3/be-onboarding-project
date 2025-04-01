@@ -1,15 +1,17 @@
-package org.survey.taehwanonboarding.domain.survey
+package org.survey.taehwanonboarding.domain.entity.survey
 
-import jakarta.persistence.CascadeType
 import jakarta.persistence.Column
+import jakarta.persistence.DiscriminatorColumn
 import jakarta.persistence.Entity
 import jakarta.persistence.EntityListeners
-import jakarta.persistence.EnumType
-import jakarta.persistence.Enumerated
+import jakarta.persistence.FetchType
 import jakarta.persistence.GeneratedValue
 import jakarta.persistence.GenerationType
 import jakarta.persistence.Id
-import jakarta.persistence.OneToMany
+import jakarta.persistence.Inheritance
+import jakarta.persistence.InheritanceType
+import jakarta.persistence.JoinColumn
+import jakarta.persistence.ManyToOne
 import jakarta.persistence.Table
 import jakarta.persistence.Version
 import org.springframework.data.annotation.CreatedDate
@@ -19,8 +21,10 @@ import java.time.LocalDateTime
 
 @EntityListeners(AuditingEntityListener::class)
 @Entity
-@Table(name = "survey")
-class Survey(
+@Table(name = "survey_items")
+@Inheritance(strategy = InheritanceType.SINGLE_TABLE)
+@DiscriminatorColumn(name = "type")
+abstract class SurveyItem(
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     val id: Long? = null,
@@ -30,6 +34,12 @@ class Survey(
 
     @Column
     var description: String? = null,
+
+    @Column(nullable = false)
+    var required: Boolean = false,
+
+    @Column(nullable = false)
+    var orderNumber: Int = 0,
 
     @Version
     var version: Long = 0,
@@ -41,26 +51,9 @@ class Survey(
     @LastModifiedDate
     var updatedAt: LocalDateTime? = null,
 
-    @Enumerated(EnumType.STRING)
-    var status: SurveyStatus = SurveyStatus.DRAFT,
-
-    @OneToMany(mappedBy = "survey", cascade = [CascadeType.ALL], orphanRemoval = true)
-    var items: MutableList<SurveyItem> = mutableListOf(),
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "survey_id")
+    var survey: Survey? = null,
 ) {
-    fun addItem(item: SurveyItem) {
-        items.add(item)
-        item.survey = this
-    }
-
-    fun removeItem(item: SurveyItem) {
-        items.remove(item)
-        item.survey = null
-    }
-
-    enum class SurveyStatus {
-        DRAFT,
-        ACTIVE,
-        CLOSED,
-        ARCHIVED,
-    }
+    abstract fun validateResponse(responseValue: String?): Boolean
 }
