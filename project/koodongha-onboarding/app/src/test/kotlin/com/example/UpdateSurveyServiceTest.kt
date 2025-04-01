@@ -200,6 +200,8 @@ class UpdateSurveyServiceTest {
 
         val existingAnswer = TextAnswer(
             content = "Old Answer",
+            questionName = textItem.name,
+            questionType = "TEXT",
             survey = survey,
             item = textItem
         )
