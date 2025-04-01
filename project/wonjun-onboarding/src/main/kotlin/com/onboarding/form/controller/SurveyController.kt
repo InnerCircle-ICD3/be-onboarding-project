@@ -20,7 +20,7 @@ class SurveyController(
                 id = survey.id!!,
                 title = survey.title,
                 description = survey.description,
-                item = survey.questions.map {
+                item = survey.getQuestions().map {
                     QuestionDto.of(it)
                 }.toList()
             )
@@ -36,7 +36,7 @@ class SurveyController(
                 id = survey.id!!,
                 title = survey.title,
                 description = survey.description,
-                item = survey.questions.map {
+                item = survey.getQuestions().map {
                     QuestionDto.of(it)
                 }.toList()
             )

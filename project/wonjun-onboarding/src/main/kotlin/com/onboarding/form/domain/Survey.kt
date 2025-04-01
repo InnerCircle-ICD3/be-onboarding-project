@@ -4,28 +4,48 @@ import jakarta.persistence.*
 
 
 @Entity
-class Survey (
+class Survey(
     @Id @GeneratedValue(strategy = GenerationType.IDENTITY)
     val id: Long? = null,
     var title: String,
     var description: String,
-    @OneToMany(mappedBy = "survey", cascade = [CascadeType.ALL], orphanRemoval = true)
-    val questions: MutableList<Question> = mutableListOf()
-){
-    fun addQuestion(question: Question){
-        check(questions.size < MAX_QUESTION_SIZE) { "The number of questions cannot exceed $MAX_QUESTION_SIZE" }
-        question.survey = this
-        this.questions.add(question)
+    @OneToOne(cascade = [CascadeType.ALL])
+    @JoinColumn(name = "current_version_id")
+    var currentVersion: SurveyVersion
+) {
+    @OneToMany(mappedBy = "survey", cascade = [CascadeType.ALL])
+    val versionHistory: MutableList<SurveyVersion> = mutableListOf()
+
+    fun getQuestions() = currentVersion.questions
+
+    fun addQuestion(question: Question) {
+        check(currentVersion.questions.size < MAX_QUESTION_SIZE) { "The number of questions cannot exceed $MAX_QUESTION_SIZE" }
+        this.currentVersion.addQuestion(question)
     }
 
-    fun update(title: String, description: String, questions: List<Question>){
-        this.title = title
-        this.description = description
-        this.questions.clear()
-        questions.forEach { addQuestion(it) }
+    fun update(newTitle: String, newDescription: String, newQuestions: List<Question>) {
+        versionHistory.add(currentVersion)
+
+        this.title = newTitle
+        this.description = newDescription
+
+        val newVersion = SurveyVersion(
+            version = currentVersion.version + 1,
+            survey = this
+        )
+        currentVersion = newVersion
+        newQuestions.forEach { addQuestion(it) }
     }
 
-    companion object{
+    companion object {
         private const val MAX_QUESTION_SIZE = 10
+
+        fun of(title: String, description: String): Survey {
+            return Survey(
+                title = title,
+                description = description,
+                currentVersion = SurveyVersion(version = 0)
+            )
+        }
     }
 }

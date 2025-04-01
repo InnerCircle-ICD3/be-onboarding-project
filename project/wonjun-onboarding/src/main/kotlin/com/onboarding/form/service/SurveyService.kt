@@ -14,7 +14,7 @@ class SurveyService(
     private val surveyRepository: SurveyRepository
 ) {
     fun createSurvey(surveyDto: CreateSurveyDto): Survey {
-        val survey = Survey(
+        val survey = Survey.of(
             title = surveyDto.title,
             description = surveyDto.description,
         )

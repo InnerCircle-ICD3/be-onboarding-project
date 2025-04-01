@@ -21,8 +21,8 @@ abstract class Question(
     val description: String,
     val isRequired: Boolean,
     @ManyToOne
-    @JoinColumn(name = "survey_id")
-    var survey: Survey? = null
+    @JoinColumn(name = "survey_version_id")
+    var surveyVersion: SurveyVersion? = null
 ) {
     abstract fun getType(): QuestionType
 
@@ -67,13 +67,13 @@ class LongQuestion(
     title: String,
     description: String,
     isRequired: Boolean,
-    survey: Survey? = null
+    surveyVersion: SurveyVersion? = null
 ) : Question(
     id,
     title,
     description,
     isRequired,
-    survey
+    surveyVersion
 ) {
     override fun getType(): QuestionType = QuestionType.LONG
 }
@@ -85,13 +85,13 @@ class ShortQuestion(
     title: String,
     description: String,
     isRequired: Boolean,
-    survey: Survey? = null
+    surveyVersion: SurveyVersion? = null
 ) : Question(
     id,
     title,
     description,
     isRequired,
-    survey
+    surveyVersion
 ) {
     override fun getType(): QuestionType = QuestionType.SHORT
 }
@@ -106,13 +106,13 @@ class SingleSelectQuestion(
     @ElementCollection
     @CollectionTable
     val answerList: List<String>,
-    survey: Survey? = null
+    surveyVersion: SurveyVersion? = null
 ) : Question(
     id,
     title,
     description,
     isRequired,
-    survey
+    surveyVersion
 ) {
     override fun getType(): QuestionType = QuestionType.SINGLE_SELECT
 }
@@ -127,13 +127,13 @@ class MultiSelectQuestion(
     @ElementCollection
     @CollectionTable
     val answerList: List<String>,
-    survey: Survey? = null
+    surveyVersion: SurveyVersion? = null
 ) : Question(
     id,
     title,
     description,
     isRequired,
-    survey
+    surveyVersion
 ) {
     override fun getType(): QuestionType = QuestionType.MULTI_SELECT
 }
