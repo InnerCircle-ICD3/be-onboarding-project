@@ -6,8 +6,8 @@ import jakarta.persistence.*
 class Survey(
     @Id @GeneratedValue(strategy = GenerationType.IDENTITY)
     var id: Long = 0,
-    val title: String,
-    val description: String? = null,
+    var title: String,
+    var description: String? = null,
 
     @OneToMany(mappedBy = "survey", cascade = [CascadeType.ALL], orphanRemoval = true)
     val items: MutableList<SurveyItemBase> = mutableListOf()
@@ -19,9 +19,9 @@ class Survey(
 abstract class SurveyItemBase(
     @Id @GeneratedValue(strategy = GenerationType.IDENTITY)
     var id: Long = 0,
-    val name: String,
-    val description: String? = null,
-    val isRequired: Boolean = false,
+    var name: String,
+    var description: String? = null,
+    var isRequired: Boolean = false,
 
     @ManyToOne
     @JoinColumn(name = "survey_id")
@@ -34,7 +34,7 @@ abstract class SurveyItemBase(
 @Entity
 @DiscriminatorValue("TEXT")
 class TextItem(
-    val isLong: Boolean = false,
+    var isLong: Boolean = false,
     survey: Survey,
     name: String,
     description: String?,
@@ -44,7 +44,7 @@ class TextItem(
 @Entity
 @DiscriminatorValue("CHOICE")
 class ChoiceItem(
-    val isMultiple: Boolean = false,
+    var isMultiple: Boolean = false,
 
     @OneToMany(mappedBy = "item", cascade = [CascadeType.ALL], orphanRemoval = true)
     val options: MutableList<SelectionOption> = mutableListOf(),
