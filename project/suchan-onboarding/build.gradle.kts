@@ -1,23 +1,6 @@
-buildscript {
-    extra.apply {
-        set("springBootVersion", "3.4.3")
-        set("springDependencyManagementVersion", "1.1.7")
-        set("javaVersion", JavaVersion.VERSION_21)
-
-        set("lombokVersion", "1.18.32")
-        set("junitVersion", "5.10.2")
-    }
-    repositories {
-        mavenCentral()
-    }
-    dependencies {
-        classpath("org.springframework.boot:spring-boot-gradle-plugin:${property("springBootVersion")}")
-        classpath("io.spring.gradle:dependency-management-plugin:${property("springDependencyManagementVersion")}")
-    }
-}
-
 plugins {
     java
+    `java-test-fixtures`
 }
 
 allprojects {
@@ -27,6 +10,12 @@ allprojects {
     repositories {
         mavenCentral()
     }
+}
+
+dependencies {
+    implementation(project(":suchan-onboarding:domain"))
+    implementation(project(":suchan-onboarding:application"))
+    implementation(project(":suchan-onboarding:common"))
 }
 
 subprojects {
