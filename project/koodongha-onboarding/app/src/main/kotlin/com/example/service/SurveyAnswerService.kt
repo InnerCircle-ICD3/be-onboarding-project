@@ -21,14 +21,9 @@ class SurveyAnswerService(
         val itemMap = survey.items.associateBy { it.id }
         val answeredItemIds = request.answers.map { it.itemId }.toSet()
 
-        val alreadyAnsweredIds = survey.items
-            .filter { it.answers.isNotEmpty() }
-            .mapNotNull { it.id }
-
-        val effectiveAnsweredIds = answeredItemIds + alreadyAnsweredIds
-
+        // 필수 항목 누락 여부 검증 (중복 응답 허용 기준)
         val missingRequiredItems = survey.items.filter {
-            it.isRequired && it.id !in effectiveAnsweredIds
+            it.isRequired && it.id !in answeredItemIds
         }
         if (missingRequiredItems.isNotEmpty()) {
             throw InvalidSurveyRequestException("Required questions must be answered.")
@@ -39,54 +34,57 @@ class SurveyAnswerService(
                 ?: throw InvalidSurveyRequestException("Answer value does not match survey item.")
 
             when (dto) {
-                is TextAnswerDto -> {
-                    if (item !is TextItem) {
-                        throw InvalidSurveyRequestException("Item is not of type text.")
-                    }
-                    if (!item.isLong && dto.value.length > 255) {
-                        throw InvalidSurveyRequestException("SHORT_TEXT answers must be within 255 characters.")
-                    }
-                    if (dto.value.trim().isEmpty() && item.isRequired) {
-                        throw InvalidSurveyRequestException("Required questions must be answered.")
-                    }
-
-                    TextAnswer(
-                        content = dto.value,
-                        questionName = item.name,
-                        questionType = "TEXT",
-                        survey = survey,
-                        item = item
-                    )
-                }
-
-                is ChoiceAnswerDto -> {
-                    if (item !is ChoiceItem) {
-                        throw InvalidSurveyRequestException("Item is not of type choice.")
-                    }
-
-                    val selected = dto.selectedOptionIds.mapNotNull { id ->
-                        item.options.find { it.id == id }
-                    }
-
-                    if (selected.size != dto.selectedOptionIds.size) {
-                        throw InvalidSurveyRequestException("You must enter a valid answer for the selected options.")
-                    }
-
-                    if (selected.isEmpty() && item.isRequired) {
-                        throw InvalidSurveyRequestException("Required questions must be answered.")
-                    }
-
-                    ChoiceAnswer(
-                        selectedValues = selected.map { it.value },
-                        questionName = item.name,
-                        questionType = "CHOICE",
-                        survey = survey,
-                        item = item
-                    )
-                }
+                is TextAnswerDto -> createTextAnswer(dto, item, survey)
+                is ChoiceAnswerDto -> createChoiceAnswer(dto, item, survey)
             }
         }
 
         surveyAnswerRepository.saveAll(answers)
+    }
+
+    private fun createTextAnswer(dto: TextAnswerDto, item: SurveyItemBase, survey: Survey): TextAnswer {
+        if (item !is TextItem) {
+            throw InvalidSurveyRequestException("Item is not of type text.")
+        }
+        if (!item.isLong && dto.value.length > 255) {
+            throw InvalidSurveyRequestException("SHORT_TEXT answers must be within 255 characters.")
+        }
+        if (dto.value.trim().isEmpty() && item.isRequired) {
+            throw InvalidSurveyRequestException("Required questions must be answered.")
+        }
+
+        return TextAnswer(
+            content = dto.value,
+            questionName = item.name,
+            questionType = "TEXT",
+            survey = survey,
+            item = item
+        )
+    }
+
+    private fun createChoiceAnswer(dto: ChoiceAnswerDto, item: SurveyItemBase, survey: Survey): ChoiceAnswer {
+        if (item !is ChoiceItem) {
+            throw InvalidSurveyRequestException("Item is not of type choice.")
+        }
+
+        val selected = dto.selectedOptionIds.mapNotNull { id ->
+            item.options.find { it.id == id }
+        }
+
+        if (selected.size != dto.selectedOptionIds.size) {
+            throw InvalidSurveyRequestException("One or more selected option IDs are invalid.")
+        }
+
+        if (selected.isEmpty() && item.isRequired) {
+            throw InvalidSurveyRequestException("Required questions must be answered.")
+        }
+
+        return ChoiceAnswer(
+            selectedValues = selected.map { it.value },
+            questionName = item.name,
+            questionType = "CHOICE",
+            survey = survey,
+            item = item
+        )
     }
 }

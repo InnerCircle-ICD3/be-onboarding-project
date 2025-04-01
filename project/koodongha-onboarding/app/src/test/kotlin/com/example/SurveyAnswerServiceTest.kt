@@ -91,7 +91,7 @@ class SurveyAnswerServiceTest {
             surveyAnswerService.submitAnswer(1L, request)
         }
 
-        assertEquals("You must enter a valid answer for the selected options.", exception.message)
+        assertEquals("One or more selected option IDs are invalid.", exception.message)
     }
 
     @Test
@@ -174,7 +174,7 @@ class SurveyAnswerServiceTest {
             surveyAnswerService.submitAnswer(1L, request)
         }
 
-        assertEquals("You must enter a valid answer for the selected options.", exception.message)
+        assertEquals("One or more selected option IDs are invalid.", exception.message)
     }
 
     @Test
@@ -392,4 +392,57 @@ class SurveyAnswerServiceTest {
 
         verify(surveyAnswerRepository).saveAll(any<List<SurveyAnswerBase>>())
     }
+
+    @Test
+    @DisplayName("Should save snapshot values correctly in answers")
+    fun shouldSaveSnapshotValuesCorrectlyInAnswers() {
+        val survey = Survey(id = 1L, title = "Snapshot Test", description = "Testing snapshot fields")
+    
+        val choiceItem = ChoiceItem(
+            name = "Favorite Language",
+            description = "Pick one",
+            isRequired = true,
+            isMultiple = false,
+            survey = survey
+        ).apply { id = 1L }
+    
+        val option = SelectionOption(id = 10L, value = "Kotlin", item = choiceItem)
+        choiceItem.options.add(option)
+    
+        val textItem = TextItem(
+            name = "Comment",
+            description = "Additional thoughts",
+            isRequired = false,
+            isLong = false,
+            survey = survey
+        ).apply { id = 2L }
+    
+        survey.items.addAll(listOf(choiceItem, textItem))
+    
+        whenever(surveyRepository.findById(1L)).thenReturn(Optional.of(survey))
+    
+        val request = AnswerSubmitDto(
+            answers = listOf(
+                ChoiceAnswerDto(itemId = choiceItem.id, selectedOptionIds = listOf(option.id)),
+                TextAnswerDto(itemId = textItem.id, value = "Just love Kotlin!")
+            )
+        )
+    
+        val captor = argumentCaptor<List<SurveyAnswerBase>>()
+    
+        surveyAnswerService.submitAnswer(1L, request)
+    
+        verify(surveyAnswerRepository).saveAll(captor.capture())
+        val savedAnswers = captor.firstValue
+    
+        // 검증: 스냅샷 필드가 제대로 들어갔는지 확인
+        val choiceAnswer = savedAnswers.find { it.questionType == "CHOICE" }
+        val textAnswer = savedAnswers.find { it.questionType == "TEXT" }
+    
+        assertEquals("Favorite Language", choiceAnswer?.questionName)
+        assertEquals("CHOICE", choiceAnswer?.questionType)
+    
+        assertEquals("Comment", textAnswer?.questionName)
+        assertEquals("TEXT", textAnswer?.questionType)
+    }    
 }
