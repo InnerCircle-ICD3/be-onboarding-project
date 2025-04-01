@@ -21,7 +21,6 @@ class MultiSelectionItem(
         name = "item_option",
         joinColumns = [JoinColumn(name = "survey_item_id")],
     )
-
     @OrderColumn(name = "order")
     var options: MutableList<String> = mutableListOf(),
 

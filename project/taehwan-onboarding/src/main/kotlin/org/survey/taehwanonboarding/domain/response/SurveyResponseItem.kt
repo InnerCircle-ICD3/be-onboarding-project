@@ -26,8 +26,9 @@ class SurveyResponseItem(
     @JoinColumn(name = "survey_item_id", nullable = false)
     val surveyItem: SurveyItem,
 
+    // todo: 단일 값 또는 쉼표로 구분된 다중 값으로 우선 고려
     @Column
-    var value: String? = null, // todo: 단일 값 또는 쉼표로 구분된 다중 값으로 우선 고려
+    var value: String? = null,
 ) {
     fun isValid(): Boolean = surveyItem.validateResponse(value)
 }
