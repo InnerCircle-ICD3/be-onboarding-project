@@ -1,12 +1,11 @@
 package com.example.service
 
-import com.example.dto.AnswerSubmitDto
-import com.example.entity.InputType
-import com.example.entity.SurveyAnswer
+import com.example.dto.*
+import com.example.entity.*
 import com.example.repository.SurveyAnswerRepository
 import com.example.repository.SurveyRepository
-import com.example.common.exception.InvalidSurveyRequestException
-import com.example.common.exception.SurveyNotFoundException
+import com.example.exception.InvalidSurveyRequestException
+import com.example.exception.SurveyNotFoundException
 import org.springframework.stereotype.Service
 
 @Service
@@ -20,47 +19,58 @@ class SurveyAnswerService(
             .orElseThrow { SurveyNotFoundException() }
 
         val itemMap = survey.items.associateBy { it.id }
+        val answeredItemIds = request.answers.map { it.itemId }.toSet()
+
+        // 1. 필수 항목 응답 누락 검사
+        val missingRequiredItems = survey.items.filter { it.isRequired && it.id !in answeredItemIds }
+        if (missingRequiredItems.isNotEmpty()) {
+            throw InvalidSurveyRequestException("Required questions must be answered.")
+        }
 
         val answers = request.answers.map { dto ->
             val item = itemMap[dto.itemId]
                 ?: throw InvalidSurveyRequestException("Answer value does not match survey item.")
 
-            val values = dto.values
-
-            if (item.inputType.isChoice()) {
-                val validOptions = item.options.map { it.value }
-                values.forEach { value ->
-                    if (value !in validOptions) {
-                        throw InvalidSurveyRequestException("You must enter a valid answer for the selected options.")
+            when (dto) {
+                is TextAnswerDto -> {
+                    if (item !is TextItem) {
+                        throw InvalidSurveyRequestException("Item is not of type text.")
                     }
-                }
-            } else if (item.inputType == InputType.SHORT_TEXT) {
-                values.forEach { value ->
-                    if (value.length > 255) {
+
+                    // 2. 단답형만 길이 제한 적용
+                    if (!item.isLong && dto.value.length > 255) {
                         throw InvalidSurveyRequestException("SHORT_TEXT answers must be within 255 characters.")
                     }
+
+                    TextAnswer(
+                        content = dto.value,
+                        survey = survey,
+                        item = item
+                    )
+                }
+
+                is ChoiceAnswerDto -> {
+                    if (item !is ChoiceItem) {
+                        throw InvalidSurveyRequestException("Item is not of type choice.")
+                    }
+
+                    val selected = dto.selectedOptionIds.mapNotNull { id ->
+                        item.options.find { it.id == id }
+                    }
+
+                    if (selected.size != dto.selectedOptionIds.size) {
+                        throw InvalidSurveyRequestException("You must enter a valid answer for the selected options.")
+                    }
+
+                    ChoiceAnswer(
+                        selectedOptions = selected.toMutableList(),
+                        survey = survey,
+                        item = item
+                    )
                 }
             }
-
-            val selectedOptions = if (item.inputType.isChoice()) {
-                values.mapNotNull { value ->
-                    item.options.find { it.value == value }
-                }.toMutableList()
-            } else {
-                mutableListOf()
-            }
-
-            SurveyAnswer(
-                survey = survey,
-                surveyItem = item,
-                shortAnswer = if (item.inputType.isChoice()) null else values.joinToString(","),
-                selectedOptions = selectedOptions
-            )
         }
 
         surveyAnswerRepository.saveAll(answers)
     }
-
-    private fun InputType.isChoice(): Boolean =
-        this == InputType.SINGLE_CHOICE || this == InputType.MULTI_CHOICE
 }
