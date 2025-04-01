@@ -21,8 +21,15 @@ class SurveyAnswerService(
         val itemMap = survey.items.associateBy { it.id }
         val answeredItemIds = request.answers.map { it.itemId }.toSet()
 
-        // 1. 필수 항목 응답 누락 검사
-        val missingRequiredItems = survey.items.filter { it.isRequired && it.id !in answeredItemIds }
+        val alreadyAnsweredIds = survey.items
+            .filter { it.answers.isNotEmpty() }
+            .mapNotNull { it.id }
+
+        val effectiveAnsweredIds = answeredItemIds + alreadyAnsweredIds
+
+        val missingRequiredItems = survey.items.filter {
+            it.isRequired && it.id !in effectiveAnsweredIds
+        }
         if (missingRequiredItems.isNotEmpty()) {
             throw InvalidSurveyRequestException("Required questions must be answered.")
         }
@@ -36,14 +43,17 @@ class SurveyAnswerService(
                     if (item !is TextItem) {
                         throw InvalidSurveyRequestException("Item is not of type text.")
                     }
-
-                    // 2. 단답형만 길이 제한 적용
                     if (!item.isLong && dto.value.length > 255) {
                         throw InvalidSurveyRequestException("SHORT_TEXT answers must be within 255 characters.")
+                    }
+                    if (dto.value.trim().isEmpty() && item.isRequired) {
+                        throw InvalidSurveyRequestException("Required questions must be answered.")
                     }
 
                     TextAnswer(
                         content = dto.value,
+                        questionName = item.name,
+                        questionType = "TEXT",
                         survey = survey,
                         item = item
                     )
@@ -62,8 +72,14 @@ class SurveyAnswerService(
                         throw InvalidSurveyRequestException("You must enter a valid answer for the selected options.")
                     }
 
+                    if (selected.isEmpty() && item.isRequired) {
+                        throw InvalidSurveyRequestException("Required questions must be answered.")
+                    }
+
                     ChoiceAnswer(
-                        selectedOptions = selected.toMutableList(),
+                        selectedValues = selected.map { it.value },
+                        questionName = item.name,
+                        questionType = "CHOICE",
                         survey = survey,
                         item = item
                     )

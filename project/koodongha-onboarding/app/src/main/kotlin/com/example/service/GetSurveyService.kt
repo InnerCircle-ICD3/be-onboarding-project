@@ -25,14 +25,17 @@ class GetSurveyService(
 
         val itemResponses = survey.items.mapNotNull { item ->
             val itemAnswers = allAnswers.filter { it.item.id == item.id }
+            
+            val filteredValues = itemAnswers
                 .flatMap { it.getAnswerValues() }
+                .filter {
+                    if (filterName != null && filterAnswer != null && item.name == filterName) {
+                        it.trim() == filterAnswer
+                    } else true
+                }
 
-            val filteredAnswers = if (
-                filterName != null && filterAnswer != null && item.name == filterName
-            ) {
-                itemAnswers.filter { it.trim() == filterAnswer }
-            } else {
-                itemAnswers
+            if (filterName != null && filterAnswer != null && item.name == filterName && filteredValues.isEmpty()) {
+                return@mapNotNull null
             }
 
             when (item) {
@@ -42,7 +45,7 @@ class GetSurveyService(
                     description = item.description,
                     isRequired = item.isRequired,
                     isLong = item.isLong,
-                    answers = filteredAnswers
+                    answers = filteredValues
                 )
 
                 is ChoiceItem -> ChoiceItemResponse(
@@ -52,13 +55,13 @@ class GetSurveyService(
                     isRequired = item.isRequired,
                     isMultiple = item.isMultiple,
                     options = item.options.map { it.value },
-                    answers = filteredAnswers
+                    answers = filteredValues
                 )
 
                 else -> null
             }
         }
-
+        
         val filteredItems = if (filterName != null && filterAnswer != null) {
             itemResponses.filterNot { it.answers.isNullOrEmpty() }
         } else {

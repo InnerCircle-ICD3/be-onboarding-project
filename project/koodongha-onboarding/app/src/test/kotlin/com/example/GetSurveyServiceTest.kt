@@ -30,8 +30,7 @@ class GetSurveyServiceTest {
             description = "Choose a language",
             isRequired = true,
             isLong = false
-        )
-        textItem.id = 1L
+        ).apply { id = 1L }
 
         val choiceItem = ChoiceItem(
             survey = survey,
@@ -39,25 +38,26 @@ class GetSurveyServiceTest {
             description = "Choose a framework",
             isRequired = true,
             isMultiple = false
-        )
-        choiceItem.id = 2L
+        ).apply { id = 2L }
 
-        val option = SelectionOption(value = "Kotlin", item = choiceItem)
-        option.id = 10L
+        val option = SelectionOption(value = "Kotlin", item = choiceItem).apply { id = 10L }
         choiceItem.options.add(option)
-
         survey.items.addAll(listOf(textItem, choiceItem))
 
-        val choiceAnswer = ChoiceAnswer(
+        val textAnswer = TextAnswer(
+            content = "Java",
+            questionName = textItem.name,
+            questionType = "TEXT",
             survey = survey,
-            item = choiceItem,
-            selectedOptions = mutableListOf(option)
+            item = textItem
         )
 
-        val textAnswer = TextAnswer(
+        val choiceAnswer = ChoiceAnswer(
+            selectedValues = listOf("Kotlin"),
+            questionName = choiceItem.name,
+            questionType = "CHOICE",
             survey = survey,
-            item = textItem,
-            content = "Java"
+            item = choiceItem
         )
 
         whenever(surveyRepository.findById(surveyId)).thenReturn(Optional.of(survey))
@@ -67,12 +67,8 @@ class GetSurveyServiceTest {
 
         assertEquals("Test Survey", result.title)
         assertEquals(2, result.items.size)
-
-        val textItemResp = result.items.find { it.name == "Language Choice" }
-        val choiceItemResp = result.items.find { it.name == "Preferred Framework" }
-
-        assertEquals(listOf("Java"), textItemResp?.answers)
-        assertEquals(listOf("Kotlin"), choiceItemResp?.answers)
+        assertEquals(listOf("Java"), result.items.find { it.name == "Language Choice" }?.answers)
+        assertEquals(listOf("Kotlin"), result.items.find { it.name == "Preferred Framework" }?.answers)
     }
 
     @Test
@@ -99,7 +95,8 @@ class GetSurveyServiceTest {
             description = "Enter your hobby",
             isRequired = false,
             isLong = false
-        )
+        ).apply { id = 1L }
+
         survey.items.add(textItem)
 
         whenever(surveyRepository.findById(surveyId)).thenReturn(Optional.of(survey))
@@ -124,15 +121,28 @@ class GetSurveyServiceTest {
             description = "Preferred framework",
             isRequired = true,
             isMultiple = false
-        )
+        ).apply { id = 2L }
 
-        val option1 = SelectionOption(value = "Spring", item = choiceItem)
-        val option2 = SelectionOption(value = "Django", item = choiceItem)
+        val option1 = SelectionOption(value = "Spring", item = choiceItem).apply { id = 10L }
+        val option2 = SelectionOption(value = "Django", item = choiceItem).apply { id = 11L }
         choiceItem.options.addAll(listOf(option1, option2))
         survey.items.add(choiceItem)
 
-        val answer1 = ChoiceAnswer(survey = survey, item = choiceItem, selectedOptions = mutableListOf(option1))
-        val answer2 = ChoiceAnswer(survey = survey, item = choiceItem, selectedOptions = mutableListOf(option2))
+        val answer1 = ChoiceAnswer(
+            selectedValues = listOf("Spring"),
+            questionName = choiceItem.name,
+            questionType = "CHOICE",
+            survey = survey,
+            item = choiceItem
+        )
+
+        val answer2 = ChoiceAnswer(
+            selectedValues = listOf("Django"),
+            questionName = choiceItem.name,
+            questionType = "CHOICE",
+            survey = survey,
+            item = choiceItem
+        )
 
         whenever(surveyRepository.findById(surveyId)).thenReturn(Optional.of(survey))
         whenever(answerRepository.findBySurveyId(surveyId)).thenReturn(listOf(answer1, answer2))
@@ -156,12 +166,19 @@ class GetSurveyServiceTest {
             description = "Operating system",
             isRequired = false,
             isMultiple = false
-        )
-        val option = SelectionOption(value = "Linux", item = choiceItem)
+        ).apply { id = 2L }
+
+        val option = SelectionOption(value = "Linux", item = choiceItem).apply { id = 10L }
         choiceItem.options.add(option)
         survey.items.add(choiceItem)
 
-        val answer = ChoiceAnswer(survey = survey, item = choiceItem, selectedOptions = mutableListOf(option))
+        val answer = ChoiceAnswer(
+            selectedValues = listOf("Linux"),
+            questionName = choiceItem.name,
+            questionType = "CHOICE",
+            survey = survey,
+            item = choiceItem
+        )
 
         whenever(surveyRepository.findById(surveyId)).thenReturn(Optional.of(survey))
         whenever(answerRepository.findBySurveyId(surveyId)).thenReturn(listOf(answer))
@@ -169,5 +186,86 @@ class GetSurveyServiceTest {
         val result = service.getSurvey(surveyId, filterName = "OS", filterAnswer = "Windows")
 
         assertTrue(result.items.isEmpty())
+    }
+
+    @Test
+    @DisplayName("Should return previous answers even if question name changes")
+    fun shouldReturnPreviousAnswersWithSnapshotQuestionName() {
+        val surveyId = 5L
+        val survey = Survey(surveyId, "Snapshot Test", "Test snapshot")
+
+        val updatedItem = TextItem(
+            survey = survey,
+            name = "New Question Name",
+            description = "Updated desc",
+            isRequired = true,
+            isLong = false
+        ).apply { id = 1L }
+
+        survey.items.add(updatedItem)
+
+        val oldAnswer = TextAnswer(
+            content = "Snapshot value",
+            questionName = "Old Question Name",
+            questionType = "TEXT",
+            survey = survey,
+            item = updatedItem
+        )
+
+        whenever(surveyRepository.findById(surveyId)).thenReturn(Optional.of(survey))
+        whenever(answerRepository.findBySurveyId(surveyId)).thenReturn(listOf(oldAnswer))
+
+        val result = service.getSurvey(surveyId)
+
+        assertEquals(1, result.items.size)
+        assertTrue(result.items[0].answers!!.contains("Snapshot value"))
+    }
+
+    @Test
+    @DisplayName("Should return previous answers even if question name changes (snapshot preserved)")
+    fun shouldReturnPreviousAnswersEvenIfQuestionNameChanges() {
+        val surveyId = 99L
+        val originalItem = TextItem(
+            survey = mock(),
+            name = "Old Name",
+            description = "Old Description",
+            isRequired = true,
+            isLong = false
+        ).apply { id = 1L }
+
+        val survey = Survey(
+            id = surveyId,
+            title = "Snapshot Test",
+            description = "Testing snapshot",
+            items = mutableListOf()
+        )
+
+        // 기존 응답은 "Old Name" 기준
+        val answer = TextAnswer(
+            content = "Original Answer",
+            questionName = "Old Name",
+            questionType = "TEXT",
+            survey = survey,
+            item = originalItem
+        )
+
+        // name을 바꾼 새 Item을 만들어서 교체!
+        val updatedItem = TextItem(
+            survey = survey,
+            name = "Updated Name",
+            description = "Old Description",
+            isRequired = true,
+            isLong = false
+        ).apply { id = 1L }
+
+        survey.items.add(updatedItem)
+
+        whenever(surveyRepository.findById(surveyId)).thenReturn(Optional.of(survey))
+        whenever(answerRepository.findBySurveyId(surveyId)).thenReturn(listOf(answer))
+
+        val response = GetSurveyService(surveyRepository, answerRepository).getSurvey(surveyId)
+
+        val item = response.items.find { it.name == "Updated Name" }
+        assertEquals(listOf("Original Answer"), item?.answers)
     }
 }

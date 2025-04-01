@@ -197,4 +197,25 @@ class CreateSurveyServiceTest {
 
         assertEquals("Survey description is required.", exception.message)
     }
+    
+    @Test
+    @DisplayName("Should create survey successfully with one choice option")
+    fun shouldCreateSurveyWithOneChoiceOption() {
+        val request = CreateSurveyRequest(
+            title = "Single Option Test",
+            description = "Just one choice",
+            items = listOf(
+                ChoiceItemRequest(
+                    name = "Favorite Language",
+                    description = "Choose one",
+                    isRequired = true,
+                    isMultiple = false,
+                    options = listOf("Kotlin")
+                )
+            )
+        )
+
+        assertDoesNotThrow { createSurveyService.createSurvey(request) }
+        verify(surveyRepository).save(any())
+    }
 }
