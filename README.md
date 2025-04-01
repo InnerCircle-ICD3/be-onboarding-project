@@ -101,8 +101,6 @@
 - 최소 기능 단위마다 PR을 작성합니다.(커밋 아님)
 - 리뷰 검토자로 리더를 지정합니다. (GitHub ID: `heli-os`)
 - 리뷰를 받고 머지가 되면 관련 이슈에 해당 항목을 완료 처리합니다.
-- 리뷰 코멘트에 대한 처리가 마무리되면, PR 우측 상단에서 꼭 리뷰를 재요청해 주세요.
-  - https://github.blog/changelog/2019-02-21-re-request-review-on-a-pull-request/
 
 ## 코드레벨 평가 항목
 
