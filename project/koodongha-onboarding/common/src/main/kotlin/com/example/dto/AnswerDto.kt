@@ -17,3 +17,15 @@ data class ChoiceAnswerDto(
 data class AnswerSubmitDto(
     val answers: List<AnswerDto>
 )
+
+data class SurveyAnswerSnapshotDto(
+    val questionName: String,
+    val questionType: String, // "TEXT" | "CHOICE"
+    val values: List<String>
+)
+
+data class SurveyAnswerResponse(
+    val surveyId: Long,
+    val title: String,
+    val answers: List<SurveyAnswerSnapshotDto>
+)

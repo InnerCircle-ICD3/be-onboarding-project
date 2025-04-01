@@ -34,7 +34,7 @@ abstract class SurveyItemBase(
 @Entity
 @DiscriminatorValue("TEXT")
 class TextItem(
-    val isLong: Boolean = false, 
+    val isLong: Boolean = false,
     survey: Survey,
     name: String,
     description: String?,
@@ -44,7 +44,7 @@ class TextItem(
 @Entity
 @DiscriminatorValue("CHOICE")
 class ChoiceItem(
-    val isMultiple: Boolean = false, 
+    val isMultiple: Boolean = false,
 
     @OneToMany(mappedBy = "item", cascade = [CascadeType.ALL], orphanRemoval = true)
     val options: MutableList<SelectionOption> = mutableListOf(),

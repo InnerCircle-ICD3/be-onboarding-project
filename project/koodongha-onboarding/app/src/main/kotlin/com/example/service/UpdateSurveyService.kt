@@ -19,8 +19,7 @@ class UpdateSurveyService(
 
         val itemMap = survey.items.associateBy { it.id }
         val answeredItemIds = request.answers.map {
-            val item = itemMap[it.itemId]
-                ?: throw InvalidSurveyRequestException("Answer value does not match survey item.")
+            itemMap[it.itemId] ?: throw InvalidSurveyRequestException("Answer value does not match survey item.")
             it.itemId
         }.toSet()
 
@@ -46,13 +45,17 @@ class UpdateSurveyService(
                     if (item !is TextItem) {
                         throw InvalidSurveyRequestException("Item is not of type text.")
                     }
-
                     if (!item.isLong && dto.value.length > 255) {
                         throw InvalidSurveyRequestException("SHORT_TEXT answers must be within 255 characters.")
+                    }
+                    if (dto.value.trim().isEmpty() && item.isRequired) {
+                        throw InvalidSurveyRequestException("Required questions must be answered.")
                     }
 
                     TextAnswer(
                         content = dto.value,
+                        questionName = item.name,
+                        questionType = "TEXT",
                         survey = survey,
                         item = item
                     )
@@ -70,9 +73,14 @@ class UpdateSurveyService(
                     if (selected.size != dto.selectedOptionIds.size) {
                         throw InvalidSurveyRequestException("You must enter a valid answer for the selected options.")
                     }
+                    if (selected.isEmpty() && item.isRequired) {
+                        throw InvalidSurveyRequestException("Required questions must be answered.")
+                    }
 
                     ChoiceAnswer(
-                        selectedOptions = selected.toMutableList(),
+                        selectedValues = selected.map { it.value },
+                        questionName = item.name,
+                        questionType = "CHOICE",
                         survey = survey,
                         item = item
                     )
