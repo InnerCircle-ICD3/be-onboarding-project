@@ -1,4 +1,4 @@
-package dayoung.onboarding
+package onboarding.survey.api
 
 import org.springframework.boot.autoconfigure.SpringBootApplication
 import org.springframework.boot.runApplication
