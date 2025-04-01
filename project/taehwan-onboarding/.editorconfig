@@ -10,5 +10,4 @@ insert_final_newline=true
 [*.{kt,kts}]
 insert_final_newline=false
 disabled_rules=no-wildcard-imports
-
-
+ktlint_standard_no-blank-line-in-list = disabled
