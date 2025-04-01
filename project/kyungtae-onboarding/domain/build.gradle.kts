@@ -26,10 +26,7 @@ dependencies {
 	testImplementation("org.springframework.boot:spring-boot-starter-test")
 	testRuntimeOnly("org.junit.platform:junit-platform-launcher")
 
-	testFixturesImplementation("org.junit.jupiter:junit-jupiter-api:5.10.0")
-	testFixturesImplementation("org.springframework.boot:spring-boot-starter-test")
-	testFixturesImplementation("com.fasterxml.jackson.module:jackson-module-kotlin")
-	testFixturesImplementation("com.h2database:h2")
+	testFixturesImplementation("org.junit.jupiter:junit-jupiter-api")
 }
 
 dependencyManagement {

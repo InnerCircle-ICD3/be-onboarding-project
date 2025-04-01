@@ -1,5 +1,6 @@
-package com.innercircle.domain.common
+package com.innercircle.api.common
 
+import com.innercircle.domain.common.DatabaseCleaner
 import org.junit.jupiter.api.extension.AfterEachCallback
 import org.junit.jupiter.api.extension.ExtensionContext
 import org.springframework.test.context.junit.jupiter.SpringExtension
