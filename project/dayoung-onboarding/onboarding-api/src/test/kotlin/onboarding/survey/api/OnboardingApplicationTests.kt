@@ -1,4 +1,4 @@
-package dayoung.onboarding
+package onboarding.survey.api
 
 import org.junit.jupiter.api.Test
 import org.springframework.boot.test.context.SpringBootTest
