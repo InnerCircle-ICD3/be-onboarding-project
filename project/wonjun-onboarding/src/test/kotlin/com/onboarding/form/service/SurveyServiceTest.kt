@@ -60,7 +60,7 @@ class SurveyServiceTest {
         assertEquals(actualSurvey.title, createSurveyDto.title)
         assertEquals(actualSurvey.description, createSurveyDto.description)
 
-        (actualSurvey.questions.zip(createSurveyDto.questions)).forEach {
+        (actualSurvey.getQuestions().zip(createSurveyDto.questions)).forEach {
             assertEquals(it.first.title, it.second.title)
             assertEquals(it.first.description, it.second.description)
             assertEquals(it.first.getType(), it.second.type)
@@ -187,7 +187,7 @@ class SurveyServiceTest {
         assertEquals(updateActualSurvey.title, updateSurveyDto.title)
         assertEquals(updateActualSurvey.description, updateSurveyDto.description)
 
-        (updateActualSurvey.questions.zip(updateSurveyDto.questions)).forEach {
+        (updateActualSurvey.getQuestions().zip(updateSurveyDto.questions)).forEach {
             assertEquals(it.first.title, it.second.title)
             assertEquals(it.first.description, it.second.description)
             assertEquals(it.first.getType(), it.second.type)
