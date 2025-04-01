@@ -1,8 +1,8 @@
-package com.innercircle.api.survey.entity
+package com.innercircle.domain.survey.entity
 
 import com.innercircle.domain.survey.command.dto.SurveyQuestionCreateCommand
 import com.innercircle.domain.survey.command.dto.SurveyQuestionOptionCreateCommand
-import com.innercircle.api.survey.entity.SurveyTestFixtures.survey
+import com.innercircle.domain.survey.entity.SurveyTestFixtures.survey
 import com.innercircle.survey.entity.QuestionType
 import com.innercircle.survey.entity.SurveyQuestion
 import org.assertj.core.api.AssertionsForClassTypes.assertThat

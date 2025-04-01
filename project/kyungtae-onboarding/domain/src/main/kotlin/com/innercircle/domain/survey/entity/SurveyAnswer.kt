@@ -8,7 +8,6 @@ import jakarta.persistence.*
 
 @Entity
 @SoftDeleteFilter
-@Table(name = "survey_answer")
 class SurveyAnswer private constructor(
 
     @ManyToOne(fetch = FetchType.LAZY, optional = false)

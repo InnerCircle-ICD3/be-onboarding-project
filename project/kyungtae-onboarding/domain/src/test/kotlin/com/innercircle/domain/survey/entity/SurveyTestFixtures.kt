@@ -1,4 +1,4 @@
-package com.innercircle.api.survey.entity
+package com.innercircle.domain.survey.entity
 
 import com.innercircle.domain.survey.command.dto.SurveyCreateCommand
 import com.innercircle.survey.entity.Survey

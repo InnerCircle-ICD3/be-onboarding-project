@@ -1,7 +1,7 @@
-package com.innercircle.api.survey.entity
+package com.innercircle.domain.survey.entity
 
-import com.innercircle.api.survey.entity.SurveyTestFixtures.survey
-import com.innercircle.api.survey.entity.SurveyTestFixtures.surveyCreateCommand
+import com.innercircle.domain.survey.entity.SurveyTestFixtures.survey
+import com.innercircle.domain.survey.entity.SurveyTestFixtures.surveyCreateCommand
 import com.innercircle.survey.entity.Survey
 import com.innercircle.survey.entity.SurveyStatus
 import org.assertj.core.api.Assertions.assertThat

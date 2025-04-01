@@ -20,6 +20,8 @@ class SurveyRestControllerIntegrationTest {
     @Nested
     inner class `설문을 생성한다` {
 
+        private val LOCATION_HEADER_VALUE_REGEX = "/api/surveys/[0-9]+"
+
         @Test
         fun `단일 선택형 설문을 생성한다`() {
             // given
@@ -49,7 +51,7 @@ class SurveyRestControllerIntegrationTest {
             val locationHeaderValue = 설문_생성(surveyCreateRequest)
 
             // then
-            assertThat(locationHeaderValue).matches("/api/surveys/[0-9]+")
+            assertThat(locationHeaderValue).matches(LOCATION_HEADER_VALUE_REGEX)
         }
 
         @Test
@@ -81,7 +83,7 @@ class SurveyRestControllerIntegrationTest {
             val locationHeaderValue = 설문_생성(surveyCreateRequest)
 
             // then
-            assertThat(locationHeaderValue).matches("/api/surveys/[0-9]+")
+            assertThat(locationHeaderValue).matches(LOCATION_HEADER_VALUE_REGEX)
         }
 
         @Test
@@ -106,7 +108,7 @@ class SurveyRestControllerIntegrationTest {
             val locationHeaderValue = 설문_생성(surveyCreateRequest)
 
             // then
-            assertThat(locationHeaderValue).matches("/api/surveys/[0-9]+")
+            assertThat(locationHeaderValue).matches(LOCATION_HEADER_VALUE_REGEX)
         }
 
         @Test
@@ -131,7 +133,7 @@ class SurveyRestControllerIntegrationTest {
             val locationHeaderValue = 설문_생성(surveyCreateRequest)
 
             // then
-            assertThat(locationHeaderValue).matches("/api/surveys/[0-9]+")
+            assertThat(locationHeaderValue).matches(LOCATION_HEADER_VALUE_REGEX)
         }
 
         private fun 설문_생성(surveyCreateRequest: SurveyCreateRequest): String? =

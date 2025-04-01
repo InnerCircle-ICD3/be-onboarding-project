@@ -19,6 +19,7 @@ dependencies {
 	implementation(project(":domain"))
 	testImplementation("io.rest-assured:rest-assured:5.5.1")
 	testImplementation("org.springframework.boot:spring-boot-starter-test")
+	testImplementation(testFixtures(project(":domain")))
 	testRuntimeOnly("org.junit.platform:junit-platform-launcher")
 }
 

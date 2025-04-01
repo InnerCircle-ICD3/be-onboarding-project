@@ -8,7 +8,6 @@ import java.time.LocalDateTime
 import java.util.*
 
 @Entity
-@Table(name = "survey")
 class Survey private constructor(
 
     @Embedded

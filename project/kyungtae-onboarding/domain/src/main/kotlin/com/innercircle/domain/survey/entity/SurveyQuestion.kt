@@ -6,7 +6,6 @@ import com.innercircle.domain.survey.entity.SurveyQuestionContext
 import jakarta.persistence.*
 
 @Entity
-@Table(name = "survey_question")
 class SurveyQuestion private constructor(
 
     @JoinColumn(name = "survey_id", nullable = false)

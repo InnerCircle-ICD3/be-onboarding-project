@@ -19,7 +19,7 @@ class SurveyRestController(
     @PostMapping
     fun createSurvey(
         @RequestBody @Valid request: SurveyCreateRequest
-    ): ResponseEntity<Void> {
+    ): ResponseEntity<Unit> {
         val surveyCreatedResponse = surveyService.createSurvey(request)
         return ResponseEntity.created(URI.create("/api/surveys/${surveyCreatedResponse.id}")).build()
 

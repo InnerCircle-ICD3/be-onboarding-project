@@ -10,6 +10,6 @@ class SurveyService(
     private val surveyCommandService: SurveyCommandService
 ) {
     fun createSurvey(request: SurveyCreateRequest): SurveyCreatedResponse {
-        return surveyCommandService.create(request.toCommand()).let { SurveyCreatedResponse(it.id) }
+        return SurveyCreatedResponse(surveyCommandService.create(request.toCommand()).id)
     }
 }

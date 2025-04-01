@@ -3,7 +3,6 @@ package com.innercircle.survey.entity
 import jakarta.persistence.*
 
 @Entity
-@Table(name = "survey_answer_option")
 class SurveyAnswerOption private constructor(
 
     @EmbeddedId
