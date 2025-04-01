@@ -1,19 +1,20 @@
 CREATE TABLE `Survey`
 (
-    `id`          BIGINT PRIMARY KEY NOT NULL COMMENT '설문조사 식별자',
-    `external_id` CHAR(36)           NOT NULL COMMENT '외부 사용 키',
-    `name`        VARCHAR(100)       NOT NULL COMMENT '설문조사 이름',
-    `description` VARCHAR(500)       NOT NULL COMMENT '설문조사 설명',
-    `status`      ENUM('READY', 'IN_PROGRESS', 'END') NOT NULL COMMENT '상태',
-    `start_at`    TIMESTAMP          NOT NULL COMMENT '시작예정일시',
-    `end_at`      TIMESTAMP NULL COMMENT '종료예정일시',
-    `started_at`  TIMESTAMP NULL COMMENT '시작일시',
-    `ended_at`    TIMESTAMP NULL COMMENT '종료일시',
-    `created_at`  TIMESTAMP          NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT '생성일시',
-    `updated_at`  TIMESTAMP NULL COMMENT '수정일시',
+    `id`                   BIGINT PRIMARY KEY NOT NULL COMMENT '설문조사 식별자',
+    `external_id`          CHAR(36)           NOT NULL COMMENT '외부 사용 키',
+    `name`                 VARCHAR(100)       NOT NULL COMMENT '설문조사 이름',
+    `description`          VARCHAR(500)       NOT NULL COMMENT '설문조사 설명',
+    `status`               ENUM('READY', 'IN_PROGRESS', 'END') NOT NULL COMMENT '상태',
+    `start_at`             TIMESTAMP          NOT NULL COMMENT '시작예정일시',
+    `end_at`               TIMESTAMP NULL COMMENT '종료예정일시',
+    `started_at`           TIMESTAMP NULL COMMENT '시작일시',
+    `ended_at`             TIMESTAMP NULL COMMENT '종료일시',
+    `participant_capacity` INT                NOT NULL DEFAULT 0 COMMENT '참여자 수',
+    `created_at`           TIMESTAMP          NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT '생성일시',
+    `updated_at`           TIMESTAMP NULL COMMENT '수정일시',
     UNIQUE KEY `UK_Survey_external_id` (`external_id`),
-    INDEX         `IDX_Survey_name` (`name`),
-    INDEX         `IDX_Survey_description` (`description`)
+    INDEX                  `IDX_Survey_name` (`name`),
+    INDEX                  `IDX_Survey_description` (`description`)
 ) COMMENT '설문조사'
 engine=InnoDB
 default charset=utf8mb4
