@@ -5,7 +5,7 @@ import com.innercircle.survey.entity.QuestionType
 data class SurveyQuestionCreateCommand(
     val name: String,
     val description: String,
-    val inputType: QuestionType,
+    val questionType: QuestionType,
     val required: Boolean,
     val options: List<SurveyQuestionOptionCreateCommand>
 )

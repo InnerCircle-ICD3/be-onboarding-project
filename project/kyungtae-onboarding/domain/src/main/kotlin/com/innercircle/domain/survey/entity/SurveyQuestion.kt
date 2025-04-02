@@ -43,7 +43,7 @@ class SurveyQuestion private constructor(
                     name = questionCommand.name,
                     description = questionCommand.description
                 ),
-                questionType = questionCommand.inputType,
+                questionType = questionCommand.questionType,
             ).apply {
                 survey.questions.add(this)
                 this.options.addAll(questionCommand.options.map { SurveyQuestionOption.of(this, it) }.toList())

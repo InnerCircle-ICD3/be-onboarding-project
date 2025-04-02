@@ -1,5 +1,7 @@
 package com.innercircle.api.survey.controller.response
 
+import java.util.*
+
 data class SurveyCreatedResponse(
-    val id: Long? = null
+    val externalId: UUID? = null
 )

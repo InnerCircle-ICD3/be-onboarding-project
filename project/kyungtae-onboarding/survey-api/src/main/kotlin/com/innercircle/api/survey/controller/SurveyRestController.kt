@@ -21,7 +21,7 @@ class SurveyRestController(
         @RequestBody @Valid request: SurveyCreateRequest
     ): ResponseEntity<Unit> {
         val surveyCreatedResponse = surveyService.createSurvey(request)
-        return ResponseEntity.created(URI.create("/api/surveys/${surveyCreatedResponse.id}")).build()
+        return ResponseEntity.created(URI.create("/api/surveys/${surveyCreatedResponse.externalId}")).build()
 
     }
 

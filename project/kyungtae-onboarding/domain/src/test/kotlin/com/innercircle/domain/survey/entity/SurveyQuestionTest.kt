@@ -27,7 +27,7 @@ class SurveyQuestionTest {
                 survey, SurveyQuestionCreateCommand(
                     name = "첫사랑 이름은?",
                     description = "첫사랑 이름을 입력해주세요",
-                    inputType = QuestionType.valueOf(type),
+                    questionType = QuestionType.valueOf(type),
                     required = true,
                     options = listOf(
                         SurveyQuestionOptionCreateCommand(content = "옵션1"),
@@ -55,7 +55,7 @@ class SurveyQuestionTest {
                 survey, SurveyQuestionCreateCommand(
                     name = "첫사랑 이름은?",
                     description = "첫사랑 이름을 입력해주세요",
-                    inputType = QuestionType.valueOf(type),
+                    questionType = QuestionType.valueOf(type),
                     required = true,
                     options = emptyList()
                 )

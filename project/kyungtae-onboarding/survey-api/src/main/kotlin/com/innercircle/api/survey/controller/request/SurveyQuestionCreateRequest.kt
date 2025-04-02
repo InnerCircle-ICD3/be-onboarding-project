@@ -6,7 +6,7 @@ import com.innercircle.survey.entity.QuestionType
 data class SurveyQuestionCreateRequest(
     val name: String? = null,
     val description: String? = null,
-    val inputType: String? = null,
+    val questionType: String? = null,
     val required: Boolean? = null,
     val options: List<SurveyQuestionOptionCreateRequest>? = emptyList()
 ) {
@@ -14,7 +14,7 @@ data class SurveyQuestionCreateRequest(
         return SurveyQuestionCreateCommand(
             name = name!!,
             description = description!!,
-            inputType = QuestionType.valueOf(inputType!!),
+            questionType = QuestionType.valueOf(questionType!!),
             required = required!!,
             options = options?.map { it.toCommand() }?.toList() ?: emptyList()
         )
