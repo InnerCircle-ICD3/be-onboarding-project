@@ -21,6 +21,7 @@ data class Item(
     val id: Long?,
 
     @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "survey_id")
     var survey: Survey? = null,
 
     val name: String,

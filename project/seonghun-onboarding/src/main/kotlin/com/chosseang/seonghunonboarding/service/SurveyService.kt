@@ -10,16 +10,11 @@ class SurveyService(val repository: SurveyRepository) {
 
     @Transactional
     fun createSurvey(survey: Survey): Survey {
-        // 양방향 관계 설정을 위해 Survey와 Item 사이의 관계 설정
-        val items = survey.items.toMutableList()
-        survey.items = mutableListOf()  // 기존 리스트 비우기
+        // 각 아이템의 survey 참조 설정 (양방향 관계 유지)
+        survey.items.forEach { item ->
+            item.survey = survey
+        }
 
-        // 새로운 Survey 인스턴스 저장
-        val savedSurvey = repository.save(survey)
-
-        // 저장된 Survey에 Item 추가 (양방향 관계 설정)
-        items.forEach { savedSurvey.addItem(it) }
-
-        return repository.save(savedSurvey)
+        return repository.save(survey)
     }
 }
