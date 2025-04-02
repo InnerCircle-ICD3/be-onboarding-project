@@ -2,12 +2,13 @@ package com.example
 
 import com.example.dto.*
 import com.example.service.CreateSurveyService
+import com.example.controller.CreateSurveyController
 import com.fasterxml.jackson.databind.ObjectMapper
 import org.junit.jupiter.api.DisplayName
 import org.junit.jupiter.api.Test
 import org.mockito.kotlin.any
 import org.mockito.kotlin.doNothing
-import org.mockito.kotlin.mock
+import org.mockito.kotlin.whenever
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest
 import org.springframework.boot.test.mock.mockito.MockBean
@@ -34,13 +35,13 @@ class CreateSurveyControllerTest {
             title = "My First Survey",
             description = "Tell us your opinion",
             items = listOf(
-                CreateTextItemRequest(
+                TextItemRequest(
                     name = "What's your name?",
                     description = "Please enter your full name",
                     isRequired = true,
                     isLong = false
                 ),
-                CreateChoiceItemRequest(
+                ChoiceItemRequest(
                     name = "Favorite language?",
                     description = "Select one",
                     isRequired = true,
@@ -50,7 +51,7 @@ class CreateSurveyControllerTest {
             )
         )
 
-        doNothing().`when`(createSurveyService).createSurvey(any())
+        doNothing().whenever(createSurveyService).createSurvey(any())
 
         mockMvc.post("/surveys") {
             contentType = MediaType.APPLICATION_JSON
@@ -67,7 +68,7 @@ class CreateSurveyControllerTest {
             title = "",
             description = "Desc",
             items = listOf(
-                CreateTextItemRequest("Q1", "Desc", true, false)
+                TextItemRequest("Q1", "Desc", true, false)
             )
         )
 
@@ -103,7 +104,7 @@ class CreateSurveyControllerTest {
             title = "Survey",
             description = "Desc",
             items = listOf(
-                CreateChoiceItemRequest(
+                ChoiceItemRequest(
                     name = "Select one",
                     description = "Pick one",
                     isRequired = true,
@@ -124,7 +125,7 @@ class CreateSurveyControllerTest {
     @Test
     @DisplayName("Should fail when items exceed 10")
     fun shouldFailWhenItemsExceedLimit() {
-        val item = CreateTextItemRequest("Q", "D", false, false)
+        val item = TextItemRequest("Q", "D", false, false)
         val request = CreateSurveyRequest(
             title = "Survey",
             description = "Desc",

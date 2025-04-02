@@ -1,4 +1,4 @@
-package com.example.api.controller
+package com.example.controller
 
 import com.example.dto.SurveyUpdateRequest
 import com.example.service.UpdateSurveyService

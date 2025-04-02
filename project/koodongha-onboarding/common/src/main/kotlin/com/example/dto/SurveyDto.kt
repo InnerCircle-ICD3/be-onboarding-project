@@ -1,5 +1,9 @@
 package com.example.dto
 
+import jakarta.validation.Valid
+import jakarta.validation.constraints.NotBlank
+import jakarta.validation.constraints.Size
+
 sealed class CreateSurveyItemRequest {
     abstract val name: String
     abstract val description: String?
@@ -7,23 +11,41 @@ sealed class CreateSurveyItemRequest {
 }
 
 data class TextItemRequest(
+    @field:NotBlank
     override val name: String,
+
+    @field:NotBlank
     override val description: String?,
+
     override val isRequired: Boolean,
+
     val isLong: Boolean = false
 ) : CreateSurveyItemRequest()
 
 data class ChoiceItemRequest(
+    @field:NotBlank
     override val name: String,
+
+    @field:NotBlank
     override val description: String?,
+
     override val isRequired: Boolean,
+
     val isMultiple: Boolean = false,
+
+    @field:Size(min = 1)
     val options: List<String>
 ) : CreateSurveyItemRequest()
 
 data class CreateSurveyRequest(
+    @field:NotBlank
     val title: String,
+
+    @field:NotBlank
     val description: String?,
+
+    @field:Size(min = 1, max = 10)
+    @field:Valid
     val items: List<CreateSurveyItemRequest>
 )
 

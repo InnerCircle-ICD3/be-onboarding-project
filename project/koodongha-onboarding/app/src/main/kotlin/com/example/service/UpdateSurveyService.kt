@@ -16,14 +16,14 @@ class UpdateSurveyService(
     fun updateSurvey(surveyId: Long, request: SurveyUpdateRequest) {
         val survey = surveyRepository.findById(surveyId)
             .orElseThrow { SurveyNotFoundException() }
-    
+
         // 1. 설문 제목 & 설명 수정
         survey.title = request.title
         survey.description = request.description
-    
+
         // 2. 기존 항목 매핑
         val existingItems = survey.items.associateBy { it.id }
-    
+
         // 3. 수정 요청된 항목들 순회
         val updatedItems = mutableListOf<SurveyItemBase>()
         request.items.forEach { itemRequest ->
@@ -48,7 +48,7 @@ class UpdateSurveyService(
                         }
                     }
                 }
-    
+
                 is ChoiceItemUpdateRequest -> {
                     if (itemRequest.id == null) {
                         val newChoiceItem = ChoiceItem(
@@ -76,42 +76,16 @@ class UpdateSurveyService(
                             }
                         }
                     }
-
-                    TextAnswer(
-                        content = dto.value,
-                        survey = survey,
-                        item = item
-                    )
-                }
-
-                is ChoiceAnswerDto -> {
-                    if (item !is ChoiceItem) {
-                        throw InvalidSurveyRequestException("Item is not of type choice.")
-                    }
-
-                    val selected = dto.selectedOptionIds.mapNotNull { id ->
-                        item.options.find { it.id == id }
-                    }
-
-                    if (selected.size != dto.selectedOptionIds.size) {
-                        throw InvalidSurveyRequestException("You must enter a valid answer for the selected options.")
-                    }
-
-                    ChoiceAnswer(
-                        selectedOptions = selected.toMutableList(),
-                        survey = survey,
-                        item = item
-                    )
                 }
             }
             updatedItems.add(item)
         }
-    
+
         // 4. 항목 전체 대체
         survey.items.clear()
         survey.items.addAll(updatedItems)
-    
+
         // 5. 저장
         surveyRepository.save(survey)
-    }    
+    }
 }

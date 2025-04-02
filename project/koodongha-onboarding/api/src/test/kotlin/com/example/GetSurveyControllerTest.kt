@@ -1,18 +1,14 @@
 package com.example
 
-import com.example.dto.SurveyItemResponse
-import com.example.dto.SurveyResponse
-import com.example.entity.Survey
+import com.example.dto.*
+import com.example.controller.GetSurveyController
 import com.example.service.GetSurveyService
-import com.example.api.controller.GetSurveyController
 import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.DisplayName
 import org.junit.jupiter.api.Test
-import org.mockito.kotlin.any
 import org.mockito.kotlin.mock
 import org.mockito.kotlin.whenever
 import org.springframework.http.HttpStatus
-import org.springframework.http.ResponseEntity
 
 class GetSurveyControllerTest {
 
@@ -44,7 +40,16 @@ class GetSurveyControllerTest {
             id = 1L,
             title = "Title",
             description = "Description",
-            items = listOf(SurveyItemResponse(id = 1L, name = "Language", description = null, type = "TEXT", isRequired = true, options = null))
+            items = listOf(
+                TextItemResponse(
+                    id = 1L,
+                    name = "Language",
+                    description = null,
+                    isRequired = true,
+                    isLong = false,
+                    answers = listOf("Kotlin")
+                )
+            )
         )
 
         whenever(getSurveyService.getSurvey(1L, "Language", null)).thenReturn(expectedResponse)
@@ -62,7 +67,16 @@ class GetSurveyControllerTest {
             id = 1L,
             title = "Title",
             description = "Description",
-            items = listOf(SurveyItemResponse(id = 2L, name = "Comment", description = null, type = "TEXT", isRequired = false, options = null))
+            items = listOf(
+                TextItemResponse(
+                    id = 2L,
+                    name = "Comment",
+                    description = null,
+                    isRequired = false,
+                    isLong = true,
+                    answers = listOf("Kotlin")
+                )
+            )
         )
 
         whenever(getSurveyService.getSurvey(1L, null, "Kotlin")).thenReturn(expectedResponse)
@@ -80,7 +94,17 @@ class GetSurveyControllerTest {
             id = 1L,
             title = "Title",
             description = "Description",
-            items = listOf(SurveyItemResponse(id = 3L, name = "Tech Stack", description = null, type = "CHOICE", isRequired = true, options = listOf("Kotlin")))
+            items = listOf(
+                ChoiceItemResponse(
+                    id = 3L,
+                    name = "Tech Stack",
+                    description = null,
+                    isRequired = true,
+                    isMultiple = false,
+                    options = listOf("Kotlin"),
+                    answers = listOf("Kotlin")
+                )
+            )
         )
 
         whenever(getSurveyService.getSurvey(1L, "Tech Stack", "Kotlin")).thenReturn(expectedResponse)
@@ -90,4 +114,4 @@ class GetSurveyControllerTest {
         assertEquals(HttpStatus.OK, response.statusCode)
         assertEquals(expectedResponse, response.body)
     }
-} 
+}
