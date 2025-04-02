@@ -1,6 +1,7 @@
 package com.chosseang.seonghunonboarding.entity
 
 import com.chosseang.seonghunonboarding.enum.ItemType
+import com.fasterxml.jackson.annotation.JsonIgnore
 import jakarta.persistence.CollectionTable
 import jakarta.persistence.ElementCollection
 import jakarta.persistence.Entity
@@ -20,6 +21,7 @@ data class Item(
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     val id: Long?,
 
+    @JsonIgnore
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "survey_id")
     var survey: Survey? = null,
