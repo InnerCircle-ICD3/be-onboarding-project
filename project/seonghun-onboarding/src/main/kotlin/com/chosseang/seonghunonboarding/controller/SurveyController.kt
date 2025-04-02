@@ -16,28 +16,23 @@ class SurveyController (val surveyService: SurveyService) {
     @PostMapping("/create")
     @ResponseBody
     fun createSurvey(@RequestBody survey: Survey): Survey {
-        // DTO에서 엔티티로 변환 (양방향 관계 설정)
-        val surveyValue = Survey(
+
+        return Survey(
             name = survey.name,
             description = survey.description,
             items = mutableListOf()
-        )
-
-        // Item 엔티티 생성 및 Survey와 연결
-        val items = survey.items.map { itemRequest ->
-            Item(
-                id = null,
-                name = itemRequest.name,
-                description = itemRequest.description,
-                type = itemRequest.type,
-                contents = itemRequest.contents,
-                survey = surveyValue  // 양방향 관계 설정
-            )
-        }
-
-        // 양방향 관계 설정
-        surveyValue.items = items.toMutableList()
-
-        return surveyService.createSurvey(surveyValue)
+        ).apply {
+            items = survey.items.map {
+                itemRequest ->
+                Item(
+                    id = null,
+                    name = itemRequest.name,
+                    description = itemRequest.description,
+                    type = itemRequest.type,
+                    contents = itemRequest.contents,
+                    survey = this
+                )
+            }.toMutableList()
+        }.let(surveyService::createSurvey)
     }
 }
