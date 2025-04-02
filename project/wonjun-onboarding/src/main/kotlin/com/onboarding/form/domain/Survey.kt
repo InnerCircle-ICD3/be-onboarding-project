@@ -44,7 +44,7 @@ class Survey(
             return Survey(
                 title = title,
                 description = description,
-                currentVersion = SurveyVersion(version = 0)
+                currentVersion = SurveyVersion(version = 1)
             )
         }
     }
