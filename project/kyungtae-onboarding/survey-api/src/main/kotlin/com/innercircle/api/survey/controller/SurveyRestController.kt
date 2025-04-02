@@ -1,6 +1,6 @@
 package com.innercircle.api.survey.controller
 
-import com.innercircle.api.common.ApiResponse
+import com.innercircle.api.common.response.ApiResponse
 import com.innercircle.api.survey.controller.request.SurveyCreateRequest
 import com.innercircle.api.survey.controller.response.SurveyResponse
 import com.innercircle.api.survey.service.SurveyService

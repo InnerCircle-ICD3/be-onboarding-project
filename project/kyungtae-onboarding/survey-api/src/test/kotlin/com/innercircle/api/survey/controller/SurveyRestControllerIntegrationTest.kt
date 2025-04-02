@@ -44,7 +44,6 @@ class SurveyRestControllerIntegrationTest {
             val surveyCreateRequest = 다중_선택형_설문_생성_요청()
             val surveyId = getIdFromLocation(설문_생성(surveyCreateRequest))
 
-
             // when
             val surveyResponse = 설문_조회(surveyId)
 
