@@ -1,0 +1,123 @@
+= 설문조사 서비스 API 가이드
+:doctype: book
+:icons: font
+:source-highlighter: highlightjs
+:toc: left
+:toclevels: 3
+:sectlinks:
+
+[[overview]]
+== 개요
+
+설문조사 서비스는 설문조사 양식을 만들고, 만들어진 양식을 기반으로 응답을 받을 수 있는 서비스입니다.
+
+[[create-survey]]
+== 설문조사 생성 API
+
+=== 요청
+
+include::{snippets}/create-survey/http-request.adoc[]
+
+==== 요청 필드
+
+include::{snippets}/create-survey/request-fields.adoc[]
+
+=== 응답
+
+include::{snippets}/create-survey/http-response.adoc[]
+
+==== 응답 필드
+
+include::{snippets}/create-survey/response-fields.adoc[]
+
+[[update-survey]]
+== 설문조사 수정 API
+
+=== 요청
+
+include::{snippets}/update-survey/http-request.adoc[]
+
+==== 경로 변수
+
+include::{snippets}/update-survey/path-parameters.adoc[]
+
+==== 요청 필드
+
+include::{snippets}/update-survey/request-fields.adoc[]
+
+=== 응답
+
+include::{snippets}/update-survey/http-response.adoc[]
+
+==== 응답 필드
+
+include::{snippets}/update-survey/response-fields.adoc[]
+
+[[submit-response]]
+== 설문조사 응답 제출 API
+
+=== 요청
+
+include::{snippets}/submit-response/http-request.adoc[]
+
+==== 경로 변수
+
+include::{snippets}/submit-response/path-parameters.adoc[]
+
+==== 요청 필드
+
+include::{snippets}/submit-response/request-fields.adoc[]
+
+=== 응답
+
+include::{snippets}/submit-response/http-response.adoc[]
+
+==== 응답 필드
+
+include::{snippets}/submit-response/response-fields.adoc[]
+
+[[get-survey-responses]]
+== 설문조사 응답 조회 API
+
+=== 요청
+
+include::{snippets}/get-survey-responses/http-request.adoc[]
+
+==== 경로 변수
+
+include::{snippets}/get-survey-responses/path-parameters.adoc[]
+
+==== 쿼리 파라미터
+
+include::{snippets}/get-survey-responses/query-parameters.adoc[]
+
+=== 응답
+
+include::{snippets}/get-survey-responses/http-response.adoc[]
+
+==== 응답 필드
+
+include::{snippets}/get-survey-responses/response-fields.adoc[]
+
+[[search-survey-responses]]
+== 설문조사 응답 검색 API
+
+=== 요청
+
+include::{snippets}/search-survey-responses/http-request.adoc[]
+
+==== 경로 변수
+
+include::{snippets}/search-survey-responses/path-parameters.adoc[]
+
+==== 쿼리 파라미터
+
+include::{snippets}/search-survey-responses/query-parameters.adoc[]
+
+=== 응답
+
+include::{snippets}/search-survey-responses/http-response.adoc[]
+
+==== 응답 필드
+
+include::{snippets}/search-survey-responses/response-fields.adoc[]
