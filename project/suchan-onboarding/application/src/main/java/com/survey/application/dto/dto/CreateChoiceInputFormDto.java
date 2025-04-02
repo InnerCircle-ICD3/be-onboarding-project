@@ -1,4 +1,4 @@
-package com.survey.application.dto;
+package com.survey.application.dto.dto;
 
 import com.survey.domain.ChoiceInputForm;
 import com.survey.domain.ChoiceType;
@@ -14,7 +14,7 @@ import java.util.List;
 @Getter
 @NoArgsConstructor
 @AllArgsConstructor
-public class ChoiceInputFormDto {
+public class CreateChoiceInputFormDto {
 
     @NotNull
     private String choiceType;

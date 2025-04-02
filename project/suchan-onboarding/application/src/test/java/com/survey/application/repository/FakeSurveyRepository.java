@@ -4,6 +4,7 @@ import com.survey.domain.Survey;
 import com.survey.domain.repository.SurveyRepository;
 
 import java.util.Map;
+import java.util.Optional;
 
 public class FakeSurveyRepository implements SurveyRepository {
 
@@ -24,6 +25,24 @@ public class FakeSurveyRepository implements SurveyRepository {
         storage.put(idIndex, survey);
         callCounter++;
         return survey;
+    }
+
+    @Override
+    public Optional<Survey> findById(Long surveyId) {
+        callCounter++;
+        return Optional.ofNullable(storage.get(surveyId));
+    }
+
+    @Override
+    public Optional<Survey> findCompleteSurvey(Long surveyId) {
+        callCounter++;
+        Survey survey = storage.get(surveyId);
+
+        if (survey == null) {
+            return Optional.empty();
+        }
+
+        return Optional.of(survey);
     }
 
     public Survey findById(long id) {
