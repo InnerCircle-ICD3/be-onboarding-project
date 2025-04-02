@@ -76,6 +76,32 @@ class UpdateSurveyService(
                             }
                         }
                     }
+
+                    TextAnswer(
+                        content = dto.value,
+                        survey = survey,
+                        item = item
+                    )
+                }
+
+                is ChoiceAnswerDto -> {
+                    if (item !is ChoiceItem) {
+                        throw InvalidSurveyRequestException("Item is not of type choice.")
+                    }
+
+                    val selected = dto.selectedOptionIds.mapNotNull { id ->
+                        item.options.find { it.id == id }
+                    }
+
+                    if (selected.size != dto.selectedOptionIds.size) {
+                        throw InvalidSurveyRequestException("You must enter a valid answer for the selected options.")
+                    }
+
+                    ChoiceAnswer(
+                        selectedOptions = selected.toMutableList(),
+                        survey = survey,
+                        item = item
+                    )
                 }
             }
             updatedItems.add(item)
