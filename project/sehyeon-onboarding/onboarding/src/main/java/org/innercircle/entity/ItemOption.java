@@ -1,7 +1,9 @@
 package org.innercircle.entity;
 
 import jakarta.persistence.*;
+import lombok.AccessLevel;
 import lombok.Data;
+import lombok.Setter;
 
 @Data
 @Entity
@@ -17,6 +19,7 @@ public class ItemOption {
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "seq_item")
+    @Setter(AccessLevel.NONE)
     SurveyItem surveyItem;
 
 

@@ -3,18 +3,13 @@ import jakarta.persistence.EntityManagerFactory;
 import jakarta.persistence.EntityTransaction;
 import jakarta.persistence.PersistenceContext;
 import org.innercircle.Main;
-import org.innercircle.entity.ItemOption;
-import org.innercircle.entity.Survey;
-import org.innercircle.entity.SurveyItem;
-import org.innercircle.service.ItemOptionService;
-import org.innercircle.service.SurveyItemService;
-import org.innercircle.service.SurveyService;
-import org.junit.jupiter.api.Assertions;
-import org.junit.jupiter.api.BeforeAll;
-import org.junit.jupiter.api.Test;
+import org.innercircle.entity.*;
+import org.innercircle.service.*;
+import org.junit.jupiter.api.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.context.ApplicationContext;
+import org.springframework.test.annotation.Commit;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.ArrayList;
@@ -38,15 +33,24 @@ public class OnboardingTest01 {
     @Autowired
     ItemOptionService itemOptionService;
 
+    @Autowired
+    SuveryAnswerService suveryAnswerService;
+
+    @Autowired
+    AnswerItemService answerItemService;
+
     @PersistenceContext
     EntityManager entityManager;
 
+
+    private static Survey surveyTest = new Survey();
     private static List<SurveyItem> surveyItemTestList = new ArrayList<>();
 
     private static List<ItemOption> itemOptionTestList = new ArrayList<>();
 
-    @BeforeAll
-    public static void setup() {
+//    @BeforeAll
+    @BeforeEach
+    public void setup() {
         //
         for(int i=0; i<5; i++) {
             SurveyItem surveyItemTest = new SurveyItem();
@@ -61,6 +65,9 @@ public class OnboardingTest01 {
             itemOptionTest.setContent("option"+i);
             OnboardingTest01.itemOptionTestList.add(itemOptionTest);
         }
+        surveyTest.setTitle("hello");
+        surveyTest.setDesc("world");
+        surveyTest.loadSurveyItemList(surveyItemTestList);
     }
 
     @Test
@@ -107,12 +114,6 @@ public class OnboardingTest01 {
 
         //
         Long seq = surveyService.saveSurvey(survey1);
-        for(SurveyItem item : OnboardingTest01.surveyItemTestList) {
-            surveyItemService.saveSurveyItem(item);
-        }
-        for(ItemOption option : OnboardingTest01.itemOptionTestList) {
-            itemOptionService.saveOption(option);
-        }
         //
 
         System.out.println("hello world 11111111111111111111111");
@@ -129,7 +130,49 @@ public class OnboardingTest01 {
 
     }
 
+    @Test
+    @Commit
+    public void createAndReadAnswerTest() {
+        //
 
+        List<AnswerItem> answerItemList = new ArrayList<>();
+        List<SurveyItem> surveyItemList = surveyTest.getSurveyItemList();
+        for (int i = 0; i < surveyItemList.size(); i++) {
+            SurveyItem surveyItem = surveyItemList.get(i);
+            AnswerItem answerItem = new AnswerItem();
+            answerItem.loadSurveyItem(surveyItem);
+            answerItem.setAnswVal("answer"+i);
+            answerItemList.add(answerItem);
+        }
+        //
+        int itemIdx = 3;
+        SurveyItem surveyItem = surveyItemTestList.get(itemIdx);
+        surveyItem.loadItemOptionList(itemOptionTestList);
+        //
+        AnswerItem answerItem = answerItemList.get(itemIdx);
+        answerItem.loadSurveyItem(surveyItem);
+        answerItem.loadItemOption(itemOptionTestList.get(2));
+        //
+        SurveyAnswer surveyAnswer1 = new SurveyAnswer();
+        surveyAnswer1.loadSurvey(surveyTest);
+        surveyAnswer1.loadAnswerItemList(answerItemList);
+
+        //
+        Long seqSurvey = surveyService.saveSurvey(surveyTest);
+        Long seqAnswer = suveryAnswerService.saveSurveyAnswer(surveyAnswer1);
+        Long seqOption = itemOptionTestList.get(2).getSeq();
+        //
+        System.out.println("hello world 11111111111111111111111");
+        entityManager.flush();
+        entityManager.clear();
+        System.out.println("hello world 222222222222222222222222");
+
+        //
+        SurveyAnswer surveyAnswer2 = suveryAnswerService.findOne(seqAnswer);
+        Assertions.assertEquals(seqSurvey, surveyAnswer2.getSurvey().getSeq());
+        Assertions.assertEquals(surveyAnswer1.getAnswerItemList().size(), surveyAnswer2.getAnswerItemList().size());
+        Assertions.assertEquals(seqOption, surveyAnswer2.getAnswerItemList().get(itemIdx).getItemOption().getSeq());
+    }
 
 
 }

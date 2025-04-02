@@ -1,7 +1,9 @@
 package org.innercircle.entity;
 
 import jakarta.persistence.*;
+import lombok.AccessLevel;
 import lombok.Data;
+import lombok.Setter;
 
 import java.util.List;
 
@@ -21,15 +23,18 @@ public class SurveyItem {
     private ItemType itemType;
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name="seq_survey")
+    @Setter(AccessLevel.NONE)
     Survey survey;
-    @OneToMany(mappedBy = "surveyItem")
+    @OneToMany(mappedBy = "surveyItem", cascade = CascadeType.ALL)
+    @Setter(AccessLevel.NONE)
     List<ItemOption> itemOptionList;
 
 
     public void loadSurvey(Survey survey) {
-        if(this.survey != survey) {
-            this.survey = survey;
+        if(this.survey == survey) {
+            return;
         }
+        this.survey = survey;
     }
 
     public void loadItemOptionList(List<ItemOption> itemOptionList){
@@ -39,6 +44,7 @@ public class SurveyItem {
         this.itemOptionList = itemOptionList;
         for(ItemOption itemOption : itemOptionList) {
             if(itemOption.getSurveyItem() != this) {
+                //
                 itemOption.loadSurveyItem(this);
             }
         }

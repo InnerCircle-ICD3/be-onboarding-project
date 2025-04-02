@@ -2,9 +2,7 @@ package org.innercircle.entity;
 
 
 import jakarta.persistence.*;
-import lombok.Builder;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import lombok.*;
 
 import java.util.List;
 
@@ -25,7 +23,8 @@ public class Survey {
     private String title;
     private String desc;
 
-    @OneToMany(mappedBy = "survey")
+    @OneToMany(mappedBy = "survey", cascade = CascadeType.ALL)
+    @Setter(AccessLevel.NONE)
     List<SurveyItem> surveyItemList;
 
 
@@ -36,6 +35,7 @@ public class Survey {
         this.surveyItemList = surveyItemList;
         for(SurveyItem surveyItem : surveyItemList) {
             if(surveyItem.getSurvey() != this) {
+                // surveyItem의 survey가 내가 아니면 그 survey 찾아가서 surveyItemList 로부터 이 surveyItem을 지워주고 나와야 하나
                 surveyItem.loadSurvey(this);
             }
         }

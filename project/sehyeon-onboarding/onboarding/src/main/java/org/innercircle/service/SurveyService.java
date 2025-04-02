@@ -18,8 +18,6 @@ public class SurveyService {
 
     @Autowired
     private SurveyJpaRepository surveyRepository;
-    @Autowired
-    private SurveyItemService surveyItemService;
 
 //    public Long createSurvey(String surveyTitle, String surveyDesc, List<SurveyItem> surveyItemList) {
 //        // 주어진 데이터를 바탕으로 entity 를 생성하는 건 service 계층이 아니라 entity 계층에서 담당할 기능
@@ -28,8 +26,6 @@ public class SurveyService {
 
 
     public Long saveSurvey(Survey survey) {
-        List<SurveyItem> surveyItemList = survey.getSurveyItemList();
-        surveyItemService.saveSurveyItemAll(surveyItemList);
         return surveyRepository.save(survey);
     }
 

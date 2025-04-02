@@ -20,15 +20,6 @@ public class ItemOptionService {
         return itemOption.getSeq();
     }
 
-    public boolean saveOptionAll(List<ItemOption> itemOptionList) {
-        if(itemOptionList != null && itemOptionList.size() >0) {
-            for(ItemOption itemOption : itemOptionList) {
-                saveOption(itemOption);
-            }
-        }
-        return false;
-    }
-
     public ItemOption findItemOption(Long seq) {
         ItemOption itemOption = itemOptionRepository.findOne(seq);
         return itemOption;

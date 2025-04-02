@@ -15,25 +15,12 @@ public class SurveyItemService {
 
     @Autowired
     SurveyItemJpaRepository surveyItemRepository;
-    @Autowired
-    ItemOptionService itemOptionService;
 
     public Long saveSurveyItem(SurveyItem surveyItem) {
-        List<ItemOption> itemOptionList = surveyItem.getItemOptionList();
-        itemOptionService.saveOptionAll(itemOptionList);
         surveyItemRepository.save(surveyItem);
         return surveyItem.getSeq();
     }
 
-    public boolean saveSurveyItemAll(List<SurveyItem> surveyItemList) {
-        if(surveyItemList != null && surveyItemList.size() > 0) {
-            for(SurveyItem surveyItem : surveyItemList) {
-                saveSurveyItem(surveyItem);
-            }
-            return true;
-        }
-        return false;
-    }
 
     public SurveyItem findServeyItem(Long seq) {
         SurveyItem surveyItem = surveyItemRepository.findOne(seq);
