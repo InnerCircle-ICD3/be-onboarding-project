@@ -19,6 +19,80 @@ import java.time.LocalDateTime
 class SurveyRestControllerIntegrationTest {
 
     @Nested
+    inner class `설문을_조회한다` {
+        @Test
+        fun `단일 선택형 설문을 조회한다`() {
+            // given
+            val surveyCreateRequest = 단일_선택형_설문_생성_요청()
+            val surveyId = getIdFromLocation(설문_생성(surveyCreateRequest))
+
+            // when
+            val surveyResponse = 설문_조회(surveyId)
+
+            // then
+            assertThat(surveyResponse.id).isEqualTo(surveyId)
+            // TODO 설문 생성 요청과 응답을 비교한다.
+        }
+
+        @Test
+        fun `다중 선택형 설문을 조회한다`() {
+            // given
+            val surveyCreateRequest = 다중_선택형_설문_생성_요청()
+            val surveyId = getIdFromLocation(설문_생성(surveyCreateRequest))
+
+
+            // when
+            val surveyResponse = 설문_조회(surveyId)
+
+            // then
+            assertThat(surveyResponse.id).isEqualTo(surveyId)
+            // TODO 설문 생성 요청과 응답을 비교한다.
+        }
+
+        @Test
+        fun `단답형 설문을 조회한다`() {
+            // given
+            val surveyCreateRequest = 단답형_설문_생성_요청()
+            val surveyId = getIdFromLocation(설문_생성(surveyCreateRequest))
+
+            // when
+            val surveyResponse = 설문_조회(surveyId)
+
+            // then
+            assertThat(surveyResponse.id).isEqualTo(surveyId)
+            // TODO 설문 생성 요청과 응답을 비교한다.
+        }
+
+        @Test
+        fun `장문형 설문을 조회한다`() {
+            // given
+            val surveyCreateRequest = 장문형_설문_생성_요청()
+            val surveyId = getIdFromLocation(설문_생성(surveyCreateRequest))
+
+            // when
+            val surveyResponse = 설문_조회(surveyId)
+
+            // then
+            assertThat(surveyResponse.id).isEqualTo(surveyId)
+            // TODO 설문 생성 요청과 응답을 비교한다.
+        }
+
+
+    }
+
+    private fun 설문_조회(surveyId: Long) {
+        RestAssured.given()
+            .accept(ContentType.JSON)
+            .get("/api/surveys/$surveyId")
+            .then()
+            .statusCode(HttpStatus.SC_OK)
+            .extract()
+            .`as`(SurveyResponse::class.java)
+    }
+
+    private fun getIdFromLocation(locationHeaderValue: String?) = locationHeaderValue!!.substringAfterLast("/").toLong()
+
+    @Nested
     inner class `설문을 생성한다` {
 
         private val LOCATION_HEADER_VALUE_REGEX = "/api/surveys/[a-f0-9]{8}-([a-f0-9]{4}-){3}[a-f0-9]{12}"
