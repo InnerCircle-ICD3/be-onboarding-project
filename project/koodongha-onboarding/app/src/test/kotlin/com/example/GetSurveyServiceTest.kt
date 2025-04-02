@@ -44,7 +44,7 @@ class GetSurveyServiceTest {
         choiceItem.options.add(option)
         survey.items.addAll(listOf(textItem, choiceItem))
 
-        val textAnswer = TextAnswer(
+        val textAnswerEntity = TextAnswer(
             content = "Java",
             questionName = textItem.name,
             questionType = "TEXT",
@@ -60,14 +60,8 @@ class GetSurveyServiceTest {
             item = choiceItem
         )
 
-        val textAnswer = TextAnswer(
-            survey = survey,
-            item = textItem,
-            content = "Java"
-        )
-
         whenever(surveyRepository.findById(surveyId)).thenReturn(Optional.of(survey))
-        whenever(answerRepository.findBySurveyId(surveyId)).thenReturn(listOf(choiceAnswer, textAnswer))
+        whenever(answerRepository.findBySurveyId(surveyId)).thenReturn(listOf(choiceAnswer, textAnswerEntity))
 
         val result: SurveyResponse = service.getSurvey(surveyId)
 
@@ -246,7 +240,6 @@ class GetSurveyServiceTest {
             items = mutableListOf()
         )
 
-        // 기존 응답은 "Old Name" 기준
         val answer = TextAnswer(
             content = "Original Answer",
             questionName = "Old Name",
@@ -255,7 +248,6 @@ class GetSurveyServiceTest {
             item = originalItem
         )
 
-        // name을 바꾼 새 Item을 만들어서 교체!
         val updatedItem = TextItem(
             survey = survey,
             name = "Updated Name",

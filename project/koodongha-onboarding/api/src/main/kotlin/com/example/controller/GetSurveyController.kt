@@ -1,7 +1,8 @@
-package com.example.api.controller
+package com.example.controller
 
 import com.example.dto.SurveyResponse
 import com.example.service.GetSurveyService
+import org.springframework.http.HttpStatus
 import org.springframework.http.ResponseEntity
 import org.springframework.web.bind.annotation.*
 
@@ -18,6 +19,7 @@ class GetSurveyController(
         @RequestParam(required = false) filterAnswer: String?
     ): ResponseEntity<SurveyResponse> {
         val response = getSurveyService.getSurvey(id, filterName, filterAnswer)
-        return ResponseEntity.ok(response)
+        return ResponseEntity.status(HttpStatus.OK).body(response)
     }
+    
 }
