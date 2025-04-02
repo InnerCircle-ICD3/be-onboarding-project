@@ -4,7 +4,6 @@ import org.springframework.stereotype.Service
 import org.springframework.transaction.annotation.Transactional
 import org.survey.taehwanonboarding.api.dto.QuestionRequest
 import org.survey.taehwanonboarding.api.dto.QuestionType
-import org.survey.taehwanonboarding.api.dto.QuestionType.*
 import org.survey.taehwanonboarding.api.dto.SurveyCreateRequest
 import org.survey.taehwanonboarding.api.dto.SurveyCreateResponse
 import org.survey.taehwanonboarding.config.ValidationMessage
@@ -19,17 +18,18 @@ import java.time.format.DateTimeFormatter
 
 @Service
 class SurveyService(
-    private val surveyRepository: SurveyRepository
+    private val surveyRepository: SurveyRepository,
 ) {
     @Transactional
     fun createSurvey(request: SurveyCreateRequest): SurveyCreateResponse {
         validateSurveyRequest(request)
 
-        val survey = Survey(
-            title = request.title,
-            description = request.description,
-            status = Survey.SurveyStatus.DRAFT
-        )
+        val survey =
+            Survey(
+                title = request.title,
+                description = request.description,
+                status = Survey.SurveyStatus.DRAFT,
+            )
 
         // 질문 항목 추가
         request.questions.forEach { questionRequest ->
@@ -46,7 +46,7 @@ class SurveyService(
             title = savedSurvey.title,
             description = savedSurvey.description,
             status = savedSurvey.status.name,
-            createdAt = savedSurvey.createdAt?.format(DateTimeFormatter.ISO_DATE_TIME) ?: ""
+            createdAt = savedSurvey.createdAt?.format(DateTimeFormatter.ISO_DATE_TIME) ?: "",
         )
     }
 
@@ -66,7 +66,6 @@ class SurveyService(
     }
 
     private fun validateQuestionRequest(question: QuestionRequest) {
-
         // 제목은 필수값 검사
         require(question.title.isNotBlank()) {
             ValidationMessage.IS_TITLE_REQUIRED
@@ -74,7 +73,7 @@ class SurveyService(
 
         // 항목별 유효성 검사
         when (question.type) {
-            SINGLE_SELECTION, MULTI_SELECTION -> {
+            QuestionType.SINGLE_SELECTION, QuestionType.MULTI_SELECTION -> {
                 requireNotNull(question.options) { ValidationMessage.IS_OPTION_REQUIRED }
                 require(question.options.isNotEmpty()) { ValidationMessage.IS_MIN_OPTION_COUNT_ONE }
 
@@ -89,55 +88,51 @@ class SurveyService(
                 }
             }
 
-            SHORT_ANSWER, LONG_ANSWER -> {
+            QuestionType.SHORT_ANSWER, QuestionType.LONG_ANSWER -> {
                 question.maxLength?.let { maxLength ->
                     require(maxLength > 0) { ValidationMessage.IS_REQUIRED_MIN_LENGTH_TEN }
                 }
             }
-
-            SINGLE_SELECTION -> TODO()
-            MULTI_SELECTION -> TODO()
         }
     }
 
-    private fun createSurveyItem(question: QuestionRequest): SurveyItem {
-        return when (question.type) {
-            SHORT_ANSWER -> ShortAnswerItem(
+    private fun createSurveyItem(question: QuestionRequest): SurveyItem = when (question.type) {
+        QuestionType.SHORT_ANSWER ->
+            ShortAnswerItem(
                 title = question.title,
                 description = question.description,
                 required = question.required,
                 orderNumber = question.orderNumber,
-                maxLength = question.maxLength
+                maxLength = question.maxLength,
             )
 
-            LONG_ANSWER -> LongAnswerItem(
+        QuestionType.LONG_ANSWER ->
+            LongAnswerItem(
                 title = question.title,
                 description = question.description,
                 required = question.required,
                 orderNumber = question.orderNumber,
-                maxLength = question.maxLength
+                maxLength = question.maxLength,
             )
 
-            SINGLE_SELECTION -> SingleSelectionItem(
+        QuestionType.SINGLE_SELECTION ->
+            SingleSelectionItem(
                 title = question.title,
                 description = question.description,
                 required = question.required,
                 orderNumber = question.orderNumber,
-                options = question.options?.toMutableList() ?: mutableListOf()
+                options = question.options?.toMutableList() ?: mutableListOf(),
             )
 
-            MULTI_SELECTION -> MultiSelectionItem(
+        QuestionType.MULTI_SELECTION ->
+            MultiSelectionItem(
                 title = question.title,
                 description = question.description,
                 required = question.required,
                 orderNumber = question.orderNumber,
                 options = question.options?.toMutableList() ?: mutableListOf(),
                 minSelections = question.minSelections,
-                maxSelections = question.maxSelections
+                maxSelections = question.maxSelections,
             )
-
-            SINGLE_SELECTION -> TODO()
-            MULTI_SELECTION -> TODO()
-        }
     }
 }

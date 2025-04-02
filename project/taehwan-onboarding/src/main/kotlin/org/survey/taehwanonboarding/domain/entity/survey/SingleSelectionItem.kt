@@ -23,11 +23,11 @@ class SingleSelectionItem(
     @OrderColumn(name = "order")
     var options: MutableList<String> = mutableListOf(),
 ) : SurveyItem(
-        title = title,
-        description = description,
-        required = required,
-        orderNumber = orderNumber,
-    ) {
+    title = title,
+    description = description,
+    required = required,
+    orderNumber = orderNumber,
+) {
     override fun validateResponse(responseValue: String?): Boolean {
         if (required && responseValue.isNullOrBlank()) return false
         return responseValue == null || options.contains(responseValue)

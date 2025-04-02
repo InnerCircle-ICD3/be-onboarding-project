@@ -13,10 +13,12 @@ import org.survey.taehwanonboarding.application.service.SurveyService
 @RestController
 @RequestMapping("/api/v1/survey")
 class SurveyController(
-    private val surveyService: SurveyService
+    private val surveyService: SurveyService,
 ) {
     @PostMapping
-    fun createSurvey(@RequestBody request: SurveyCreateRequest): ResponseEntity<SurveyCreateResponse> {
+    fun createSurvey(
+        @RequestBody request: SurveyCreateRequest,
+    ): ResponseEntity<SurveyCreateResponse> {
         val response = surveyService.createSurvey(request)
         return ResponseEntity(response, HttpStatus.CREATED)
     }
