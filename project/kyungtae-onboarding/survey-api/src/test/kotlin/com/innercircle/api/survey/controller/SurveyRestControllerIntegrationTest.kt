@@ -5,6 +5,7 @@ import com.innercircle.api.common.jsonMapper
 import com.innercircle.api.survey.controller.request.SurveyCreateRequest
 import com.innercircle.api.survey.controller.request.SurveyQuestionCreateRequest
 import com.innercircle.api.survey.controller.request.SurveyQuestionOptionCreateRequest
+import com.innercircle.api.survey.controller.response.SurveyResponse
 import com.innercircle.survey.entity.QuestionType
 import io.restassured.RestAssured
 import io.restassured.http.ContentType
@@ -80,7 +81,7 @@ class SurveyRestControllerIntegrationTest {
 
     }
 
-    private fun 설문_조회(surveyId: Long) {
+    private fun 설문_조회(surveyId: Long): SurveyResponse =
         RestAssured.given()
             .accept(ContentType.JSON)
             .get("/api/surveys/$surveyId")
@@ -88,7 +89,6 @@ class SurveyRestControllerIntegrationTest {
             .statusCode(HttpStatus.SC_OK)
             .extract()
             .`as`(SurveyResponse::class.java)
-    }
 
     private fun getIdFromLocation(locationHeaderValue: String?) = locationHeaderValue!!.substringAfterLast("/").toLong()
 
