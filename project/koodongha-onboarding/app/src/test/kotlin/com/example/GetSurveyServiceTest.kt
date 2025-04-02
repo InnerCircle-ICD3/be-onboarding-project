@@ -60,6 +60,12 @@ class GetSurveyServiceTest {
             item = choiceItem
         )
 
+        val textAnswer = TextAnswer(
+            survey = survey,
+            item = textItem,
+            content = "Java"
+        )
+
         whenever(surveyRepository.findById(surveyId)).thenReturn(Optional.of(survey))
         whenever(answerRepository.findBySurveyId(surveyId)).thenReturn(listOf(choiceAnswer, textAnswer))
 
