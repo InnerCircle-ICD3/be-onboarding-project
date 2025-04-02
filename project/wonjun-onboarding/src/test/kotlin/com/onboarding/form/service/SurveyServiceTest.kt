@@ -85,6 +85,7 @@ class SurveyServiceTest {
             }
         }
     }
+
     @Test
     @DisplayName("Survey가 존재하지 않는데 수정을 시도할 시 에러가 발생한다.")
     fun updateSurveyTestSurveyIsNotExist() {
@@ -103,8 +104,8 @@ class SurveyServiceTest {
         )
 
 
-        assertThrows<IllegalArgumentException>{
-            surveyService.updateSurveyDto(0, updateSurveyDto)
+        assertThrows<IllegalArgumentException> {
+            surveyService.updateSurveyDto(1, updateSurveyDto)
         }
     }
 
@@ -211,5 +212,47 @@ class SurveyServiceTest {
                 }
             }
         }
+    }
+
+    @Test
+    @DisplayName("설문조사 수정 시 새로운 버전이 추가된다.")
+    fun updateSurveyVersionTest() {
+        val createSurveyDto = CreateSurveyDto(
+            title = "testTitle",
+            description = "testDescription",
+            questions = listOf(
+                CreateSelectQuestionDto(
+                    title = "testTitle",
+                    description = "testDescription",
+                    type = QuestionType.MULTI_SELECT,
+                    isRequired = true,
+                    answerList = listOf("testAnswer1", "testAnswer2")
+                ),
+            )
+        )
+
+        val survey = surveyService.createSurvey(createSurveyDto)
+
+        assertEquals(survey.currentVersion.version, 1)
+
+        val updateSurveyDto = CreateSurveyDto(
+            title = "testTitle2",
+            description = "testDescription2",
+            questions = listOf(
+                CreateSelectQuestionDto(
+                    title = "testTitle2",
+                    description = "testDescription2",
+                    type = QuestionType.MULTI_SELECT,
+                    isRequired = true,
+                    answerList = listOf("testAnswer12", "testAnswer22")
+                )
+            )
+        )
+
+        val updateActualSurvey = surveyService.updateSurveyDto(survey.id!!, updateSurveyDto)
+
+        assertEquals(updateActualSurvey.title, updateSurveyDto.title)
+        assertEquals(updateActualSurvey.description, updateSurveyDto.description)
+        assertEquals(updateActualSurvey.currentVersion.version, 2)
     }
 }

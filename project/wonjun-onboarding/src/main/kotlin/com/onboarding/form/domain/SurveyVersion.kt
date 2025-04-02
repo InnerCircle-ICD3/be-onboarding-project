@@ -7,7 +7,7 @@ import jakarta.persistence.*
 class SurveyVersion(
     @Id @GeneratedValue(strategy = GenerationType.IDENTITY)
     val id: Long? = null,
-    var version: Int = 0,
+    var version: Int,
     @ManyToOne
     @JoinColumn(name = "survey_id")
     var survey: Survey? = null,
