@@ -9,6 +9,7 @@ data class SurveyQuestion(
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     val questionId: Int,
+    var orderNumber: Int,
 
     @ManyToOne
     @JoinColumn(name = "survey_id")

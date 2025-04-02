@@ -9,7 +9,8 @@ data class CreateSurveyRequest(
 )
 
 data class QuestionRequest(
-    val name: String,
+    var orderNumber: Int,
+    val title: String,
     val description: String,
     val type: SurveyQuestionType,
     val required: Boolean,

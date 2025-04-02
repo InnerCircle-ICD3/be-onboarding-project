@@ -9,17 +9,20 @@ import onboarding.survey.api.model.response.AnswerSurveyResponse
 import onboarding.survey.api.model.response.CreateSurveyResponse
 import onboarding.survey.api.model.response.GetAnswersResponse
 import onboarding.survey.api.model.response.UpdateSurveyResponse
+import onboarding.survey.api.service.survey.SurveyService
 import org.springframework.http.ResponseEntity
 import org.springframework.web.bind.annotation.*
 
 @Tag(name = "Survey", description = "설문조사 관련 CRUD API")
 @RestController
-class SurveyController {
+class SurveyController(
+    private val surveyService: SurveyService  // ✅ 생성자 주입
+) {
     @Operation(summary = "설문조사 생성")
     @PostMapping("/survey")
     fun createSurvey(@RequestBody request: CreateSurveyRequest): ResponseEntity<CreateSurveyResponse> {
-        // TODO: 서비스 호출 및 로직 작성
-        return ResponseEntity.ok(CreateSurveyResponse(surveyId = 1))
+        val response = surveyService.createSurvey(request)
+        return ResponseEntity.ok(response)
     }
 
     @Operation(summary = "설문조사 수정")
