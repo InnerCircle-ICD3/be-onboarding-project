@@ -28,9 +28,8 @@ class SurveyController(
     fun submitAnswers(
         @RequestBody createAnswerRequestDto: CreateAnswerRequestDto,
         @PathVariable id: Long
-    ): ResponseEntity<Nothing> {
+    ): ResponseEntity<Unit> {
         service.submitAnswer(surveyId = id, createAnswerRequestDto)
         return ResponseEntity.ok(null)
     }
 }
-
