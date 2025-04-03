@@ -35,12 +35,17 @@ public class SurveyResponseMapperService {
     }
 
     private void addSurveyOptionResultDto(SurveyResponse surveyResponse, SurveyOption surveyOption, List<SurveyOptionResultDto> surveyOptionResultDtos) {
+        if (!surveyOption.isActivated()) {
+            return;
+        }
+
         for (SurveyOptionResponse surveyOptionRes : surveyResponse.getSurveyOptionResponses()) {
             if (surveyOptionRes.getSurveyOptionId().equals(surveyOption.getId())) {
                 surveyOptionResultDtos.add(createSurveyOptionResult(surveyOption, surveyOptionRes));
                 return;
             }
         }
+
         throw new IllegalArgumentException("설문 조사 항목 id : " + surveyOption.getId() + " 이 존재하지 않습니다.");
     }
 
