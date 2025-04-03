@@ -3,6 +3,7 @@ package com.onboarding.form.response
 import com.onboarding.form.domain.*
 
 sealed class QuestionDto(
+    open val id: Long,
     open val title: String,
     open val description: String,
     open val type: QuestionType,
@@ -22,14 +23,16 @@ sealed class QuestionDto(
 }
 
 data class StandardQuestionDto(
+    override val id: Long,
     override val title: String,
     override val description: String,
     override val type: QuestionType,
     override val isRequired: Boolean
-) : QuestionDto(title, description, type, isRequired) {
+) : QuestionDto(id, title, description, type, isRequired) {
     companion object {
         fun of(question: ShortQuestion) =
             StandardQuestionDto(
+                question.id,
                 question.title,
                 question.description,
                 question.type,
@@ -38,6 +41,7 @@ data class StandardQuestionDto(
 
         fun of(question: LongQuestion) =
             StandardQuestionDto(
+                question.id,
                 question.title,
                 question.description,
                 question.type,
@@ -47,15 +51,17 @@ data class StandardQuestionDto(
 }
 
 data class SelectQuestionDto(
+    override val id: Long,
     override val title: String,
     override val description: String,
     override val type: QuestionType,
     override val isRequired: Boolean,
     val options: List<String>
-) : QuestionDto(title, description, type, isRequired) {
+) : QuestionDto(id, title, description, type, isRequired) {
     companion object {
         fun of(question: SingleSelectQuestion) =
             SelectQuestionDto(
+                question.id,
                 question.title,
                 question.description,
                 question.type,
@@ -65,6 +71,7 @@ data class SelectQuestionDto(
 
         fun of(question: MultiSelectQuestion) =
             SelectQuestionDto(
+                question.id,
                 question.title,
                 question.description,
                 question.type,
