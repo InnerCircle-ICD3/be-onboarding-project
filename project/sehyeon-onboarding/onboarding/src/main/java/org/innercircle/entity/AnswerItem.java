@@ -17,7 +17,7 @@ public class AnswerItem {
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "seq_answer")
     @Setter(AccessLevel.NONE)
-    SurveyAnswer surveyAnswer;
+    Answer answer;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "seq_item")
@@ -31,25 +31,35 @@ public class AnswerItem {
 
     String answVal;
 
-    public void loadSurveyAnswer(SurveyAnswer surveyAnswer) {
-        if(this.surveyAnswer == surveyAnswer) {
+    public void setAnswer(Answer answer) {
+        if(this.answer == answer) {
             return;
         }
-        this.surveyAnswer = surveyAnswer;
+        this.answer = answer;
     }
 
-    public void loadSurveyItem(SurveyItem surveyItem) {
+    public void setSurveyItem(SurveyItem surveyItem) {
         if(this.surveyItem == surveyItem) {
             return;
         }
         this.surveyItem = surveyItem;
     }
 
-    public void loadItemOption(ItemOption itemOption) {
+    public void setItemOption(ItemOption itemOption) {
         if(this.itemOption == itemOption) {
             return;
         }
         this.itemOption = itemOption;
     }
 
+
+    @Override
+    public String toString() {
+        return "AnswerItem{" +
+                "seq=" + seq +
+                ", surveyItem=" + surveyItem +
+                ", itemOption=" + itemOption +
+                ", answVal='" + answVal + '\'' +
+                '}';
+    }
 }

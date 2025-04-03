@@ -9,7 +9,6 @@ import org.junit.jupiter.api.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.context.ApplicationContext;
-import org.springframework.test.annotation.Commit;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.ArrayList;
@@ -34,7 +33,7 @@ public class OnboardingTest01 {
     ItemOptionService itemOptionService;
 
     @Autowired
-    SuveryAnswerService suveryAnswerService;
+    AnswerService answerService;
 
     @Autowired
     AnswerItemService answerItemService;
@@ -67,7 +66,7 @@ public class OnboardingTest01 {
         }
         surveyTest.setTitle("hello");
         surveyTest.setDesc("world");
-        surveyTest.loadSurveyItemList(surveyItemTestList);
+        surveyTest.setSurveyItemList(surveyItemTestList);
     }
 
     @Test
@@ -107,9 +106,9 @@ public class OnboardingTest01 {
         Survey survey1 = new Survey();
         survey1.setTitle(surveyTitle);
         survey1.setDesc(surveyDesc);
-        survey1.loadSurveyItemList(OnboardingTest01.surveyItemTestList);
+        survey1.setSurveyItemList(OnboardingTest01.surveyItemTestList);
         int optionIdx = 2;
-        OnboardingTest01.surveyItemTestList.get(optionIdx).loadItemOptionList(OnboardingTest01.itemOptionTestList);
+        OnboardingTest01.surveyItemTestList.get(optionIdx).setItemOptionList(OnboardingTest01.itemOptionTestList);
 
 
         //
@@ -131,7 +130,7 @@ public class OnboardingTest01 {
     }
 
     @Test
-    @Commit
+//    @Commit
     public void createAndReadAnswerTest() {
         //
 
@@ -140,26 +139,26 @@ public class OnboardingTest01 {
         for (int i = 0; i < surveyItemList.size(); i++) {
             SurveyItem surveyItem = surveyItemList.get(i);
             AnswerItem answerItem = new AnswerItem();
-            answerItem.loadSurveyItem(surveyItem);
+            answerItem.setSurveyItem(surveyItem);
             answerItem.setAnswVal("answer"+i);
             answerItemList.add(answerItem);
         }
         //
         int itemIdx = 3;
         SurveyItem surveyItem = surveyItemTestList.get(itemIdx);
-        surveyItem.loadItemOptionList(itemOptionTestList);
+        surveyItem.setItemOptionList(itemOptionTestList);
         //
         AnswerItem answerItem = answerItemList.get(itemIdx);
-        answerItem.loadSurveyItem(surveyItem);
-        answerItem.loadItemOption(itemOptionTestList.get(2));
+        answerItem.setSurveyItem(surveyItem);
+        answerItem.setItemOption(itemOptionTestList.get(2));
         //
-        SurveyAnswer surveyAnswer1 = new SurveyAnswer();
-        surveyAnswer1.loadSurvey(surveyTest);
-        surveyAnswer1.loadAnswerItemList(answerItemList);
+        Answer answer1 = new Answer();
+        answer1.setSurvey(surveyTest);
+        answer1.setAnswerItemList(answerItemList);
 
         //
         Long seqSurvey = surveyService.saveSurvey(surveyTest);
-        Long seqAnswer = suveryAnswerService.saveSurveyAnswer(surveyAnswer1);
+        Long seqAnswer = answerService.saveAnswer(answer1);
         Long seqOption = itemOptionTestList.get(2).getSeq();
         //
         System.out.println("hello world 11111111111111111111111");
@@ -168,10 +167,10 @@ public class OnboardingTest01 {
         System.out.println("hello world 222222222222222222222222");
 
         //
-        SurveyAnswer surveyAnswer2 = suveryAnswerService.findOne(seqAnswer);
-        Assertions.assertEquals(seqSurvey, surveyAnswer2.getSurvey().getSeq());
-        Assertions.assertEquals(surveyAnswer1.getAnswerItemList().size(), surveyAnswer2.getAnswerItemList().size());
-        Assertions.assertEquals(seqOption, surveyAnswer2.getAnswerItemList().get(itemIdx).getItemOption().getSeq());
+        Answer answer2 = answerService.findOne(seqAnswer);
+        Assertions.assertEquals(seqSurvey, answer2.getSurvey().getSeq());
+        Assertions.assertEquals(answer1.getAnswerItemList().size(), answer2.getAnswerItemList().size());
+        Assertions.assertEquals(seqOption, answer2.getAnswerItemList().get(itemIdx).getItemOption().getSeq());
     }
 
 

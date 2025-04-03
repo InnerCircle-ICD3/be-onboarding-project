@@ -6,6 +6,7 @@ import lombok.Data;
 import lombok.Setter;
 
 import java.util.List;
+import java.util.Objects;
 
 @Data
 @Entity
@@ -30,14 +31,14 @@ public class SurveyItem {
     List<ItemOption> itemOptionList;
 
 
-    public void loadSurvey(Survey survey) {
+    public void setSurvey(Survey survey) {
         if(this.survey == survey) {
             return;
         }
         this.survey = survey;
     }
 
-    public void loadItemOptionList(List<ItemOption> itemOptionList){
+    public void setItemOptionList(List<ItemOption> itemOptionList){
         if(this.itemOptionList == itemOptionList) {
             return;
         }
@@ -45,7 +46,7 @@ public class SurveyItem {
         for(ItemOption itemOption : itemOptionList) {
             if(itemOption.getSurveyItem() != this) {
                 //
-                itemOption.loadSurveyItem(this);
+                itemOption.setSurveyItem(this);
             }
         }
     }
@@ -57,9 +58,8 @@ public class SurveyItem {
                 ", title='" + title + '\'' +
                 ", desc='" + desc + '\'' +
                 ", isRequiredYN='" + isRequiredYN + '\'' +
-                ", itemType=" + itemType.hashCode() +
-                ", survey=" + survey.hashCode() +
-                ", itemOptionList=" + itemOptionList.hashCode() +
+                ", itemType=" + itemType +
+                ", itemOptionList=" + itemOptionList +
                 '}';
     }
 }

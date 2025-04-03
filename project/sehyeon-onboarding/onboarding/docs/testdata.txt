@@ -1,0 +1,21 @@
+
+// registsurvey
+{
+    "title": "hello",
+    "desc": "world",
+    "surveyItemList": [
+        {"title": "survey item title 1",
+        "desc": "item desc 1",
+        "isRequiredYN": "Y",
+        "itemType": "SHORT_ANS",
+        "itemOptionList": []},
+        {"title": "survey item title 1",
+        "desc": "item desc 1",
+        "isRequiredYN": "Y",
+        "itemType": "SHORT_ANS",
+        "itemOptionList": [{"content": "option1"}, {"content": "option2"}]}
+    ]
+}
+
+
+//

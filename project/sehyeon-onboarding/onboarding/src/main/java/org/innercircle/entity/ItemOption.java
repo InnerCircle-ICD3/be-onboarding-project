@@ -24,7 +24,7 @@ public class ItemOption {
 
 
 
-    public void loadSurveyItem(SurveyItem surveyItem) {
+    public void setSurveyItem(SurveyItem surveyItem) {
         if(this.surveyItem == surveyItem) {
             return;
         }
@@ -37,7 +37,6 @@ public class ItemOption {
         return "ItemOption{" +
                 "seq=" + seq +
                 ", content='" + content + '\'' +
-                ", surveyItem=" + surveyItem.hashCode() +
                 '}';
     }
 }
