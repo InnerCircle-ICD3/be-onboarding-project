@@ -1,4 +1,4 @@
-package com.survey.domain;
+package com.survey.domain.survey;
 
 import jakarta.persistence.*;
 import lombok.AccessLevel;
@@ -61,5 +61,11 @@ public class SurveyOption {
     private void addInputForm(InputForm inputForm) {
         this.inputForm = inputForm;
         inputForm.addSurveyOption(this);
+    }
+
+    public static SurveyOption createTestSurveyOption(Long id, String title, String description, boolean isNecessary, InputForm inputForm) {
+        SurveyOption surveyOption = new SurveyOption(title, description, isNecessary, inputForm);
+        surveyOption.id = id;
+        return surveyOption;
     }
 }

@@ -1,6 +1,6 @@
 package com.survey.test;
 
-import com.survey.domain.*;
+import com.survey.domain.survey.*;
 
 import java.util.List;
 import java.util.Objects;
@@ -92,4 +92,5 @@ public class TestSurveyEntityComparator {
 
         return true;
     }
+
 }

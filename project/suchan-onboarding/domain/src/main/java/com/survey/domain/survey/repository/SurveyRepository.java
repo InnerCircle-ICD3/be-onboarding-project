@@ -1,4 +1,4 @@
-package com.survey.domain.repository;
+package com.survey.domain.survey.repository;
 
 import com.survey.domain.survey.Survey;
 

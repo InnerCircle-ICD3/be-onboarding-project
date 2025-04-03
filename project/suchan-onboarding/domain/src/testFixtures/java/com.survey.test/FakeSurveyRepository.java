@@ -1,7 +1,7 @@
-package com.survey.application.repository;
+package com.survey.test;
 
-import com.survey.domain.repository.SurveyRepository;
 import com.survey.domain.survey.Survey;
+import com.survey.domain.survey.repository.SurveyRepository;
 
 import java.util.Map;
 import java.util.Optional;
@@ -43,11 +43,6 @@ public class FakeSurveyRepository implements SurveyRepository {
         }
 
         return Optional.of(survey);
-    }
-
-    public Survey findById(long id) {
-        callCounter++;
-        return storage.get(id);
     }
 
     public int getCallCounter() {

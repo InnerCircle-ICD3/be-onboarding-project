@@ -1,8 +1,8 @@
 package com.survey.application.dto.dto;
 
-import com.survey.domain.ChoiceInputForm;
-import com.survey.domain.ChoiceType;
-import com.survey.domain.InputOption;
+import com.survey.domain.survey.ChoiceInputForm;
+import com.survey.domain.survey.ChoiceType;
+import com.survey.domain.survey.InputOption;
 import jakarta.validation.constraints.NotEmpty;
 import jakarta.validation.constraints.NotNull;
 import lombok.AllArgsConstructor;

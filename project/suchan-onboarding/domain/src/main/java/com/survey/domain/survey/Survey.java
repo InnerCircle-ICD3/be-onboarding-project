@@ -1,4 +1,4 @@
-package com.survey.domain;
+package com.survey.domain.survey;
 
 import jakarta.persistence.*;
 import lombok.AccessLevel;
@@ -19,6 +19,10 @@ public class Survey {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
+
+    @Version
+    @Column(nullable = false)
+    private Long version;
 
     @Column(nullable = false)
     private String title;
@@ -98,5 +102,12 @@ public class Survey {
     private void registerSurveyOption(SurveyOption newOption, List<SurveyOption> updatedOptions) {
         addSurveyOption(newOption);
         updatedOptions.add(newOption);
+    }
+
+    public static Survey createTestSurvey(Long id, Long version, String title, String description, List<SurveyOption> surveyOptions) {
+        Survey survey = new Survey(id, title, description, surveyOptions);
+        survey.id = id;
+        survey.version = version;
+        return survey;
     }
 }
