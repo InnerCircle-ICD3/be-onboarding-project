@@ -1,5 +1,6 @@
 package com.chosseang.seonghunonboarding.service
 
+import com.chosseang.seonghunonboarding.dto.SurveyCreateRequest
 import com.chosseang.seonghunonboarding.entity.Survey
 import com.chosseang.seonghunonboarding.repository.SurveyRepository
 import org.springframework.stereotype.Service
@@ -9,12 +10,20 @@ import org.springframework.transaction.annotation.Transactional
 class SurveyService(val repository: SurveyRepository) {
 
     @Transactional
-    fun createSurvey(survey: Survey): Survey {
+    fun createSurvey(surveyCreateRequest: SurveyCreateRequest): Survey {
         // 각 아이템의 survey 참조 설정 (양방향 관계 유지)
-        survey.items.forEach { item ->
-            item.survey = survey
+        surveyCreateRequest.items.forEach { item ->
+            item.survey = Survey(
+                name = surveyCreateRequest.name,
+                description = surveyCreateRequest.description,
+                items = surveyCreateRequest.items.toMutableList()
+            )
         }
 
-        return repository.save(survey)
+        return repository.save(Survey(
+            name = surveyCreateRequest.name,
+            description = surveyCreateRequest.description,
+            items = surveyCreateRequest.items.toMutableList()
+        ))
     }
 }

@@ -1,5 +1,6 @@
 package com.chosseang.seonghunonboarding.controller
 
+import com.chosseang.seonghunonboarding.dto.SurveyCreateRequest
 import com.chosseang.seonghunonboarding.entity.Item
 import com.chosseang.seonghunonboarding.entity.Survey
 import com.chosseang.seonghunonboarding.service.SurveyService
@@ -15,14 +16,14 @@ class SurveyController (val surveyService: SurveyService) {
 
     @PostMapping("/create")
     @ResponseBody
-    fun createSurvey(@RequestBody survey: Survey): Survey {
+    fun createSurvey(@RequestBody surveyCreateRequest: SurveyCreateRequest): Survey {
 
-        return Survey(
-            name = survey.name,
-            description = survey.description,
+        return SurveyCreateRequest(
+            name = surveyCreateRequest.name,
+            description = surveyCreateRequest.description,
             items = mutableListOf()
         ).apply {
-            items = survey.items.map {
+            items = surveyCreateRequest.items.map {
                 itemRequest ->
                 Item(
                     id = null,
@@ -30,7 +31,12 @@ class SurveyController (val surveyService: SurveyService) {
                     description = itemRequest.description,
                     type = itemRequest.type,
                     contents = itemRequest.contents,
-                    survey = this
+                    survey = Survey(
+                        id = itemRequest.id,
+                        name = itemRequest.name,
+                        description = itemRequest.description,
+                        items = surveyCreateRequest.items.toMutableList()
+                    )
                 )
             }.toMutableList()
         }.let(surveyService::createSurvey)
