@@ -16,7 +16,7 @@ data class SurveyQuestionCreateRequest(
             description = description!!,
             questionType = QuestionType.valueOf(questionType!!),
             required = required!!,
-            options = options?.map { it.toCommand() }?.toList() ?: emptyList()
+            options = options?.map { it.toCommand() } ?: emptyList(),
         )
     }
 }
