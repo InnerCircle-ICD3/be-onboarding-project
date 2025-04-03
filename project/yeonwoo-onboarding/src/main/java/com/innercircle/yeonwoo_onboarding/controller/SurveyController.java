@@ -1,6 +1,7 @@
 package com.innercircle.yeonwoo_onboarding.controller;
 
 import com.innercircle.yeonwoo_onboarding.domain.Survey;
+import com.innercircle.yeonwoo_onboarding.dto.SurveyCreateDto;
 import com.innercircle.yeonwoo_onboarding.service.SurveyService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
@@ -25,8 +26,14 @@ public class SurveyController {
     }
 
     @PostMapping
-    public ResponseEntity<Survey> createSurvey(@RequestBody Survey survey) {
-        return ResponseEntity.ok(surveyService.createSurvey(survey));
+    public ResponseEntity<Survey> createSurvey(@RequestBody SurveyCreateDto surveyDto) {
+        try {
+            Survey survey = surveyService.createSurvey(surveyDto);
+            return ResponseEntity.ok(survey);
+        } catch (Exception e) {
+            e.printStackTrace(); // 로그 추적
+            throw e;
+        }
     }
 
     @PutMapping("/{id}")
