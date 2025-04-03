@@ -81,4 +81,17 @@ class SurveyDomainService(
             }
         }
     }
+
+    fun getSurvey(surveyId: Long): Survey {
+        return surveyRepository.findById(surveyId)
+            ?: throw IllegalArgumentException("설문을 찾을 수 없습니다.")
+    }
+
+    fun getSurveyItems(surveyId: Long): List<SurveyItem> {
+        return surveyItemRepository.findBySurveyId(surveyId)
+    }
+
+    fun getItemOptions(surveyItemIds: List<Long>): List<ItemOption> {
+        return itemOptionRepository.findBySurveyItemIdIn(surveyItemIds)
+    }
 }
