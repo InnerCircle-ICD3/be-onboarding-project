@@ -30,7 +30,7 @@ class UpdateSurveyServiceTest {
             items = mutableListOf()
         )
 
-        whenever(surveyRepository.findById(1L)).thenReturn(Optional.of(survey))
+        whenever(surveyRepository.findSurveyWithItemsAndAnswers(1L)).thenReturn(survey)
 
         val request = SurveyUpdateRequest(
             title = "New Title",
@@ -62,7 +62,7 @@ class UpdateSurveyServiceTest {
             items = mutableListOf(oldItem)
         )
 
-        whenever(surveyRepository.findById(1L)).thenReturn(Optional.of(survey))
+        whenever(surveyRepository.findSurveyWithItemsAndAnswers(1L)).thenReturn(survey)
 
         val newRequestItem = TextItemUpdateRequest(
             id = 1L,
@@ -97,7 +97,7 @@ class UpdateSurveyServiceTest {
             items = mutableListOf()
         )
 
-        whenever(surveyRepository.findById(1L)).thenReturn(Optional.of(survey))
+        whenever(surveyRepository.findSurveyWithItemsAndAnswers(1L)).thenReturn(survey)
 
         val newRequestItem = ChoiceItemUpdateRequest(
             id = null,
@@ -148,7 +148,7 @@ class UpdateSurveyServiceTest {
             items = mutableListOf(keptItem, removedItem)
         )
 
-        whenever(surveyRepository.findById(1L)).thenReturn(Optional.of(survey))
+        whenever(surveyRepository.findSurveyWithItemsAndAnswers(1L)).thenReturn(survey)
 
         val updateRequest = TextItemUpdateRequest(
             id = 1L,
@@ -188,7 +188,7 @@ class UpdateSurveyServiceTest {
             items = mutableListOf(originalItem)
         )
 
-        whenever(surveyRepository.findById(1L)).thenReturn(Optional.of(survey))
+        whenever(surveyRepository.findSurveyWithItemsAndAnswers(1L)).thenReturn(survey)
 
         val invalidUpdate = TextItemUpdateRequest(
             id = 1L,

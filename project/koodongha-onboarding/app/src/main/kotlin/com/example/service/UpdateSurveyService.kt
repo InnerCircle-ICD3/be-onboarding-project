@@ -2,20 +2,23 @@ package com.example.service
 
 import com.example.dto.*
 import com.example.entity.*
-import com.example.repository.SurveyAnswerRepository
-import com.example.repository.SurveyRepository
 import com.example.exception.InvalidSurveyRequestException
 import com.example.exception.SurveyNotFoundException
+import com.example.repository.SurveyAnswerRepository
+import com.example.repository.SurveyRepository
 import org.springframework.stereotype.Service
+import org.springframework.transaction.annotation.Transactional
 
 @Service
 class UpdateSurveyService(
     private val surveyRepository: SurveyRepository,
     private val surveyAnswerRepository: SurveyAnswerRepository
 ) {
+
+    @Transactional
     fun updateSurvey(surveyId: Long, request: SurveyUpdateRequest) {
-        val survey = surveyRepository.findById(surveyId)
-            .orElseThrow { SurveyNotFoundException() }
+        val survey = surveyRepository.findSurveyWithItemsAndAnswers(surveyId)
+        ?: throw SurveyNotFoundException()
 
         // 1. 설문 제목 & 설명 수정
         survey.title = request.title
@@ -24,10 +27,9 @@ class UpdateSurveyService(
         // 2. 기존 항목 매핑
         val existingItems = survey.items.associateBy { it.id }
 
-        // 3. 수정 요청된 항목들 순회
-        val updatedItems = mutableListOf<SurveyItemBase>()
-        request.items.forEach { itemRequest ->
-            val item = when (itemRequest) {
+        // 3. 요청된 항목 순회하며 갱신 or 생성
+        val updatedItems = request.items.map { itemRequest ->
+            when (itemRequest) {
                 is TextItemUpdateRequest -> {
                     if (itemRequest.id == null) {
                         TextItem(
@@ -39,7 +41,8 @@ class UpdateSurveyService(
                         )
                     } else {
                         val existing = existingItems[itemRequest.id]
-                        if (existing !is TextItem) throw InvalidSurveyRequestException("Invalid item type.")
+                        if (existing !is TextItem)
+                            throw InvalidSurveyRequestException("Invalid item type.")
                         existing.apply {
                             name = itemRequest.name
                             description = itemRequest.description
@@ -64,7 +67,8 @@ class UpdateSurveyService(
                         newChoiceItem
                     } else {
                         val existing = existingItems[itemRequest.id]
-                        if (existing !is ChoiceItem) throw InvalidSurveyRequestException("Invalid item type.")
+                        if (existing !is ChoiceItem)
+                            throw InvalidSurveyRequestException("Invalid item type.")
                         existing.apply {
                             name = itemRequest.name
                             description = itemRequest.description
@@ -72,20 +76,19 @@ class UpdateSurveyService(
                             isMultiple = itemRequest.isMultiple
                             options.clear()
                             itemRequest.options.forEach {
-                                options.add(SelectionOption(value = it, item = existing))
+                                options.add(SelectionOption(value = it, item = this))
                             }
                         }
                     }
                 }
             }
-            updatedItems.add(item)
         }
 
-        // 4. 항목 전체 대체
+        // 4. 항목 전체 교체 (orphanRemoval = true 로 삭제 반영됨)
         survey.items.clear()
         survey.items.addAll(updatedItems)
 
-        // 5. 저장
+        // 5. 저장 (JPA dirty checking)
         surveyRepository.save(survey)
     }
 }
