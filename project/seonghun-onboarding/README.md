@@ -28,9 +28,9 @@
 <summary>설문조사 생성 api</summary>
 <div markdown="1">
 
-| Http Method    | Path |
-|---------|------------|
-|  POST      | /survey/create       |
+| Http Method    | Path            |
+|---------|-----------------|
+|  POST      | /surveys/create |
 
 - Request
 
