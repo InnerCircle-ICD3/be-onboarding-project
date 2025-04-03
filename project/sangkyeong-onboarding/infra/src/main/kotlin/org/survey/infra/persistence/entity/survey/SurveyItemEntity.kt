@@ -7,7 +7,7 @@ import jakarta.persistence.*
 class SurveyItemEntity(
     surveyId: Long,
     title: String,
-    description: String,
+    description: String?,
     inputType: String,
     isRequired: Boolean,
 ) {
@@ -21,7 +21,7 @@ class SurveyItemEntity(
     var title: String = title
         protected set
 
-    var description: String = description
+    var description: String? = description
         protected set
 
     var inputType: String = inputType
