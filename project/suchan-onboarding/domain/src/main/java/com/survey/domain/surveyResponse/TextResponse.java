@@ -3,10 +3,12 @@ package com.survey.domain.surveyResponse;
 import com.survey.domain.survey.TextType;
 import jakarta.persistence.*;
 import lombok.AccessLevel;
+import lombok.Getter;
 import lombok.NoArgsConstructor;
 
 @Entity
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
+@Getter
 public class TextResponse {
     private static final String TEXT_ANSWER_EMPTY_EXCEPTION_MESSAGE = "텍스트 응답 내용이 비어있습니다.";
 
