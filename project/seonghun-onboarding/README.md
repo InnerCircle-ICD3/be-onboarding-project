@@ -77,6 +77,47 @@ item : {
 </div>
 </details>
 
+<details>
+<summary>설문조사 조회 api</summary>
+<div markdown="1">
+
+| Http Method | Path           |
+|-------------|----------------|
+| GET         | /surveys       |
+
+- Request
+
+없음
+
+- Response
+
+```
+{
+    "status": 200,
+    "result": [
+        {
+            "id": Long,
+            "name": String,
+            "description": String,
+            "items": [
+                {
+                    "id": Long,
+                    name: String,
+                    description : String,
+                    type: ItemType,
+                    contents: List<String>
+                }
+            ]
+        }...
+    ]
+}
+
+```
+
+
+</div>
+</details>
+
 ### 설문조사 응답
 
 
