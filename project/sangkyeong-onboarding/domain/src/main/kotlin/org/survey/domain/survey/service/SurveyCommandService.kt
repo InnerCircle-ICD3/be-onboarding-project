@@ -10,7 +10,7 @@ import org.survey.domain.survey.repository.SurveyItemRepository
 import org.survey.domain.survey.repository.SurveyRepository
 
 @Service
-class SurveyDomainService(
+class SurveyCommandService(
     private val surveyRepository: SurveyRepository,
     private val surveyItemRepository: SurveyItemRepository,
     private val itemOptionRepository: ItemOptionRepository,
@@ -80,18 +80,5 @@ class SurveyDomainService(
                 throw IllegalArgumentException("선택형 질문에는 최소 1개 이상의 선택지가 필요하다.")
             }
         }
-    }
-
-    fun getSurvey(surveyId: Long): Survey {
-        return surveyRepository.findById(surveyId)
-            ?: throw IllegalArgumentException("설문을 찾을 수 없습니다.")
-    }
-
-    fun getSurveyItems(surveyId: Long): List<SurveyItem> {
-        return surveyItemRepository.findBySurveyId(surveyId)
-    }
-
-    fun getItemOptions(surveyItemIds: List<Long>): List<ItemOption> {
-        return itemOptionRepository.findBySurveyItemIdIn(surveyItemIds)
     }
 }

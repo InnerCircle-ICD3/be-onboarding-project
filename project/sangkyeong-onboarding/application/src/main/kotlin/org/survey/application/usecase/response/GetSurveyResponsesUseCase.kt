@@ -7,12 +7,12 @@ import org.survey.application.dto.response.TextAnswerResponse
 import org.survey.domain.response.model.ChoiceAnswer
 import org.survey.domain.response.model.TextAnswer
 import org.survey.domain.response.service.ResponseDomainService
-import org.survey.domain.survey.service.SurveyDomainService
+import org.survey.domain.survey.service.SurveyCommandService
 
 @Service
 class GetSurveyResponsesUseCase(
     private val responseDomainService: ResponseDomainService,
-    private val surveyDomainService: SurveyDomainService,
+    private val surveyCommandService: SurveyCommandService,
 ) {
     fun execute(surveyId: Long): List<SurveyAnswerResponse> {
         val responses = responseDomainService.getSurveyResponses(surveyId)

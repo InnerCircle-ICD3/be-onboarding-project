@@ -13,13 +13,13 @@ import org.survey.domain.survey.model.SurveyItem
 import org.survey.domain.survey.repository.ItemOptionRepository
 import org.survey.domain.survey.repository.SurveyItemRepository
 import org.survey.domain.survey.repository.SurveyRepository
-import org.survey.domain.survey.service.SurveyDomainService
+import org.survey.domain.survey.service.SurveyCommandService
 
 class CreateSurveyDomainServiceTest : BehaviorSpec({
     val surveyRepository = mockk<SurveyRepository>()
     val surveyItemRepository = mockk<SurveyItemRepository>()
     val itemOptionRepository = mockk<ItemOptionRepository>()
-    val surveyDomainService = SurveyDomainService(surveyRepository, surveyItemRepository, itemOptionRepository)
+    val surveyCommandService = SurveyCommandService(surveyRepository, surveyItemRepository, itemOptionRepository)
 
     given("설문조사를 생성할 때") {
         val title = "설문조사 제목테스트1"
@@ -31,7 +31,7 @@ class CreateSurveyDomainServiceTest : BehaviorSpec({
             then("설문조사 생성에 실패한다.") {
                 val exception =
                     shouldThrow<IllegalArgumentException> {
-                        surveyDomainService.createSurvey(title, description, emptyItems)
+                        surveyCommandService.createSurvey(title, description, emptyItems)
                     }
                 exception.message shouldBe "설문 항목이 최소 1개 이상 필요하다."
             }
@@ -52,7 +52,7 @@ class CreateSurveyDomainServiceTest : BehaviorSpec({
             then("설문조사 생성에 실패한다.") {
                 val exception =
                     shouldThrow<IllegalArgumentException> {
-                        surveyDomainService.createSurvey(title, description, tooManyItems)
+                        surveyCommandService.createSurvey(title, description, tooManyItems)
                     }
                 exception.message shouldBe "설문 항목은 최대 10개까지 가능하다."
             }
@@ -85,7 +85,7 @@ class CreateSurveyDomainServiceTest : BehaviorSpec({
             every { itemOptionRepository.saveAll(any()) } just runs
 
             then("성공적으로 설문조사가 생성이 된다.") {
-                surveyDomainService.createSurvey(title, description, items)
+                surveyCommandService.createSurvey(title, description, items)
                 verify { surveyRepository.save(any()) }
                 verify { surveyItemRepository.saveAll(any()) }
             }
@@ -118,7 +118,7 @@ class CreateSurveyDomainServiceTest : BehaviorSpec({
             every { itemOptionRepository.saveAll(any()) } just runs
 
             then("성공적으로 설문조사가 생성이 된다.") {
-                surveyDomainService.createSurvey(title, description, items)
+                surveyCommandService.createSurvey(title, description, items)
                 verify { surveyRepository.save(any()) }
                 verify { surveyItemRepository.saveAll(any()) }
                 verify { itemOptionRepository.saveAll(any()) }
@@ -140,7 +140,7 @@ class CreateSurveyDomainServiceTest : BehaviorSpec({
             then("설문조사 생성에 실패한다.") {
                 val exception =
                     shouldThrow<IllegalArgumentException> {
-                        surveyDomainService.createSurvey(title, description, invalidShortTextItem)
+                        surveyCommandService.createSurvey(title, description, invalidShortTextItem)
                     }
                 exception.message shouldBe "선택형 질문이 아니면 선택지가 없어야 한다."
             }
@@ -161,7 +161,7 @@ class CreateSurveyDomainServiceTest : BehaviorSpec({
             then("설문조사 생성에 실패한다.") {
                 val exception =
                     shouldThrow<IllegalArgumentException> {
-                        surveyDomainService.createSurvey(title, description, invalidChoiceItem)
+                        surveyCommandService.createSurvey(title, description, invalidChoiceItem)
                     }
                 exception.message shouldBe "선택형 질문에는 최소 1개 이상의 선택지가 필요하다."
             }

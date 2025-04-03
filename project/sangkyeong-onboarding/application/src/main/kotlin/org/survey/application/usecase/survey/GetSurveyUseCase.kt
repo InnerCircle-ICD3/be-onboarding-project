@@ -4,18 +4,18 @@ import org.springframework.stereotype.Service
 import org.survey.application.dto.response.ItemOptionResponse
 import org.survey.application.dto.response.SurveyItemResponse
 import org.survey.application.dto.response.SurveyResponse
-import org.survey.domain.survey.service.SurveyDomainService
+import org.survey.domain.survey.service.SurveyQueryService
 
 @Service
 class GetSurveyUseCase(
-    private val surveyDomainService: SurveyDomainService,
+    private val surveyQueryService: SurveyQueryService,
 ) {
     fun execute(surveyId: Long): SurveyResponse {
-        val survey = surveyDomainService.getSurvey(surveyId)
+        val survey = surveyQueryService.getSurvey(surveyId)
 
-        val surveyItems = surveyDomainService.getSurveyItems(surveyId)
+        val surveyItems = surveyQueryService.getSurveyItems(surveyId)
 
-        val itemOptions = surveyDomainService.getItemOptions(surveyItems.map { it.id })
+        val itemOptions = surveyQueryService.getItemOptions(surveyItems.map { it.id })
 
         return SurveyResponse(
             id = survey.id,
