@@ -1,13 +1,11 @@
 package com.innercircle.survey.entity
 
 import com.innercircle.common.BaseEntity
-import com.innercircle.common.SoftDeleteFilter
 import com.innercircle.domain.survey.entity.SurveyContext
 import com.innercircle.domain.survey.entity.SurveyQuestionContext
 import jakarta.persistence.*
 
 @Entity
-@SoftDeleteFilter
 class SurveyAnswer private constructor(
 
     @ManyToOne(fetch = FetchType.LAZY, optional = false)

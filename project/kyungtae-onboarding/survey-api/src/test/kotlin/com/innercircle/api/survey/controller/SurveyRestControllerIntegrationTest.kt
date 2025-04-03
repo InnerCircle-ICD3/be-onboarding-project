@@ -1,22 +1,14 @@
 package com.innercircle.api.survey.controller
 
 import com.innercircle.api.common.IntegrationTest
-import com.innercircle.api.common.jsonMapper
 import com.innercircle.api.survey.controller.request.SurveyCreateRequest
-import com.innercircle.api.survey.controller.request.SurveyQuestionCreateRequest
-import com.innercircle.api.survey.controller.request.SurveyQuestionOptionCreateRequest
+import com.innercircle.api.survey.controller.request.SurveyUpdateRequest
 import com.innercircle.api.survey.controller.response.SurveyResponse
 import com.innercircle.survey.entity.QuestionType
 import com.innercircle.survey.entity.SurveyStatus
-import io.restassured.RestAssured
-import io.restassured.http.ContentType
-import io.restassured.response.ValidatableResponse
-import org.apache.http.HttpHeaders.LOCATION
-import org.apache.http.HttpStatus
 import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.Nested
 import org.junit.jupiter.api.Test
-import java.time.LocalDateTime
 import java.time.temporal.ChronoUnit
 
 @IntegrationTest
@@ -25,32 +17,70 @@ class SurveyRestControllerIntegrationTest {
     inner class `설문을_수정한다` {
 
         @Test
-        fun `단일 선택형 설문을 수정한다`() {
+        fun `단일 선택형 설문을 단답형 설문으로 수정한다`() {
             // given
             val surveyCreateRequest = 단일_선택형_설문_생성_요청()
             val surveyId = getIdFromLocation(설문_생성(surveyCreateRequest))
             val surveyResponse = 설문_조회(surveyId)
 
             // when
-            val surveyUpdateRequest = 다중_선택형_설문_수정_요청(surveyResponse)
-            설문_수정(surveyUpdateRequest)
+            val surveyUpdateRequest = 단답형_설문_수정_요청(surveyResponse)
+            설문_수정(surveyId, surveyUpdateRequest)
 
             // then
             val modifiedSurveyResponse = 설문_조회(surveyId)
-            설문_반환값_검사(modifiedSurveyResponse, surveyId, surveyCreateRequest)
+            설문_반환값_검사(modifiedSurveyResponse, surveyId, surveyUpdateRequest)
+        }
+
+        @Test
+        fun `장문형 설문을 단일 선택형 설문으로 수정한다`() {
+            // given
+            val surveyCreateRequest = 장문형_설문_생성_요청()
+            val surveyId = getIdFromLocation(설문_생성(surveyCreateRequest))
+            val surveyResponse = 설문_조회(surveyId)
+
+            // when
+            val surveyUpdateRequest = 단일_선택형_설문_수정_요청(surveyResponse)
+            설문_수정(surveyId, surveyUpdateRequest)
+
+            // then
+            val modifiedSurveyResponse = 설문_조회(surveyId)
+            설문_반환값_검사(modifiedSurveyResponse, surveyId, surveyUpdateRequest)
+        }
+
+        @Test
+        fun `다중 선택형 설문을 장문형 설문으로 수정한다`() {
+            // given
+            val surveyCreateRequest = 다중_선택형_설문_생성_요청()
+            val surveyId = getIdFromLocation(설문_생성(surveyCreateRequest))
+            val surveyResponse = 설문_조회(surveyId)
+
+            // when
+            val surveyUpdateRequest = 장문형_설문_수정_요청(surveyResponse)
+            설문_수정(surveyId, surveyUpdateRequest)
+
+            // then
+            val modifiedSurveyResponse = 설문_조회(surveyId)
+            설문_반환값_검사(modifiedSurveyResponse, surveyId, surveyUpdateRequest)
+        }
+
+        @Test
+        fun `단답형 설문을 다중 선택형 설문으로 수정한다`() {
+            // given
+            val surveyCreateRequest = 단답형_설문_생성_요청()
+            val surveyId = getIdFromLocation(설문_생성(surveyCreateRequest))
+            val surveyResponse = 설문_조회(surveyId)
+
+            // when
+            val surveyUpdateRequest = 다중_선택형_설문_수정_요청(surveyResponse)
+            설문_수정(surveyId, surveyUpdateRequest)
+
+            // then
+            val modifiedSurveyResponse = 설문_조회(surveyId)
+            설문_반환값_검사(modifiedSurveyResponse, surveyId, surveyUpdateRequest)
         }
 
     }
-
-    private fun 설문_수정(id: Long, surveyUpdateRequest: SurveyUpdateRequest): ValidatableResponse? =
-        RestAssured.given()
-            .contentType(ContentType.JSON)
-            .accept(ContentType.JSON)
-            .body(jsonMapper().writeValueAsString(surveyUpdateRequest))
-            .put("/api/surveys/$id")
-            .then()
-            .log().body()
-            .statusCode(HttpStatus.SC_NO_CONTENT)
 
 
     @Nested
@@ -127,7 +157,7 @@ class SurveyRestControllerIntegrationTest {
         questionRequests.zip(questionResponses).forEach { (expected, actual) ->
             assertThat(actual.name).isEqualTo(expected.name)
             assertThat(actual.description).isEqualTo(expected.description)
-            assertThat(actual.inputType).isEqualTo(expected.questionType)
+            assertThat(actual.questionType).isEqualTo(expected.questionType)
             assertThat(actual.required).isEqualTo(expected.required)
             assertThat(actual.createdAt).isNotNull()
             assertThat(actual.updatedAt).isNotNull()
@@ -141,42 +171,99 @@ class SurveyRestControllerIntegrationTest {
         }
     }
 
-        private fun 설문_반환값_검사(
-            surveyResponse: SurveyResponse,
-            surveyId: String,
-            surveyCreateRequest: SurveyCreateRequest
-        ) {
-            assertThat(surveyResponse.externalId.toString()).isEqualTo(surveyId)
-            assertThat(surveyResponse.surveyStatus).isEqualTo(SurveyStatus.READY)
-            assertThat(surveyResponse.name).isEqualTo(surveyCreateRequest.name)
-            assertThat(surveyResponse.description).isEqualTo(surveyCreateRequest.description)
-            assertThat(surveyResponse.startAt?.truncatedTo(ChronoUnit.SECONDS))
-                .isEqualTo(surveyCreateRequest.startAt?.truncatedTo(ChronoUnit.SECONDS))
-            assertThat(surveyResponse.endAt?.truncatedTo(ChronoUnit.SECONDS))
-                .isEqualTo(surveyCreateRequest.endAt?.truncatedTo(ChronoUnit.SECONDS))
-            assertThat(surveyResponse.participantCapacity).isEqualTo(surveyCreateRequest.participantCapacity)
-            assertThat(surveyResponse.participantCount).isZero()
-            assertThat(surveyResponse.createdAt).isNotNull()
-            assertThat(surveyResponse.updatedAt).isNotNull()
+
+    private fun 설문_반환값_검사(
+        surveyResponse: SurveyResponse,
+        surveyId: String,
+        surveyCreateRequest: SurveyCreateRequest
+    ) {
+        assertThat(surveyResponse.externalId.toString()).isEqualTo(surveyId)
+        assertThat(surveyResponse.surveyStatus).isEqualTo(SurveyStatus.READY)
+        assertThat(surveyResponse.name).isEqualTo(surveyCreateRequest.name)
+        assertThat(surveyResponse.description).isEqualTo(surveyCreateRequest.description)
+        assertThat(surveyResponse.startAt?.truncatedTo(ChronoUnit.SECONDS))
+            .isEqualTo(surveyCreateRequest.startAt?.truncatedTo(ChronoUnit.SECONDS))
+        assertThat(surveyResponse.endAt?.truncatedTo(ChronoUnit.SECONDS))
+            .isEqualTo(surveyCreateRequest.endAt?.truncatedTo(ChronoUnit.SECONDS))
+        assertThat(surveyResponse.participantCapacity).isEqualTo(surveyCreateRequest.participantCapacity)
+        assertThat(surveyResponse.participantCount).isZero()
+        assertThat(surveyResponse.createdAt).isNotNull()
+        assertThat(surveyResponse.updatedAt).isNotNull()
+
+        if (surveyResponse.questions?.isNotEmpty() == true) {
+            assertThat(surveyResponse.questions).hasSize(surveyCreateRequest.questions?.size!!)
+            surveyResponse.questions?.forEach { question ->
+                val index = surveyResponse.questions!!.indexOf(question)
+                val questionUpdateRequest = surveyCreateRequest.questions!![index]
+                assertThat(question.name).isEqualTo(questionUpdateRequest.name)
+                assertThat(question.description).isEqualTo(questionUpdateRequest.description)
+                assertThat(question.questionType).isEqualTo(questionUpdateRequest.questionType)
+                assertThat(question.required).isEqualTo(questionUpdateRequest.required)
+                assertThat(question.createdAt).isNotNull()
+                assertThat(question.updatedAt).isNotNull()
+
+                if (question.questionType == QuestionType.MULTI_CHOICE.name || question.questionType == QuestionType.SINGLE_CHOICE.name) {
+                    assertThat(question.options).hasSize(questionUpdateRequest.options?.size ?: 0)
+                    question.options?.forEach { option ->
+                        val optionIndex = question.options!!.indexOf(option)
+                        assertThat(option.content).isEqualTo(questionUpdateRequest.options?.get(optionIndex)?.content ?: "")
+                        assertThat(option.createdAt).isNotNull()
+                        assertThat(option.updatedAt).isNotNull()
+                    }
+                } else {
+                    assertThat(question.options).isEmpty()
+                }
+            }
+        }
+    }
+
+    private fun 설문_반환값_검사(
+        surveyResponse: SurveyResponse,
+        surveyId: String,
+        surveyUpdateRequest: SurveyUpdateRequest
+    ) {
+        assertThat(surveyResponse.externalId.toString()).isEqualTo(surveyId)
+        assertThat(surveyResponse.surveyStatus).isEqualTo(SurveyStatus.READY)
+        assertThat(surveyResponse.name).isEqualTo(surveyUpdateRequest.name)
+        assertThat(surveyResponse.description).isEqualTo(surveyUpdateRequest.description)
+        assertThat(surveyResponse.startAt?.truncatedTo(ChronoUnit.SECONDS))
+            .isEqualTo(surveyUpdateRequest.startAt?.truncatedTo(ChronoUnit.SECONDS))
+        assertThat(surveyResponse.endAt?.truncatedTo(ChronoUnit.SECONDS))
+            .isEqualTo(surveyUpdateRequest.endAt?.truncatedTo(ChronoUnit.SECONDS))
+        assertThat(surveyResponse.participantCapacity).isEqualTo(surveyUpdateRequest.participantCapacity)
+        assertThat(surveyResponse.createdAt).isNotNull()
+        assertThat(surveyResponse.updatedAt).isNotNull()
+
+        if (surveyResponse.questions?.isNotEmpty() == true) {
+            assertThat(surveyResponse.questions).hasSize(surveyUpdateRequest.questions.size)
+            surveyResponse.questions?.forEach { question ->
+                val index = surveyResponse.questions!!.indexOf(question)
+                val questionUpdateRequest = surveyUpdateRequest.questions[index]
+                assertThat(question.name).isEqualTo(questionUpdateRequest.name)
+                assertThat(question.description).isEqualTo(questionUpdateRequest.description)
+                assertThat(question.questionType).isEqualTo(questionUpdateRequest.questionType)
+                assertThat(question.required).isEqualTo(questionUpdateRequest.required)
+                assertThat(question.createdAt).isNotNull()
+                assertThat(question.updatedAt).isNotNull()
+
+                if (question.questionType == QuestionType.MULTI_CHOICE.name || question.questionType == QuestionType.SINGLE_CHOICE.name) {
+                    assertThat(question.options).hasSize(questionUpdateRequest.options?.size ?: 0)
+                    question.options?.forEach { option ->
+                        val optionIndex = question.options!!.indexOf(option)
+                        assertThat(option.content).isEqualTo(questionUpdateRequest.options?.get(optionIndex)?.content ?: "")
+                        assertThat(option.createdAt).isNotNull()
+                        assertThat(option.updatedAt).isNotNull()
+                    }
+                } else {
+                    assertThat(question.options).isEmpty()
+                }
+            }
         }
 
-    private fun 설문_조회(surveyId: String): SurveyResponse =
-        RestAssured.given()
-            .accept(ContentType.JSON)
-            .get("/api/surveys/$surveyId")
-            .then()
-            .log().body()
-            .statusCode(HttpStatus.SC_OK)
-            .extract()
-            .jsonPath()
-            .getObject("data", SurveyResponse::class.java)
-
-    private fun getIdFromLocation(locationHeaderValue: String?) = locationHeaderValue!!.substringAfterLast("/")
+    }
 
     @Nested
     inner class `설문을 생성한다` {
-
-        private val LOCATION_HEADER_VALUE_REGEX = "/api/surveys/[a-f0-9]{8}-([a-f0-9]{4}-){3}[a-f0-9]{12}"
 
         @Test
         fun `단일 선택형 설문을 생성한다`() {
@@ -228,210 +315,4 @@ class SurveyRestControllerIntegrationTest {
 
     }
 
-    private fun 설문_생성(surveyCreateRequest: SurveyCreateRequest): String? =
-        RestAssured.given()
-            .contentType(ContentType.JSON)
-            .accept(ContentType.JSON)
-            .body(jsonMapper().writeValueAsString(surveyCreateRequest))
-            .post("/api/surveys")
-            .then()
-            .statusCode(HttpStatus.SC_CREATED)
-            .extract()
-            .headers()
-            .get(LOCATION)
-            .value
-
-
-    private fun 장문형_설문_생성_요청() = SurveyCreateRequest(
-        name = "설문 이름",
-        description = "설문 설명",
-        startAt = LocalDateTime.now(),
-        endAt = LocalDateTime.now().plusWeeks(1),
-        participantCapacity = 10,
-        questions = listOf(
-            SurveyQuestionCreateRequest(
-                name = "백엔드 개발자를 선택한 이유는?",
-                questionType = QuestionType.LONG_ANSWER.name,
-                description = "프론트엔드를 하지 않은 이유를 중점으로 논리적으로 서술하시오.",
-                required = true
-            )
-        )
-    )
-
-    private fun 단답형_설문_생성_요청() = SurveyCreateRequest(
-        name = "설문 이름",
-        description = "설문 설명",
-        startAt = LocalDateTime.now(),
-        endAt = LocalDateTime.now().plusWeeks(1),
-        participantCapacity = 10,
-        questions = listOf(
-            SurveyQuestionCreateRequest(
-                name = "첫사랑 이름은?",
-                questionType = QuestionType.SHORT_ANSWER.name,
-                description = "없으면 어머니 성함을 적으세요",
-                required = true
-            )
-        )
-    )
-
-    private fun 다중_선택형_설문_생성_요청() = SurveyCreateRequest(
-        name = "설문 이름",
-        description = "설문 설명",
-        startAt = LocalDateTime.now(),
-        endAt = LocalDateTime.now().plusWeeks(1),
-        participantCapacity = 10,
-        questions = listOf(
-            SurveyQuestionCreateRequest(
-                name = "다음중 월클 라인에서 나가야할 대상은?",
-                questionType = QuestionType.MULTI_CHOICE.name,
-                description = "월클 라인에서 나가야할 대상을 선택해주세요.",
-                options = listOf(
-                    SurveyQuestionOptionCreateRequest(content = "BTS"),
-                    SurveyQuestionOptionCreateRequest(content = "봉준호"),
-                    SurveyQuestionOptionCreateRequest(content = "손흥민"),
-                    SurveyQuestionOptionCreateRequest(content = "제이팍"),
-                    SurveyQuestionOptionCreateRequest(content = "레츠고")
-                ),
-                required = true
-            )
-        )
-    )
-
-    private fun 단일_선택형_설문_생성_요청() = SurveyCreateRequest(
-        name = "설문 이름",
-        description = "설문 설명",
-        startAt = LocalDateTime.now(),
-        endAt = LocalDateTime.now().plusWeeks(1),
-        participantCapacity = 10,
-        questions = listOf(
-            SurveyQuestionCreateRequest(
-                name = "다음중 월클 라인에서 나가야할 대상은?",
-                questionType = QuestionType.SINGLE_CHOICE.name,
-                description = "월클 라인에서 나가야할 대상을 선택해주세요.",
-                options = listOf(
-                    SurveyQuestionOptionCreateRequest(content = "BTS"),
-                    SurveyQuestionOptionCreateRequest(content = "봉준호"),
-                    SurveyQuestionOptionCreateRequest(content = "손흥민"),
-                    SurveyQuestionOptionCreateRequest(content = "제이팍"),
-                    SurveyQuestionOptionCreateRequest(content = "레츠고")
-                ),
-                required = true
-            )
-        )
-    )
-
-    private fun 단일_선택형_설문_수정_요청(surveyResponse: SurveyResponse) = SurveyUpdateRequest(
-        surveyExternalId = surveyResponse.externalId,
-        name = "수정 된 설문 이름",
-        description = "수정 된 설문 설명",
-        startAt = LocalDateTime.now(),
-        endAt = LocalDateTime.now().plusWeeks(1),
-        participantCapacity = 10,
-        questions = listOf(
-            SurveyQuestionUpdateRequest(
-                id = surveyResponse.questions?.get(0)?.id,
-                name = "수정 된 다음중 월클 라인에서 나가야할 대상은?",
-                questionType = QuestionType.SINGLE_CHOICE.name,
-                description = "수정 된 월클 라인에서 나가야할 대상을 선택해주세요.",
-                options = listOf(
-                    SurveyQuestionOptionUpdateRequest(
-                        id = surveyResponse.questions?.get(0)?.options?.get(0)?.id,
-                        content = "수정 된 BTS"
-                    ),
-                    SurveyQuestionOptionUpdateRequest(
-                        id = surveyResponse.questions?.get(0)?.options?.get(1)?.id,
-                        content = "수정 된 봉준호"
-                    ),
-                    SurveyQuestionOptionUpdateRequest(
-                        id = surveyResponse.questions?.get(0)?.options?.get(2)?.id,
-                        content = "수정 된 손흥민"
-                    ),
-                    SurveyQuestionOptionUpdateRequest(
-                        id = surveyResponse.questions?.get(0)?.options?.get(3)?.id,
-                        content = "수정 된 제이팍"
-                    ),
-                    SurveyQuestionOptionUpdateRequest(
-                        id = surveyResponse.questions?.get(0)?.options?.get(4)?.id,
-                        content = "수정 된 레츠고"
-                    )
-                ),
-                required = true
-            )
-        )
-    )
-
-
-    private fun 장문형_설문_생성_요청(surveyResponse: SurveyResponse) = SurveyUpdateRequest(
-        surveyExternalId = surveyResponse.externalId,
-        name = "설문 이름",
-        description = "설문 설명",
-        startAt = LocalDateTime.now(),
-        endAt = LocalDateTime.now().plusWeeks(1),
-        participantCapacity = 10,
-        questions = listOf(
-            SurveyQuestionUpdateRequest(
-                name = "백엔드 개발자를 선택한 이유는?",
-                questionType = QuestionType.LONG_ANSWER.name,
-                description = "프론트엔드를 하지 않은 이유를 중점으로 논리적으로 서술하시오.",
-                required = true
-            )
-        )
-    )
-
-    private fun 단답형_설문_생성_요청(surveyResponse: SurveyResponse) = SurveyUpdateRequest(
-        surveyExternalId = surveyResponse.externalId,
-        name = "설문 이름",
-        description = "설문 설명",
-        startAt = LocalDateTime.now(),
-        endAt = LocalDateTime.now().plusWeeks(1),
-        participantCapacity = 10,
-        questions = listOf(
-            SurveyQuestionUpdateRequest(
-                name = "첫사랑 이름은?",
-                questionType = QuestionType.SHORT_ANSWER.name,
-                description = "없으면 어머니 성함을 적으세요",
-                required = true
-            )
-        )
-    )
-
-    private fun 다중_선택형_설문_수정_요청(surveyResponse: SurveyResponse) = SurveyUpdateRequest(
-        surveyExternalId = surveyResponse.externalId,
-        name = "설문 이름",
-        description = "설문 설명",
-        startAt = LocalDateTime.now(),
-        endAt = LocalDateTime.now().plusWeeks(1),
-        participantCapacity = 10,
-        questions = listOf(
-            SurveyQuestionUpdateRequest(
-                id = surveyResponse.questions?.get(0)?.id,
-                name = "다음중 월클 라인에서 나가야할 대상은?",
-                questionType = QuestionType.MULTI_CHOICE.name,
-                description = "월클 라인에서 나가야할 대상을 선택해주세요.",
-                options = listOf(
-                    SurveyQuestionOptionUpdateRequest(
-                        id = surveyResponse.questions?.get(0)?.options?.get(0)?.id,
-                        content = "수정 된 BTS"
-                    ),
-                    SurveyQuestionOptionUpdateRequest(
-                        id = surveyResponse.questions?.get(0)?.options?.get(1)?.id,
-                        content = "수정 된 봉준호"
-                    ),
-                    SurveyQuestionOptionUpdateRequest(
-                        id = surveyResponse.questions?.get(0)?.options?.get(2)?.id,
-                        content = "수정 된 손흥민"
-                    ),
-                    SurveyQuestionOptionUpdateRequest(
-                        id = surveyResponse.questions?.get(0)?.options?.get(3)?.id,
-                        content = "수정 된 제이팍"
-                    ),
-                    SurveyQuestionOptionUpdateRequest(
-                        id = surveyResponse.questions?.get(0)?.options?.get(4)?.id,
-                        content = "수정 된 레츠고"
-                    )
-                ),
-                required = true
-            )
-        )
-    )
 }

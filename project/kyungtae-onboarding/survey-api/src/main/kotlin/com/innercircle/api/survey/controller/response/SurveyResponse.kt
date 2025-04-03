@@ -1,5 +1,6 @@
 package com.innercircle.api.survey.controller.response
 
+import com.innercircle.survey.entity.QuestionType
 import com.innercircle.survey.entity.Survey
 import com.innercircle.survey.entity.SurveyStatus
 import java.time.LocalDateTime

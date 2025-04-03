@@ -1,12 +1,10 @@
 package com.innercircle.survey.entity
 
 import com.innercircle.common.BaseEntity
-import com.innercircle.common.SoftDeleteFilter
 import com.innercircle.domain.survey.command.dto.SurveyQuestionOptionCreateCommand
 import jakarta.persistence.*
 
 @Entity
-@SoftDeleteFilter
 class SurveyQuestionOption private constructor(
 
     @ManyToOne(fetch = FetchType.LAZY, optional = false)
@@ -14,7 +12,7 @@ class SurveyQuestionOption private constructor(
     val surveyQuestion: SurveyQuestion,
 
     @Column(nullable = false, length = 100)
-    val content: String,
+    var content: String,
 ) : BaseEntity() {
 
     @Id

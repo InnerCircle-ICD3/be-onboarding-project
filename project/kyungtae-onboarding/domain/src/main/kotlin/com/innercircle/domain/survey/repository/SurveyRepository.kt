@@ -7,10 +7,14 @@ import java.util.*
 
 interface SurveyRepository : JpaRepository<Survey, Long> {
 
-    @Query("SELECT s FROM Survey s join fetch SurveyQuestion sq on sq.survey = s WHERE s.externalId = :id")
+    @Query("SELECT s FROM Survey s " +
+            "JOIN FETCH s.questions q " +
+            "WHERE s.externalId = :id")
     fun fetchSurveyQuestions(id: UUID): Optional<Survey>
 
-    @Query("SELECT s FROM Survey s left join fetch SurveyAnswer sa on sa.survey = s WHERE s.externalId = :id")
+    @Query("SELECT s FROM Survey s " +
+            "LEFT JOIN FETCH s.answers a " +
+            "WHERE s.externalId = :id")
     fun fetchSurveyAnswers(id: UUID): Optional<Survey>
 
 }
