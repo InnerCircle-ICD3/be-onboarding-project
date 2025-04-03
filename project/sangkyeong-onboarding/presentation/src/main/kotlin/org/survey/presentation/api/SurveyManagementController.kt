@@ -4,7 +4,7 @@ import org.springframework.web.bind.annotation.PostMapping
 import org.springframework.web.bind.annotation.RequestBody
 import org.springframework.web.bind.annotation.RequestMapping
 import org.springframework.web.bind.annotation.RestController
-import org.survey.application.usecase.CreateSurveyUseCase
+import org.survey.application.usecase.survey.CreateSurveyUseCase
 import org.survey.presentation.dto.request.CreateSurveyRequest
 import org.survey.presentation.dto.request.toCommand
 
