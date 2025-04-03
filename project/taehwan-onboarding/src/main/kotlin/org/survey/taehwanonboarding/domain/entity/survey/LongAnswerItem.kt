@@ -15,11 +15,11 @@ class LongAnswerItem(
     var maxLength: Int? = 1000,
 
 ) : SurveyItem(
-        title = title,
-        description = description,
-        required = required,
-        orderNumber = orderNumber,
-    ) {
+    title = title,
+    description = description,
+    required = required,
+    orderNumber = orderNumber,
+) {
     override fun validateResponse(responseValue: String?): Boolean {
         if (required && responseValue.isNullOrBlank()) return false
         return responseValue == null ||

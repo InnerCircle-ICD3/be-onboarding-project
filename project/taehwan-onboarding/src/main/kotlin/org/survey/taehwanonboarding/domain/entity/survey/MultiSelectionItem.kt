@@ -30,11 +30,11 @@ class MultiSelectionItem(
     @Column
     var maxSelections: Int? = null,
 ) : SurveyItem(
-        title = title,
-        description = description,
-        required = required,
-        orderNumber = orderNumber,
-    ) {
+    title = title,
+    description = description,
+    required = required,
+    orderNumber = orderNumber,
+) {
     override fun validateResponse(responseValue: String?): Boolean {
         if (responseValue.isNullOrBlank()) {
             return !required
