@@ -4,6 +4,7 @@ import com.survey.domain.surveyResponse.SurveyResponse;
 import com.survey.domain.surveyResponse.repository.SurveyResponseRepository;
 
 import java.util.HashMap;
+import java.util.List;
 
 public class FakeSurveyResponseRepository implements SurveyResponseRepository {
 
@@ -16,5 +17,11 @@ public class FakeSurveyResponseRepository implements SurveyResponseRepository {
     @Override
     public void save(SurveyResponse surveyResponse) {
         // TODO
+    }
+
+    @Override
+    public List<SurveyResponse> findBySurveyIdFetchJoin(Long surveyId) {
+        // TODO
+        return null;
     }
 }

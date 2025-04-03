@@ -2,12 +2,12 @@ package com.survey.application.service;
 
 import com.survey.application.dto.request.CreateSurveyRequest;
 import com.survey.application.dto.request.UpdateSurveyRequest;
-import com.survey.test.FakeSurveyRepository;
 import com.survey.application.test.TestFixture;
 import com.survey.domain.survey.Survey;
 import com.survey.domain.survey.SurveyOption;
 import com.survey.domain.surveyResponse.repository.SurveyResponseRepository;
 import com.survey.domain.surveyResponse.service.SurveyResponseValidationService;
+import com.survey.test.FakeSurveyRepository;
 import com.survey.test.TestSurveyEntityComparator;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
@@ -30,7 +30,8 @@ class SurveyServiceTest {
         surveyRepository = new FakeSurveyRepository(new HashMap<>());
         SurveyResponseRepository surveyResponseRepository = new FakeSurveyResponseRepository(new HashMap<>());
         SurveyResponseValidationService surveyResponseValidationService = new SurveyResponseValidationService(surveyRepository);
-        surveyService = new SurveyService(surveyRepository, surveyResponseValidationService, surveyResponseRepository);
+        SurveyResponseMapperService surveyResponseMapperService = new SurveyResponseMapperService();
+        surveyService = new SurveyService(surveyRepository, surveyResponseValidationService, surveyResponseRepository, surveyResponseMapperService);
         comparator = new TestSurveyEntityComparator();
     }
 
