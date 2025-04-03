@@ -31,9 +31,9 @@ class SurveyTest {
         val question = ShortQuestion(title = "test", description = "test", isRequired = true)
         survey.addQuestion(question)
 
-        assertEquals(survey.currentVersion.version, 1)
+        assertEquals(survey.currentVersion.version, 0)
 
         survey.update("newTitle", "newDescription", listOf(question))
-        assertEquals(survey.currentVersion.version, 2)
+        assertEquals(survey.currentVersion.version, 1)
     }
 }

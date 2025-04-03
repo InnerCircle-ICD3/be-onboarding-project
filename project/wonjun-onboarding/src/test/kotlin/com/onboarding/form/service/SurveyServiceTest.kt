@@ -63,7 +63,7 @@ class SurveyServiceTest {
         (actualSurvey.getQuestions().zip(createSurveyDto.questions)).forEach {
             assertEquals(it.first.title, it.second.title)
             assertEquals(it.first.description, it.second.description)
-            assertEquals(it.first.getType(), it.second.type)
+            assertEquals(it.first.type, it.second.type)
             assertEquals(it.first.isRequired, it.second.isRequired)
 
             if (it.first is MultiSelectQuestion) {
@@ -183,7 +183,7 @@ class SurveyServiceTest {
             )
         )
 
-        val updateActualSurvey = surveyService.updateSurveyDto(actualSurvey.id!!, updateSurveyDto)
+        val updateActualSurvey = surveyService.updateSurveyDto(actualSurvey.id, updateSurveyDto)
 
         assertEquals(updateActualSurvey.title, updateSurveyDto.title)
         assertEquals(updateActualSurvey.description, updateSurveyDto.description)
@@ -191,7 +191,7 @@ class SurveyServiceTest {
         (updateActualSurvey.getQuestions().zip(updateSurveyDto.questions)).forEach {
             assertEquals(it.first.title, it.second.title)
             assertEquals(it.first.description, it.second.description)
-            assertEquals(it.first.getType(), it.second.type)
+            assertEquals(it.first.type, it.second.type)
             assertEquals(it.first.isRequired, it.second.isRequired)
 
             if (it.first is MultiSelectQuestion) {
@@ -233,7 +233,7 @@ class SurveyServiceTest {
 
         val survey = surveyService.createSurvey(createSurveyDto)
 
-        assertEquals(survey.currentVersion.version, 1)
+        assertEquals(survey.currentVersion.version, 0)
 
         val updateSurveyDto = CreateSurveyDto(
             title = "testTitle2",
@@ -249,10 +249,10 @@ class SurveyServiceTest {
             )
         )
 
-        val updateActualSurvey = surveyService.updateSurveyDto(survey.id!!, updateSurveyDto)
+        val updateActualSurvey = surveyService.updateSurveyDto(survey.id, updateSurveyDto)
 
         assertEquals(updateActualSurvey.title, updateSurveyDto.title)
         assertEquals(updateActualSurvey.description, updateSurveyDto.description)
-        assertEquals(updateActualSurvey.currentVersion.version, 2)
+        assertEquals(updateActualSurvey.currentVersion.version, 1)
     }
 }
