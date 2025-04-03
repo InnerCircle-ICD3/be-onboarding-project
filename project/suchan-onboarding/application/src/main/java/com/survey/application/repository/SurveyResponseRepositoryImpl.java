@@ -4,6 +4,8 @@ import com.survey.domain.surveyResponse.SurveyResponse;
 import com.survey.domain.surveyResponse.repository.SurveyResponseRepository;
 import org.springframework.stereotype.Repository;
 
+import java.util.List;
+
 @Repository
 public class SurveyResponseRepositoryImpl implements SurveyResponseRepository {
 
@@ -17,4 +19,10 @@ public class SurveyResponseRepositoryImpl implements SurveyResponseRepository {
     public void save(SurveyResponse surveyResponse) {
         jpaSurveyResponseRepository.save(surveyResponse);
     }
+
+    @Override
+    public List<SurveyResponse> findBySurveyIdFetchJoin(Long surveyId) {
+        return jpaSurveyResponseRepository.findBySurveyIdFetchJoin(surveyId);
+    }
+
 }
