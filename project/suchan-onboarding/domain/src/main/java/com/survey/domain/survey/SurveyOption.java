@@ -30,6 +30,10 @@ public class SurveyOption {
     @OneToOne(mappedBy = "surveyOption", cascade = CascadeType.ALL, orphanRemoval = true)
     private InputForm inputForm;
 
+    @Enumerated(EnumType.STRING)
+    @Column(nullable = false)
+    private SurveyOptionStatus status;
+
     public SurveyOption(String title, String description, boolean isNecessary, InputForm inputForm) {
         this.title = title;
         this.description = description;
@@ -67,5 +71,9 @@ public class SurveyOption {
         SurveyOption surveyOption = new SurveyOption(title, description, isNecessary, inputForm);
         surveyOption.id = id;
         return surveyOption;
+    }
+
+    public void delete() {
+        this.status = SurveyOptionStatus.DELETED;
     }
 }

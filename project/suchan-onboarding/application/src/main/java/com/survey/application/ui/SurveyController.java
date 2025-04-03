@@ -21,8 +21,8 @@ public class SurveyController {
     }
 
     @PostMapping
-    public void createSurvey(@Valid @RequestBody CreateSurveyRequest request) {
-        surveyService.registerSurvey(request);
+    public Long createSurvey(@Valid @RequestBody CreateSurveyRequest request) {
+        return surveyService.registerSurvey(request);
     }
 
     @PutMapping

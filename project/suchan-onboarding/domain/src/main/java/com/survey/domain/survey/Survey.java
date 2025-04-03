@@ -90,7 +90,7 @@ public class Survey {
             }
         }
 
-        this.surveyOptions.removeAll(optionsToRemove);
+        removeSurveyOption(optionsToRemove);
     }
 
     private void changeSurveyOption(SurveyOption newOption, Map<Long, SurveyOption> existingOptionsMap, List<SurveyOption> updatedOptions) {
@@ -102,6 +102,12 @@ public class Survey {
     private void registerSurveyOption(SurveyOption newOption, List<SurveyOption> updatedOptions) {
         addSurveyOption(newOption);
         updatedOptions.add(newOption);
+    }
+
+    private void removeSurveyOption(List<SurveyOption> surveyOptions) {
+        for (SurveyOption surveyOption : surveyOptions) {
+            surveyOption.delete();
+        }
     }
 
     public static Survey createTestSurvey(Long id, Long version, String title, String description, List<SurveyOption> surveyOptions) {
