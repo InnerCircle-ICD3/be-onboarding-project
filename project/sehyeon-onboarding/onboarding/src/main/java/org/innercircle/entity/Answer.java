@@ -10,7 +10,7 @@ import java.util.List;
 
 @Data
 @Entity
-@TableGenerator(name = "MY_SEQ_GEN", table = "MY_SEQ_TB", pkColumnName = "SEQ_NAME", valueColumnName = "SEQ_VAL", pkColumnValue = "SURVEY_ANSWER_SEQ", allocationSize = 5)
+@TableGenerator(name = "MY_SEQ_GEN", table = "MY_SEQ_TB", pkColumnName = "SEQ_NAME", valueColumnName = "SEQ_VAL", pkColumnValue = "ANSWER_SEQ", allocationSize = 5)
 public class Answer {
 
     @Id
@@ -23,7 +23,7 @@ public class Answer {
     @Setter(AccessLevel.NONE)
     Survey survey;
 
-    @OneToMany(mappedBy = "surveyAnswer", cascade = CascadeType.ALL)
+    @OneToMany(mappedBy = "answer", cascade = CascadeType.ALL)
     @Setter(AccessLevel.NONE)
     List<AnswerItem> answerItemList;
 
@@ -49,7 +49,7 @@ public class Answer {
 
     @Override
     public String toString() {
-        return "SurveyAnswer{" +
+        return "Answer{" +
                 "seq=" + seq +
                 ", survey=" + survey +
                 ", answerItemList=" + answerItemList +
