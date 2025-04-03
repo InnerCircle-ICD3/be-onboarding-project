@@ -2,6 +2,7 @@ package com.chosseang.seonghunonboarding.entity
 
 import com.chosseang.seonghunonboarding.enum.ItemType
 import com.fasterxml.jackson.annotation.JsonIgnore
+import jakarta.persistence.CascadeType
 import jakarta.persistence.CollectionTable
 import jakarta.persistence.ElementCollection
 import jakarta.persistence.Entity
@@ -22,7 +23,7 @@ data class Item(
     val id: Long?,
 
     @JsonIgnore
-    @ManyToOne(fetch = FetchType.LAZY)
+    @ManyToOne(fetch = FetchType.LAZY, cascade = [CascadeType.PERSIST])
     @JoinColumn(name = "survey_id")
     var survey: Survey? = null,
 
