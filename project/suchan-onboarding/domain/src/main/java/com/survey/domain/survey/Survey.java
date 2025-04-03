@@ -50,9 +50,14 @@ public class Survey {
     }
 
     private void validateSurveyOptionCnt(List<SurveyOption> surveyOptions) {
-        if (surveyOptions == null || surveyOptions.isEmpty() || surveyOptions.size() > 10) {
+        if (surveyOptions == null || surveyOptions.isEmpty() || checkActivatedSurveyOptionsSizeOver(surveyOptions)) {
             throw new IllegalArgumentException(SURVEY_OPTIONS_CNT_EXCEPTION_MESSAGE);
         }
+    }
+
+    private boolean checkActivatedSurveyOptionsSizeOver(List<SurveyOption> surveyOptions) {
+        List<SurveyOption> activatedSurveyOptions = surveyOptions.stream().filter(SurveyOption::isActivated).toList();
+        return activatedSurveyOptions.size() > 10;
     }
 
     private void addSurveyOption(SurveyOption surveyOption) {

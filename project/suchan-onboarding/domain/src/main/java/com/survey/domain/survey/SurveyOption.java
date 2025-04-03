@@ -76,4 +76,8 @@ public class SurveyOption {
     public void delete() {
         this.status = SurveyOptionStatus.DELETED;
     }
+
+    public boolean isActivated() {
+        return this.status == SurveyOptionStatus.ACTIVE;
+    }
 }
