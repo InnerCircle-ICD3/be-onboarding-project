@@ -6,13 +6,14 @@ import jakarta.persistence.*
 @Entity
 class Survey(
     @Id @GeneratedValue(strategy = GenerationType.IDENTITY)
-    val id: Long? = null,
+    val id: Long = 0,
     var title: String,
-    var description: String,
+    var description: String
+) {
     @OneToOne(cascade = [CascadeType.ALL])
     @JoinColumn(name = "current_version_id")
-    var currentVersion: SurveyVersion
-) {
+    lateinit var currentVersion: SurveyVersion
+
     @OneToMany(mappedBy = "survey", cascade = [CascadeType.ALL])
     val versionHistory: MutableList<SurveyVersion> = mutableListOf()
 
@@ -41,11 +42,13 @@ class Survey(
         private const val MAX_QUESTION_SIZE = 10
 
         fun of(title: String, description: String): Survey {
-            return Survey(
+            val survey = Survey(
                 title = title,
-                description = description,
-                currentVersion = SurveyVersion(version = 1)
+                description = description
             )
+            survey.currentVersion = SurveyVersion.of(0, survey)
+
+            return survey
         }
     }
 }

@@ -12,17 +12,14 @@ data class SurveyDto(
 ) {
 
     companion object {
-        fun of(survey: Survey): SurveyDto {
-            return SurveyDto(
-                survey.id!!,
+        fun of(survey: Survey) =
+            SurveyDto(
+                survey.id,
                 survey.currentVersion.version,
                 survey.title,
                 survey.description,
-                survey.getQuestions().map {
-                    QuestionDto.of(it)
-                }.toList()
+                survey.getQuestions().map(QuestionDto::of)
             )
-        }
     }
 
 }

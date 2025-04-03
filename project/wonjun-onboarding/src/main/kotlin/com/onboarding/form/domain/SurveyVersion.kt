@@ -6,16 +6,20 @@ import jakarta.persistence.*
 @Table(name = "question_versions")
 class SurveyVersion(
     @Id @GeneratedValue(strategy = GenerationType.IDENTITY)
-    val id: Long? = null,
+    val id: Long = 0,
     var version: Int,
     @ManyToOne
     @JoinColumn(name = "survey_id")
-    var survey: Survey? = null,
+    val survey: Survey,
     @OneToMany(mappedBy = "surveyVersion", cascade = [CascadeType.ALL])
     val questions: MutableList<Question> = mutableListOf()
 ) {
     fun addQuestion(question: Question) {
         question.surveyVersion = this
         this.questions.add(question)
+    }
+
+    companion object {
+        fun of(version: Int, survey: Survey) = SurveyVersion(0, version, survey)
     }
 }
