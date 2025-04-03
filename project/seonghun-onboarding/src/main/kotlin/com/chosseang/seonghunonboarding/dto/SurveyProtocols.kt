@@ -14,3 +14,17 @@ data class ItemCreateRequest(
     val type: String,
     val contents: List<String>
 )
+
+data class SurveyCreateResponse(
+    val name: String,
+    val description: String,
+    val items : List<Item>
+)
+
+data class ItemResponse(
+    val id: Long?,
+    val name: String,
+    val description: String,
+    val type: String,
+    val contents: List<String>
+)

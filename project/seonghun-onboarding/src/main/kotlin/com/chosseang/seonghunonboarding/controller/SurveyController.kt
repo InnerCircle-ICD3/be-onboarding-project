@@ -1,6 +1,7 @@
 package com.chosseang.seonghunonboarding.controller
 
 import com.chosseang.seonghunonboarding.dto.SurveyCreateRequest
+import com.chosseang.seonghunonboarding.dto.SurveyCreateResponse
 import com.chosseang.seonghunonboarding.entity.Item
 import com.chosseang.seonghunonboarding.entity.Survey
 import com.chosseang.seonghunonboarding.service.SurveyService
@@ -16,7 +17,7 @@ class SurveyController (val surveyService: SurveyService) {
 
     @PostMapping("/create")
     @ResponseBody
-    fun createSurvey(@RequestBody surveyCreateRequest: SurveyCreateRequest): Survey {
+    fun createSurvey(@RequestBody surveyCreateRequest: SurveyCreateRequest): SurveyCreateResponse {
 
         return SurveyCreateRequest(
             name = surveyCreateRequest.name,
