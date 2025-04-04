@@ -27,13 +27,13 @@ data class Item(
     @JoinColumn(name = "survey_id")
     var survey: Survey? = null,
 
-    val name: String,
-    val description: String,
+    var name: String,
+    var description: String,
 
     @Enumerated(EnumType.STRING)
     val type: ItemType,
 
     @ElementCollection
     @CollectionTable(name = "item_contents", joinColumns = [JoinColumn(name = "itemId")])
-    val contents: List<String>
+    var contents: List<String>
 )

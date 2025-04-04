@@ -12,8 +12,8 @@ data class Survey(
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     val id: Long? = null,
-    val name: String,
-    val description: String,
+    var name: String,
+    var description: String,
 
     @OneToMany(mappedBy = "survey", orphanRemoval = true, cascade = [CascadeType.ALL])
     var items: MutableList<Item>
