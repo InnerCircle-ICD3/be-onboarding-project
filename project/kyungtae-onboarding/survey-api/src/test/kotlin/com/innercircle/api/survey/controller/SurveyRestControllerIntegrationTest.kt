@@ -1,6 +1,7 @@
 package com.innercircle.api.survey.controller
 
 import com.innercircle.api.common.IntegrationTest
+import com.innercircle.api.survey.controller.request.SurveyAnswerCreateRequest
 import com.innercircle.api.survey.controller.request.SurveyCreateRequest
 import com.innercircle.api.survey.controller.request.SurveyUpdateRequest
 import com.innercircle.api.survey.controller.response.SurveyResponse
@@ -64,9 +65,26 @@ class SurveyRestControllerIntegrationTest {
             val surveyResponse = 설문_조회(surveyId)
             val questionResponse = surveyResponse.questions?.firstOrNull()
             val questionId = questionResponse?.id
-            val questionOptionId = questionResponse?.options?.firstOrNull()?.id
-            val secondQuestionOptionId = questionResponse?.options?.getOrNull(1)?.id
-            val surveyAnswerRequest = 다중_선택형_설문_답변_요청(questionId, questionOptionId, secondQuestionOptionId)
+            val surveyAnswerRequest = 단답형_설문_답변_요청(questionId)
+
+            // when
+            val locationHeaderValue = 설문_답변(surveyId, surveyAnswerRequest)
+            val surveyAnswerId = getIdFromLocation(locationHeaderValue)
+
+            // then
+            assertThat(locationHeaderValue).matches(LOCATION_HEADER_VALUE_REGEX)
+            assertThat(surveyAnswerId).isNotNull()
+        }
+
+        @Test
+        fun `장문형 설문에 응답한다`() {
+            // given
+            val surveyCreateRequest = 장문형_설문_생성_요청()
+            val surveyId = getIdFromLocation(설문_생성(surveyCreateRequest))
+            val surveyResponse = 설문_조회(surveyId)
+            val questionResponse = surveyResponse.questions?.firstOrNull()
+            val questionId = questionResponse?.id
+            val surveyAnswerRequest = 장문형_설문_답변_요청(questionId)
 
             // when
             val locationHeaderValue = 설문_답변(surveyId, surveyAnswerRequest)
@@ -77,6 +95,7 @@ class SurveyRestControllerIntegrationTest {
             assertThat(surveyAnswerId).isNotNull()
         }
     }
+
 
     @Nested
     inner class `설문을_수정한다` {

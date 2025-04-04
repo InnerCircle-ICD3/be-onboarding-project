@@ -35,16 +35,12 @@ class SurveyService(
             surveyQueryService.fetchSurveyAggregateOrThrow(surveyId)
                 .questions.first { it.id == request.surveyQuestionId }
                 .also {
-                    val affected = surveyCommandService.increaseParticipantCount(surveyId)
-                    if (affected) {
-                        throw IllegalStateException("설문 참여 인원이 초과되었습니다.")
-                    }
-                }
-                .let {
+                    check(surveyCommandService.increaseParticipantCount(surveyId)) { "설문 참여 인원이 초과되었습니다." }
+                }.let {
                     surveyAnswerCommandService.create(
-                        surveyQuestion = it,
+                        surveyQuestionId = it.id!!,
                         command = request.toCommand()
-                    )
-                }.id
+                    ).id
+                }
         )
 }

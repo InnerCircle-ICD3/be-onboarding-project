@@ -19,5 +19,5 @@ class SurveyCommandService(
         survey.update(command)
     }
 
-    fun increaseParticipantCount(surveyId: UUID): Boolean = surveyRepository.increaseParticipantCount(surveyId)
+    fun increaseParticipantCount(surveyId: UUID): Boolean = surveyRepository.increaseParticipantCount(surveyId) > 0
 }

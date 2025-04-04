@@ -85,6 +85,7 @@ class SurveyAnswer private constructor(
                     check(surveyAnswer.options.isNotEmpty()) { "Single choice question should have options" }
                     check(surveyAnswer.options.size == 1) { "Single choice question should have only one selected option" }
                 }
+
                 QuestionType.MULTI_CHOICE -> {
                     check(surveyAnswer.options.isNotEmpty()) {
                         "Multi choice question should have options"

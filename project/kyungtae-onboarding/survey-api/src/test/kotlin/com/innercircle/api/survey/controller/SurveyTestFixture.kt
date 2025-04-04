@@ -229,3 +229,25 @@ fun 다중_선택형_설문_답변_요청(questionId: Long?, vararg questionOpti
             )
         }
     )
+
+fun 단답형_설문_답변_요청(questionId: Long?): SurveyAnswerCreateRequest =
+    SurveyAnswerCreateRequest(
+        surveyQuestionId = questionId,
+        surveyName = "단답형 설문",
+        surveyDescription = "단답형 설문 설명",
+        surveyQuestionName = "단답형 질문",
+        surveyQuestionDescription = "단답형 질문 설명",
+        questionType = QuestionType.SHORT_ANSWER.name,
+        content = "단답형 설문 답변 내용",
+    )
+
+fun 장문형_설문_답변_요청(questionId: Long?): SurveyAnswerCreateRequest =
+    SurveyAnswerCreateRequest(
+        surveyQuestionId = questionId,
+        surveyName = "장문형 설문",
+        surveyDescription = "장문형 설문 설명",
+        surveyQuestionName = "장문형 질문",
+        surveyQuestionDescription = "장문형 질문 설명",
+        questionType = QuestionType.LONG_ANSWER.name,
+        content = "장문형 설문 답변 내용",
+    )

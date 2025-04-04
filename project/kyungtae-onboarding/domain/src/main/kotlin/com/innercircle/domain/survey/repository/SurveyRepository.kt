@@ -27,8 +27,8 @@ interface SurveyRepository : JpaRepository<Survey, Long> {
         "UPDATE Survey s " +
                 "SET s.participantCount = s.participantCount + 1 " +
                 "WHERE s.externalId = :surveyId " +
-                "AND s.participantCount < s.maxParticipantCount"
+                "AND s.participantCount <= s.participantCapacity"
     )
-    fun increaseParticipantCount(surveyId: UUID): Boolean
+    fun increaseParticipantCount(surveyId: UUID): Int
 
 }
