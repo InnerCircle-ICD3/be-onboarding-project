@@ -91,7 +91,7 @@ class SurveyService(
         val existingMap = existingQuestions.associateBy { it.orderNumber }
         request.questions.forEach { req ->
             when (req.questionStatus) {
-                QuestionStatus.ADD -> handleAddQuestion(survey, req)
+                QuestionStatus.ADD -> handleAddQuestion(survey, req, existingMap)
                 QuestionStatus.UPDATE -> handleUpdateQuestion(survey, req, existingMap)
                 QuestionStatus.DELETE -> handleDeleteQuestion(req, existingMap)
                 else -> error("정의되지 않은 상태입니다: ${req.questionStatus}")
@@ -101,7 +101,12 @@ class SurveyService(
         return UpdateSurveyResponse(surveyId)
     }
 
-    private fun handleAddQuestion(survey: Survey, req: QuestionRequest) {
+    private fun handleAddQuestion(survey: Survey, req: QuestionRequest, existingMap: Map<Int, SurveyQuestion>) {
+        // 기존 항목이 10 이상이면 예외 발생
+        if (existingMap.size >= 10) {
+            throw IllegalStateException("질문은 최대 10개까지 등록할 수 있습니다.")
+        }
+
         val newQuestion = SurveyQuestion(
             questionId = 0,
             orderNumber = req.orderNumber,
