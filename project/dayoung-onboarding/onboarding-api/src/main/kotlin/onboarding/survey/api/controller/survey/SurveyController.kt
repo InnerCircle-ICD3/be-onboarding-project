@@ -31,8 +31,8 @@ class SurveyController(
         @PathVariable surveyId: Int,
         @RequestBody request: UpdateSurveyRequest
     ): ResponseEntity<UpdateSurveyResponse> {
-        // TODO: 서비스 호출 및 로직 작성
-        return ResponseEntity.ok(UpdateSurveyResponse(surveyId = surveyId))
+        val response = surveyService.updateSurvey(surveyId, request)
+        return ResponseEntity.ok(response)
     }
 
     @Operation(summary = "설문 응답 제출")

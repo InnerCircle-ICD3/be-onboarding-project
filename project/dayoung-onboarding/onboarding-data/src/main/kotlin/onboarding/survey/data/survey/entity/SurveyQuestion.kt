@@ -17,15 +17,15 @@ data class SurveyQuestion(
     @JoinColumn(name = "survey_id")
     val survey: Survey,
 
-    val title: String,
-    val description: String? = "",
-    val required: Boolean? = false,
+    var title: String,
+    var description: String? = "",
+    var required: Boolean? = false,
 
     @Enumerated(EnumType.STRING)
     @Column(name = "question_type")
     val questionType: SurveyQuestionType,
 
-    val questionStatus: SurveyQuestionStatus = SurveyQuestionStatus.ACTIVE,
-    val lastModifiedDate: Date = Date(),
-    val version: Int = 1
+    var questionStatus: SurveyQuestionStatus = SurveyQuestionStatus.ACTIVE,
+    var lastModifiedDate: Date = Date(),
+    var version: Int = 1
 )
