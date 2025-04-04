@@ -15,6 +15,8 @@ class Survey private constructor(
 
     val participantCapacity : Int = 0,
 
+    val participantCount : Int = 0,
+
     @Column(nullable = false)
     val startAt: LocalDateTime,
 
