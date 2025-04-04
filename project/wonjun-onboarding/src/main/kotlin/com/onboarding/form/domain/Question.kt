@@ -16,13 +16,13 @@ import jakarta.persistence.*
 abstract class Question(
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    val id: Long = 0,
-    val title: String,
-    val description: String,
-    val isRequired: Boolean,
+    open val id: Long = 0,
+    open val title: String,
+    open val description: String,
+    open val isRequired: Boolean,
     @ManyToOne
     @JoinColumn(name = "survey_version_id")
-    var surveyVersion: SurveyVersion? = null
+    open var surveyVersion: SurveyVersion? = null
 ) {
     @get:Transient
     abstract val type: QuestionType

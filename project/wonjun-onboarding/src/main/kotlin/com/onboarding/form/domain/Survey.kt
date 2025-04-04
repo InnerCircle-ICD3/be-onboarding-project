@@ -8,34 +8,31 @@ class Survey(
     @Id @GeneratedValue(strategy = GenerationType.IDENTITY)
     val id: Long = 0,
     var title: String,
-    var description: String
-) {
-    @OneToOne(cascade = [CascadeType.ALL])
-    @JoinColumn(name = "current_version_id")
-    lateinit var currentVersion: SurveyVersion
-
+    var description: String,
     @OneToMany(mappedBy = "survey", cascade = [CascadeType.ALL])
-    val versionHistory: MutableList<SurveyVersion> = mutableListOf()
+    @OrderBy("version desc")
+    val versions: MutableList<SurveyVersion> = mutableListOf(),
+) {
+    fun getCurrentVersion(): SurveyVersion = requireNotNull(versions.firstOrNull())
 
-    fun getQuestions() = currentVersion.questions
+    fun getQuestions(): List<Question> = requireNotNull(versions.firstOrNull()).questions
 
     fun addQuestion(question: Question) {
-        check(currentVersion.questions.size < MAX_QUESTION_SIZE) { "The number of questions cannot exceed $MAX_QUESTION_SIZE" }
-        this.currentVersion.addQuestion(question)
+        check(getCurrentVersion().questions.size < MAX_QUESTION_SIZE) { "The number of questions cannot exceed $MAX_QUESTION_SIZE" }
+        this.getCurrentVersion().addQuestion(question)
     }
 
     fun update(newTitle: String, newDescription: String, newQuestions: List<Question>) {
-        versionHistory.add(currentVersion)
-
         this.title = newTitle
         this.description = newDescription
 
         val newVersion = SurveyVersion(
-            version = currentVersion.version + 1,
+            version = getCurrentVersion().version + 1,
             survey = this
         )
-        currentVersion = newVersion
-        newQuestions.forEach { addQuestion(it) }
+        newQuestions.forEach { newVersion.addQuestion(it) }
+
+        versions.addFirst(newVersion)
     }
 
     companion object {
@@ -46,7 +43,7 @@ class Survey(
                 title = title,
                 description = description
             )
-            survey.currentVersion = SurveyVersion.of(0, survey)
+            survey.versions.add(SurveyVersion.of(0, survey))
 
             return survey
         }

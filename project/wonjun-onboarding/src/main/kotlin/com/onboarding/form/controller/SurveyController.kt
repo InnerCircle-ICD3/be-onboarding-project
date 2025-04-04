@@ -1,5 +1,6 @@
 package com.onboarding.form.controller
 
+import CreateAnswerRequestDto
 import com.onboarding.form.request.CreateSurveyDto
 import com.onboarding.form.response.SurveyDto
 import com.onboarding.form.service.SurveyService
@@ -19,9 +20,17 @@ class SurveyController(
 
     @PutMapping("/surveys/{id}")
     fun update(@RequestBody surveyDto: CreateSurveyDto, @PathVariable id: Long): ResponseEntity<SurveyDto> {
-        val survey = service.updateSurveyDto(id, surveyDto)
-
+        val survey = service.updateSurvey(id, surveyDto)
         return ResponseEntity.ok(SurveyDto.of(survey))
+    }
+
+    @PutMapping("/surveys/{id}/submit")
+    fun submitAnswers(
+        @RequestBody createAnswerRequestDto: CreateAnswerRequestDto,
+        @PathVariable id: Long
+    ): ResponseEntity<Nothing> {
+        service.submitAnswer(surveyId = id, createAnswerRequestDto)
+        return ResponseEntity.ok(null)
     }
 }
 

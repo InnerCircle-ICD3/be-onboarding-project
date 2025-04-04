@@ -1,14 +1,16 @@
 package com.onboarding.form.service
 
-import com.onboarding.form.domain.MultiSelectQuestion
-import com.onboarding.form.domain.QuestionType
-import com.onboarding.form.domain.SingleSelectQuestion
+import CreateAnswerRequestDto
+import CreateInsertAnswerDto
+import CreateSelectAnswerDto
+import com.onboarding.form.domain.*
 import com.onboarding.form.request.CreateSelectQuestionDto
 import com.onboarding.form.request.CreateStandardQuestionDto
 import com.onboarding.form.request.CreateSurveyDto
 import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.Assertions.assertTrue
 import org.junit.jupiter.api.DisplayName
+import org.junit.jupiter.api.assertDoesNotThrow
 import org.junit.jupiter.api.assertThrows
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.boot.test.context.SpringBootTest
@@ -105,7 +107,7 @@ class SurveyServiceTest {
 
 
         assertThrows<IllegalArgumentException> {
-            surveyService.updateSurveyDto(1, updateSurveyDto)
+            surveyService.updateSurvey(1, updateSurveyDto)
         }
     }
 
@@ -183,7 +185,7 @@ class SurveyServiceTest {
             )
         )
 
-        val updateActualSurvey = surveyService.updateSurveyDto(actualSurvey.id, updateSurveyDto)
+        val updateActualSurvey = surveyService.updateSurvey(actualSurvey.id, updateSurveyDto)
 
         assertEquals(updateActualSurvey.title, updateSurveyDto.title)
         assertEquals(updateActualSurvey.description, updateSurveyDto.description)
@@ -233,7 +235,7 @@ class SurveyServiceTest {
 
         val survey = surveyService.createSurvey(createSurveyDto)
 
-        assertEquals(survey.currentVersion.version, 0)
+        assertEquals(survey.getCurrentVersion().version, 0)
 
         val updateSurveyDto = CreateSurveyDto(
             title = "testTitle2",
@@ -249,10 +251,56 @@ class SurveyServiceTest {
             )
         )
 
-        val updateActualSurvey = surveyService.updateSurveyDto(survey.id, updateSurveyDto)
+        val updateActualSurvey = surveyService.updateSurvey(survey.id, updateSurveyDto)
 
         assertEquals(updateActualSurvey.title, updateSurveyDto.title)
         assertEquals(updateActualSurvey.description, updateSurveyDto.description)
-        assertEquals(updateActualSurvey.currentVersion.version, 1)
+        assertEquals(updateActualSurvey.getCurrentVersion().version, 1)
+    }
+
+    @Test
+    @DisplayName("설문조사 수정 시 새로운 버전이 추가된다.")
+    fun submitAnswerTest() {
+        val createSurveyDto = CreateSurveyDto(
+            title = "testTitle",
+            description = "testDescription",
+            questions = listOf(
+                CreateSelectQuestionDto(
+                    title = "testTitle",
+                    description = "testDescription",
+                    type = QuestionType.MULTI_SELECT,
+                    isRequired = true,
+                    answerList = listOf("testAnswer1", "testAnswer2")
+                ),
+                CreateStandardQuestionDto(
+                    title = "testTitle",
+                    description = "testDescription",
+                    type = QuestionType.LONG,
+                    isRequired = true,
+                ),
+            )
+        )
+
+        val survey = surveyService.createSurvey(createSurveyDto)
+        val questions = survey.getQuestions()
+        val createResponseRequestDto = CreateAnswerRequestDto(
+            version = survey.getCurrentVersion().version,
+            answers = questions.map { question ->
+                when (question) {
+                    is MultiSelectQuestion -> CreateSelectAnswerDto(question.id, question.type, question.answerList)
+                    is SingleSelectQuestion -> CreateSelectAnswerDto(
+                        question.id,
+                        question.type,
+                        listOf(question.answerList.first())
+                    )
+
+                    is LongQuestion -> CreateInsertAnswerDto(question.id, question.type, "testValue")
+                    is ShortQuestion -> CreateInsertAnswerDto(question.id, question.type, "testValue")
+                    else -> throw IllegalArgumentException()
+                }
+            }
+        )
+
+        assertDoesNotThrow { surveyService.submitAnswer(survey.id, createResponseRequestDto) }
     }
 }
