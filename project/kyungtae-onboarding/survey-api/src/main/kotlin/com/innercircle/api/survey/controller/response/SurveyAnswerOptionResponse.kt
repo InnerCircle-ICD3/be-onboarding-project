@@ -11,7 +11,7 @@ data class SurveyAnswerOptionResponse(
         fun from(surveyAnswerOption: SurveyAnswerOption): SurveyAnswerOptionResponse {
             return SurveyAnswerOptionResponse(
                 surveyAnswerId = surveyAnswerOption.id.surveyAnswerId,
-                surveyQuestionOptionId = surveyAnswerOption.id.surveyAnswerId,
+                surveyQuestionOptionId = surveyAnswerOption.id.surveyQuestionOptionId,
                 content = surveyAnswerOption.content
             )
         }

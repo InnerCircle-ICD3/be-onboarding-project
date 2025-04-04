@@ -28,7 +28,6 @@ data class SurveyAnswerCreateRequest(
     @field:NotBlank
     val questionType: String? = null,
 
-    @field:NotBlank
     val content: String? = null,
 
     val options: List<SurveyAnswerOptionCreateRequest>? = emptyList()
@@ -55,7 +54,7 @@ data class SurveyAnswerCreateRequest(
 
     fun toCommand(): SurveyAnswerCreateCommand {
         return SurveyAnswerCreateCommand(
-            content = content!!,
+            content = content,
             options = options?.map { it.toCommand() } ?: emptyList()
         )
     }
