@@ -2,10 +2,10 @@ package com.example
 
 import com.example.dto.SurveyResponse
 import com.example.entity.*
+import com.example.exception.SurveyNotFoundException
 import com.example.repository.SurveyAnswerRepository
 import com.example.repository.SurveyRepository
 import com.example.service.GetSurveyService
-import com.example.common.exception.SurveyNotFoundException
 import org.junit.jupiter.api.Assertions.*
 import org.junit.jupiter.api.DisplayName
 import org.junit.jupiter.api.Test
@@ -23,61 +23,84 @@ class GetSurveyServiceTest {
     fun shouldReturnSurveyWhenExists() {
         val surveyId = 1L
         val survey = Survey(surveyId, "Test Survey", "Survey Description")
-        val item = SurveyItem(
-            id = 1L,
+
+        val textItem = TextItem(
+            survey = survey,
             name = "Language Choice",
             description = "Choose a language",
-            inputType = InputType.SINGLE_CHOICE,
             isRequired = true,
-            survey = survey
+            isLong = false
         )
-        val option = SelectionOption(value = "Kotlin", surveyItem = item)
-        item.options.add(option)
-        survey.items.add(item)
+        textItem.id = 1L
 
-        val answer = SurveyAnswer(
+        val choiceItem = ChoiceItem(
             survey = survey,
-            surveyItem = item,
+            name = "Preferred Framework",
+            description = "Choose a framework",
+            isRequired = true,
+            isMultiple = false
+        )
+        choiceItem.id = 2L
+
+        val option = SelectionOption(value = "Kotlin", item = choiceItem)
+        option.id = 10L
+        choiceItem.options.add(option)
+
+        survey.items.addAll(listOf(textItem, choiceItem))
+
+        val choiceAnswer = ChoiceAnswer(
+            survey = survey,
+            item = choiceItem,
             selectedOptions = mutableListOf(option)
         )
 
+        val textAnswer = TextAnswer(
+            survey = survey,
+            item = textItem,
+            content = "Java"
+        )
+
         whenever(surveyRepository.findById(surveyId)).thenReturn(Optional.of(survey))
-        whenever(answerRepository.findBySurveyId(surveyId)).thenReturn(listOf(answer))
+        whenever(answerRepository.findBySurveyId(surveyId)).thenReturn(listOf(choiceAnswer, textAnswer))
 
         val result: SurveyResponse = service.getSurvey(surveyId)
 
         assertEquals("Test Survey", result.title)
-        assertEquals(1, result.items.size)
-        assertEquals("Language Choice", result.items[0].name)
-        assertEquals("Kotlin", result.items[0].answers?.first())
+        assertEquals(2, result.items.size)
+
+        val textItemResp = result.items.find { it.name == "Language Choice" }
+        val choiceItemResp = result.items.find { it.name == "Preferred Framework" }
+
+        assertEquals(listOf("Java"), textItemResp?.answers)
+        assertEquals(listOf("Kotlin"), choiceItemResp?.answers)
     }
 
     @Test
     @DisplayName("Should throw exception when survey does not exist")
     fun shouldThrowExceptionWhenSurveyNotFound() {
         whenever(surveyRepository.findById(9999L)).thenReturn(Optional.empty())
-    
+
         val exception = assertThrows(SurveyNotFoundException::class.java) {
             service.getSurvey(9999L)
         }
-    
+
         assertEquals(SurveyNotFoundException().message, exception.message)
-    }    
+    }
 
     @Test
     @DisplayName("Should return empty answer list when no answers exist for a survey item")
     fun shouldReturnEmptyAnswerListWhenNoAnswersExist() {
         val surveyId = 2L
         val survey = Survey(surveyId, "Empty Answer Survey", "No responses")
-        val item = SurveyItem(
-            id = 1L,
+
+        val textItem = TextItem(
+            survey = survey,
             name = "Hobby",
             description = "Enter your hobby",
-            inputType = InputType.SHORT_TEXT,
             isRequired = false,
-            survey = survey
+            isLong = false
         )
-        survey.items.add(item)
+        survey.items.add(textItem)
 
         whenever(surveyRepository.findById(surveyId)).thenReturn(Optional.of(survey))
         whenever(answerRepository.findBySurveyId(surveyId)).thenReturn(emptyList())
@@ -86,7 +109,7 @@ class GetSurveyServiceTest {
 
         assertEquals("Empty Answer Survey", result.title)
         assertEquals(1, result.items.size)
-        assertTrue(result.items[0].answers?.isEmpty() == true)
+        assertTrue(result.items[0].answers!!.isEmpty())
     }
 
     @Test
@@ -94,21 +117,22 @@ class GetSurveyServiceTest {
     fun shouldFilterAnswersByItemNameAndAnswerValue() {
         val surveyId = 3L
         val survey = Survey(surveyId, "Filter Test", "Filter by specific item")
-        val item = SurveyItem(
-            id = 1L,
+
+        val choiceItem = ChoiceItem(
+            survey = survey,
             name = "Framework",
             description = "Preferred framework",
-            inputType = InputType.SINGLE_CHOICE,
             isRequired = true,
-            survey = survey
+            isMultiple = false
         )
-        val option1 = SelectionOption(value = "Spring", surveyItem = item)
-        val option2 = SelectionOption(value = "Django", surveyItem = item)
-        item.options.addAll(listOf(option1, option2))
-        survey.items.add(item)
 
-        val answer1 = SurveyAnswer(survey = survey, surveyItem = item, selectedOptions = mutableListOf(option1))
-        val answer2 = SurveyAnswer(survey = survey, surveyItem = item, selectedOptions = mutableListOf(option2))
+        val option1 = SelectionOption(value = "Spring", item = choiceItem)
+        val option2 = SelectionOption(value = "Django", item = choiceItem)
+        choiceItem.options.addAll(listOf(option1, option2))
+        survey.items.add(choiceItem)
+
+        val answer1 = ChoiceAnswer(survey = survey, item = choiceItem, selectedOptions = mutableListOf(option1))
+        val answer2 = ChoiceAnswer(survey = survey, item = choiceItem, selectedOptions = mutableListOf(option2))
 
         whenever(surveyRepository.findById(surveyId)).thenReturn(Optional.of(survey))
         whenever(answerRepository.findBySurveyId(surveyId)).thenReturn(listOf(answer1, answer2))
@@ -117,8 +141,7 @@ class GetSurveyServiceTest {
 
         assertEquals(1, result.items.size)
         assertEquals("Framework", result.items[0].name)
-        assertTrue(result.items[0].answers!!.contains("Spring"))
-        assertFalse(result.items[0].answers!!.contains("Django"))
+        assertEquals(listOf("Spring"), result.items[0].answers)
     }
 
     @Test
@@ -126,19 +149,19 @@ class GetSurveyServiceTest {
     fun shouldExcludeItemsWhenFilterConditionsDoNotMatch() {
         val surveyId = 4L
         val survey = Survey(surveyId, "Filter Exclude Test", "Condition mismatch")
-        val item = SurveyItem(
-            id = 1L,
+
+        val choiceItem = ChoiceItem(
+            survey = survey,
             name = "OS",
             description = "Operating system",
-            inputType = InputType.SINGLE_CHOICE,
             isRequired = false,
-            survey = survey
+            isMultiple = false
         )
-        val option = SelectionOption(value = "Linux", surveyItem = item)
-        item.options.add(option)
-        survey.items.add(item)
+        val option = SelectionOption(value = "Linux", item = choiceItem)
+        choiceItem.options.add(option)
+        survey.items.add(choiceItem)
 
-        val answer = SurveyAnswer(survey = survey, surveyItem = item, selectedOptions = mutableListOf(option))
+        val answer = ChoiceAnswer(survey = survey, item = choiceItem, selectedOptions = mutableListOf(option))
 
         whenever(surveyRepository.findById(surveyId)).thenReturn(Optional.of(survey))
         whenever(answerRepository.findBySurveyId(surveyId)).thenReturn(listOf(answer))

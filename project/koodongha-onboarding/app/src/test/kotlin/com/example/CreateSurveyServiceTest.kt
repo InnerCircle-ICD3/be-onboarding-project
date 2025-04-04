@@ -1,17 +1,14 @@
 package com.example
 
-import com.example.dto.CreateSurveyItemRequest
-import com.example.dto.CreateSurveyRequest
-import com.example.entity.InputType
+import com.example.dto.*
+import com.example.entity.*
+import com.example.exception.*
 import com.example.repository.SurveyRepository
 import com.example.service.CreateSurveyService
-import com.example.common.exception.InvalidSurveyRequestException
 import org.junit.jupiter.api.Assertions.*
 import org.junit.jupiter.api.DisplayName
 import org.junit.jupiter.api.Test
-import org.mockito.kotlin.any
-import org.mockito.kotlin.mock
-import org.mockito.kotlin.verify
+import org.mockito.kotlin.*
 
 class CreateSurveyServiceTest {
 
@@ -25,12 +22,11 @@ class CreateSurveyServiceTest {
             title = "Title",
             description = "Description",
             items = (1..10).map {
-                CreateSurveyItemRequest(
+                TextItemRequest(
                     name = "Question$it",
                     description = "Description$it",
-                    inputType = InputType.SHORT_TEXT,
                     isRequired = true,
-                    options = null
+                    isLong = false
                 )
             }
         )
@@ -46,12 +42,11 @@ class CreateSurveyServiceTest {
             title = "Title",
             description = "Description",
             items = (1..11).map {
-                CreateSurveyItemRequest(
+                TextItemRequest(
                     name = "Question$it",
                     description = "Description$it",
-                    inputType = InputType.SHORT_TEXT,
                     isRequired = true,
-                    options = null
+                    isLong = false
                 )
             }
         )
@@ -70,12 +65,12 @@ class CreateSurveyServiceTest {
             title = "Title",
             description = "Description",
             items = listOf(
-                CreateSurveyItemRequest(
+                ChoiceItemRequest(
                     name = "Language Choice",
                     description = "No options",
-                    inputType = InputType.SINGLE_CHOICE,
                     isRequired = true,
-                    options = null
+                    isMultiple = false,
+                    options = emptyList()
                 )
             )
         )
@@ -94,11 +89,11 @@ class CreateSurveyServiceTest {
             title = "Title",
             description = "Description",
             items = listOf(
-                CreateSurveyItemRequest(
+                ChoiceItemRequest(
                     name = "Language Choice",
                     description = "Empty options list",
-                    inputType = InputType.MULTI_CHOICE,
                     isRequired = true,
+                    isMultiple = true,
                     options = emptyList()
                 )
             )
@@ -118,12 +113,11 @@ class CreateSurveyServiceTest {
             title = "Title",
             description = "Description",
             items = listOf(
-                CreateSurveyItemRequest(
+                TextItemRequest(
                     name = "",
                     description = "Description",
-                    inputType = InputType.SHORT_TEXT,
                     isRequired = true,
-                    options = null
+                    isLong = false
                 )
             )
         )
@@ -142,12 +136,11 @@ class CreateSurveyServiceTest {
             title = "Title",
             description = "Description",
             items = listOf(
-                CreateSurveyItemRequest(
+                TextItemRequest(
                     name = "Question 1",
                     description = "",
-                    inputType = InputType.SHORT_TEXT,
                     isRequired = true,
-                    options = null
+                    isLong = false
                 )
             )
         )
@@ -166,12 +159,11 @@ class CreateSurveyServiceTest {
             title = "",
             description = "Description",
             items = listOf(
-                CreateSurveyItemRequest(
+                TextItemRequest(
                     name = "Question 1",
                     description = "Description",
-                    inputType = InputType.SHORT_TEXT,
                     isRequired = true,
-                    options = null
+                    isLong = false
                 )
             )
         )
@@ -190,12 +182,11 @@ class CreateSurveyServiceTest {
             title = "Title",
             description = "",
             items = listOf(
-                CreateSurveyItemRequest(
+                TextItemRequest(
                     name = "Question 1",
                     description = "Description",
-                    inputType = InputType.SHORT_TEXT,
                     isRequired = true,
-                    options = null
+                    isLong = false
                 )
             )
         )
