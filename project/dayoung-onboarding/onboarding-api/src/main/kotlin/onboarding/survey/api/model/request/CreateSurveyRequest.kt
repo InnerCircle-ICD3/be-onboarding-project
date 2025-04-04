@@ -14,5 +14,7 @@ data class QuestionRequest(
     val description: String,
     val type: SurveyQuestionType,
     val required: Boolean,
-    val options: List<String>? = null // 선택형일 때만 필요
+    val questionStatus:QuestionStatus? = QuestionStatus.ADD,
+    val options: List<String>? = null, // 선택형일 때만
+    val selectList: List<String>? = null // 선택형일 때만
 )
