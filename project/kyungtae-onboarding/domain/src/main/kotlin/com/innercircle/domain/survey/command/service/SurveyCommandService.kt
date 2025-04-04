@@ -11,14 +11,13 @@ import java.util.*
 class SurveyCommandService(
     private val surveyRepository: SurveyRepository
 ) {
-    fun create(command: SurveyCreateCommand): Survey {
-        val survey = Survey.from(command)
-
-        return surveyRepository.save(survey)
-    }
+    fun create(command: SurveyCreateCommand): Survey =
+        surveyRepository.save(Survey.from(command))
 
     fun update(id: UUID, command: SurveyUpdateCommand) {
         val survey = surveyRepository.fetchSurveyQuestions(id).orElseThrow()
         survey.update(command)
     }
+
+    fun increaseParticipantCount(surveyId: UUID): Boolean = surveyRepository.increaseParticipantCount(surveyId)
 }

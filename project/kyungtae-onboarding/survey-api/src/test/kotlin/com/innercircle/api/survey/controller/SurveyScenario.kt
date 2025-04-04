@@ -11,7 +11,7 @@ import io.restassured.response.ValidatableResponse
 import org.apache.http.HttpHeaders
 import org.apache.http.HttpStatus
 
-val LOCATION_HEADER_VALUE_REGEX = "/api/surveys/[a-f0-9]{8}-([a-f0-9]{4}-){3}[a-f0-9]{12}"
+val LOCATION_HEADER_VALUE_REGEX = "/api/surveys/[a-f0-9]{8}(-[a-f0-9]{4}){3}-[a-f0-9]{12}(/answers/\\d+)?"
 fun getIdFromLocation(locationHeaderValue: String?) = locationHeaderValue!!.substringAfterLast("/")
 
 fun 설문_생성(surveyCreateRequest: SurveyCreateRequest): String? =

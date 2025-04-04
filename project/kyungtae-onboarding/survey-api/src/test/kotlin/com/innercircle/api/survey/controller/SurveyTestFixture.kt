@@ -204,11 +204,28 @@ fun 단일_선택형_설문_답변_요청(questionId: Long?, questionOptionId: L
         surveyQuestionName = "단일 선택형 질문",
         surveyQuestionDescription = "단일 선택형 질문 설명",
         questionType = QuestionType.SINGLE_CHOICE.name,
-        content = "단일 선택형 답변",
+        content = "단일 선택형 선택지 내용",
         options = listOf(
             SurveyAnswerOptionCreateRequest(
                 optionId = questionOptionId,
-                content = "단일 선택형 답변"
+                content = "단일 선택형 선택지 내용"
             )
         )
+    )
+
+fun 다중_선택형_설문_답변_요청(questionId: Long?, vararg questionOptionIds: Long?): SurveyAnswerCreateRequest =
+    SurveyAnswerCreateRequest(
+        surveyQuestionId = questionId,
+        surveyName = "다중 선택형 설문",
+        surveyDescription = "다중 선택형 설문 설명",
+        surveyQuestionName = "다중 선택형 질문",
+        surveyQuestionDescription = "다중 선택형 질문 설명",
+        questionType = QuestionType.SINGLE_CHOICE.name,
+        content = "다중 선택형 선택지 내용",
+        options = questionOptionIds.map {
+            SurveyAnswerOptionCreateRequest(
+                optionId = it,
+                content = "다중 선택형 선택지 내용"
+            )
+        }
     )

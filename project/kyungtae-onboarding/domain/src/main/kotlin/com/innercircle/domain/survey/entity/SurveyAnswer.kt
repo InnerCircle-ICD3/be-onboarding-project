@@ -1,6 +1,7 @@
 package com.innercircle.survey.entity
 
 import com.innercircle.common.BaseEntity
+import com.innercircle.domain.survey.command.dto.SurveyAnswerCreateCommand
 import com.innercircle.domain.survey.entity.SurveyContext
 import com.innercircle.domain.survey.entity.SurveyQuestionContext
 import jakarta.persistence.*
@@ -51,19 +52,27 @@ class SurveyAnswer private constructor(
     }
 
     companion object {
+
         fun of(
             surveyQuestion: SurveyQuestion,
-            content: String,
-            questionType: QuestionType
+            command: SurveyAnswerCreateCommand
         ): SurveyAnswer {
+            val survey = surveyQuestion.survey
             return SurveyAnswer(
-                survey = surveyQuestion.survey,
+                survey = survey,
+                surveyContext = survey.context,
                 surveyQuestion = surveyQuestion,
-                content = content,
-                surveyContext = surveyQuestion.survey.context,
                 surveyQuestionContext = surveyQuestion.context,
-                questionType = questionType
-            ).also {
+                content = command.content,
+                questionType = surveyQuestion.questionType,
+            ).apply {
+                command.options.forEach { commandOption ->
+                    val matchingOption = surveyQuestion.options.firstOrNull { it.id == commandOption.optionId }
+                    matchingOption?.let {
+                        this.options.add(SurveyAnswerOption.of(matchingOption, this))
+                    }
+                }
+            }.also {
                 validateType(it)
             }
         }
@@ -72,9 +81,14 @@ class SurveyAnswer private constructor(
             when (surveyAnswer.questionType) {
                 QuestionType.SHORT_ANSWER -> check(surveyAnswer.options.isEmpty()) { "Short answer question should not have options" }
                 QuestionType.LONG_ANSWER -> check(surveyAnswer.options.isEmpty()) { "Long answer question should not have options" }
-                QuestionType.SINGLE_CHOICE -> check(surveyAnswer.options.isNotEmpty()) { "Single choice question should have options" }
-                QuestionType.MULTI_CHOICE -> check(surveyAnswer.options.isNotEmpty()) {
-                    "Multi choice question should have options"
+                QuestionType.SINGLE_CHOICE -> {
+                    check(surveyAnswer.options.isNotEmpty()) { "Single choice question should have options" }
+                    check(surveyAnswer.options.size == 1) { "Single choice question should have only one selected option" }
+                }
+                QuestionType.MULTI_CHOICE -> {
+                    check(surveyAnswer.options.isNotEmpty()) {
+                        "Multi choice question should have options"
+                    }
                 }
             }
         }
