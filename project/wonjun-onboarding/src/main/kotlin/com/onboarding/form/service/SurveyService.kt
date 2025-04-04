@@ -48,10 +48,10 @@ class SurveyService(
                 "Survey version not found"
             }
 
-        val questionIdToResponse: Map<Long, Answer> =
-            answerRequestDto.answers.associate { it.questionId to Answer.of(it) }
+        val answers: List<Answer> =
+            answerRequestDto.answers.map { Answer.of(it) }
 
-        surveyVersion.checkValid(questionIdToResponse)
-        answerRepository.saveAll(questionIdToResponse.values)
+        surveyVersion.checkValid(answers)
+        answerRepository.saveAll(answers)
     }
 }

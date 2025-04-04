@@ -19,12 +19,14 @@ class SurveyVersion(
         this.questions.add(question)
     }
 
-    fun checkValid(questionIdToResponse: Map<Long, Answer>) {
+    fun checkValid(answers: List<Answer>) {
+        val questionIdToResponse: Map<Long, Answer> = answers.associateBy(Answer::questionId)
+
         questions.forEach { question ->
             if (!question.isRequired) return@forEach
             val answer =
                 requireNotNull(questionIdToResponse.getValue(question.id)) { "QuestionId ${question.id} is answer required" }
-            question.isValidAnswer(answer)
+            question.checkValid(answer)
         }
     }
 

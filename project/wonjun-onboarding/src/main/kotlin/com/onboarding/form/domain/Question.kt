@@ -27,7 +27,7 @@ abstract class Question(
     @get:Transient
     abstract val type: QuestionType
 
-    abstract fun isValidAnswer(answer: Answer)
+    abstract fun checkValid(answer: Answer)
 
     companion object {
         fun of(question: CreateQuestionDto): Question {
@@ -79,7 +79,7 @@ class LongQuestion(
     surveyVersion
 ) {
     override val type: QuestionType = QuestionType.LONG
-    override fun isValidAnswer(answer: Answer) {
+    override fun checkValid(answer: Answer) {
         check(answer is InsertAnswer) { "invalid AnswerType" }
     }
 }
@@ -100,7 +100,7 @@ class ShortQuestion(
     surveyVersion
 ) {
     override val type: QuestionType = QuestionType.SHORT
-    override fun isValidAnswer(answer: Answer) {
+    override fun checkValid(answer: Answer) {
         check(answer is InsertAnswer) { "invalid AnswerType" }
     }
 }
@@ -124,7 +124,7 @@ class SingleSelectQuestion(
     surveyVersion
 ) {
     override val type: QuestionType = QuestionType.SINGLE_SELECT
-    override fun isValidAnswer(answer: Answer) {
+    override fun checkValid(answer: Answer) {
         check(answer is SelectAnswer) { "invalid AnswerType" }
         require(answer.selected.size == 1) { "Selected Answer is invalid" }
         require(answerList.contains(answer.selected.first())) { "Selected Answer is not in candidates" }
@@ -150,7 +150,7 @@ class MultiSelectQuestion(
     surveyVersion
 ) {
     override val type: QuestionType = QuestionType.MULTI_SELECT
-    override fun isValidAnswer(answer: Answer) {
+    override fun checkValid(answer: Answer) {
         check(answer is SelectAnswer) { "invalid AnswerType" }
         answer.selected
             .forEach {
