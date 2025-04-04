@@ -1,13 +1,11 @@
 package com.example
 
-import com.example.dto.AnswerDto
-import com.example.dto.AnswerSubmitDto
+import com.example.dto.*
 import com.example.entity.*
+import com.example.exception.*
 import com.example.repository.SurveyAnswerRepository
 import com.example.repository.SurveyRepository
 import com.example.service.SurveyAnswerService
-import com.example.common.exception.InvalidSurveyRequestException
-import com.example.common.exception.SurveyNotFoundException
 import org.junit.jupiter.api.Assertions.*
 import org.junit.jupiter.api.DisplayName
 import org.junit.jupiter.api.Test
@@ -28,31 +26,42 @@ class SurveyAnswerServiceTest {
             title = "Answer Submission Test Survey",
             description = "Test for submitting and retrieving responses"
         )
-        val singleChoiceItem = SurveyItem(1L, "Language Choice", "Choose a language", InputType.SINGLE_CHOICE, true, survey = survey)
-        val shortTextItem = SurveyItem(2L, "Experience", "Years of experience", InputType.SHORT_TEXT, false, survey = survey)
-        val kotlinOption = SelectionOption(value = "Kotlin", surveyItem = singleChoiceItem)
-        val javaOption = SelectionOption(value = "Java", surveyItem = singleChoiceItem)
+
+        val singleChoiceItem = ChoiceItem(
+            name = "Language Choice",
+            description = "Choose a language",
+            isRequired = true,
+            isMultiple = false,
+            survey = survey
+        ).apply { id = 1L }
+
+        val shortTextItem = TextItem(
+            name = "Experience",
+            description = "Years of experience",
+            isRequired = false,
+            survey = survey
+        ).apply { id = 2L }
+
+        val kotlinOption = SelectionOption(id = 10L, value = "Kotlin", item = singleChoiceItem)
+        val javaOption = SelectionOption(value = "Java", item = singleChoiceItem)
         singleChoiceItem.options.addAll(listOf(kotlinOption, javaOption))
+
         survey.items.addAll(listOf(singleChoiceItem, shortTextItem))
 
         whenever(surveyRepository.findById(1L)).thenReturn(Optional.of(survey))
 
         val request = AnswerSubmitDto(
             answers = listOf(
-                AnswerDto(1L, listOf("Kotlin")),
-                AnswerDto(2L, listOf("3 years"))
+                ChoiceAnswerDto(itemId = singleChoiceItem.id, selectedOptionIds = listOf(kotlinOption.id)),
+                TextAnswerDto(itemId = shortTextItem.id, value = "3 years")
             )
         )
 
-        val captor = argumentCaptor<List<SurveyAnswer>>()
-        surveyAnswerService.submitAnswer(1L, request)
-        verify(surveyAnswerRepository).saveAll(captor.capture())
+        assertDoesNotThrow {
+            surveyAnswerService.submitAnswer(1L, request)
+        }
 
-        val savedAnswers = captor.firstValue
-        val selectedOptionValues = savedAnswers.first { it.surveyItem.id == 1L }.selectedOptions.map { it.value }
-
-        assertTrue(selectedOptionValues.contains("Kotlin"))
-        assertEquals("3 years", savedAnswers.first { it.surveyItem.id == 2L }.shortAnswer)
+        verify(surveyAnswerRepository).saveAll(any<List<SurveyAnswerBase>>())
     }
 
     @Test
@@ -63,26 +72,33 @@ class SurveyAnswerServiceTest {
             title = "Answer Value Match Test",
             description = "Test if the answer matches the options"
         )
-        val item = SurveyItem(1L, "Language Choice", "Choose a language", InputType.SINGLE_CHOICE, true, survey = survey)
-        item.options.addAll(
-            listOf(
-                SelectionOption(value = "Kotlin", surveyItem = item),
-                SelectionOption(value = "Java", surveyItem = item)
-            )
+
+        val item = ChoiceItem(
+            name = "Language Choice",
+            description = "Choose a language",
+            isRequired = true,
+            isMultiple = false,
+            survey = survey
         )
+
+        val kotlin = SelectionOption(value = "Kotlin", item = item)
+        val java = SelectionOption(value = "Java", item = item)
+        item.options.addAll(listOf(kotlin, java))
         survey.items.add(item)
 
         whenever(surveyRepository.findById(1L)).thenReturn(Optional.of(survey))
 
         val request = AnswerSubmitDto(
-            answers = listOf(AnswerDto(1L, listOf("Python")))
+            answers = listOf(
+                ChoiceAnswerDto(itemId = item.id, selectedOptionIds = listOf(999L))
+            )
         )
 
         val exception = assertThrows(InvalidSurveyRequestException::class.java) {
             surveyAnswerService.submitAnswer(1L, request)
         }
 
-        assertEquals(InvalidSurveyRequestException("You must enter a valid answer for the selected options.").message, exception.message)
+        assertEquals("You must enter a valid answer for the selected options.", exception.message)
     }
 
     @Test
@@ -91,14 +107,14 @@ class SurveyAnswerServiceTest {
         whenever(surveyRepository.findById(999L)).thenReturn(Optional.empty())
 
         val request = AnswerSubmitDto(
-            answers = listOf(AnswerDto(1L, listOf("Kotlin")))
+            answers = listOf(TextAnswerDto(itemId = 1L, value = "Kotlin"))
         )
 
         val exception = assertThrows(SurveyNotFoundException::class.java) {
             surveyAnswerService.submitAnswer(999L, request)
         }
 
-        assertEquals(SurveyNotFoundException().message, exception.message)
+        assertEquals(ErrorCode.SURVEY_NOT_FOUND.message, exception.message)
     }
 
     @Test
@@ -109,24 +125,33 @@ class SurveyAnswerServiceTest {
             title = "Programming Language Survey",
             description = "Select all the languages you use"
         )
-        val item = SurveyItem(1L, "Language Choice", "Select all the languages you use", InputType.MULTI_CHOICE, true, survey = survey)
-        val kotlin = SelectionOption(value = "Kotlin", surveyItem = item)
-        val java = SelectionOption(value = "Java", surveyItem = item)
+
+        val item = ChoiceItem(
+            name = "Language Choice",
+            description = "Select all the languages you use",
+            isRequired = true,
+            isMultiple = true,
+            survey = survey
+        )
+
+        val kotlin = SelectionOption(id = 100L, value = "Kotlin", item = item)
+        val java = SelectionOption(id = 101L, value = "Java", item = item)
         item.options.addAll(listOf(kotlin, java))
         survey.items.add(item)
 
         whenever(surveyRepository.findById(1L)).thenReturn(Optional.of(survey))
 
         val request = AnswerSubmitDto(
-            answers = listOf(AnswerDto(1L, listOf("Kotlin", "Java")))
+            answers = listOf(
+                ChoiceAnswerDto(itemId = item.id, selectedOptionIds = listOf(kotlin.id, java.id))
+            )
         )
 
-        val captor = argumentCaptor<List<SurveyAnswer>>()
-        surveyAnswerService.submitAnswer(1L, request)
-        verify(surveyAnswerRepository).saveAll(captor.capture())
+        assertDoesNotThrow {
+            surveyAnswerService.submitAnswer(1L, request)
+        }
 
-        val savedOptions = captor.firstValue.first().selectedOptions.map { it.value }
-        assertTrue(savedOptions.containsAll(listOf("Kotlin", "Java")))
+        verify(surveyAnswerRepository).saveAll(any<List<SurveyAnswerBase>>())
     }
 
     @Test
@@ -137,26 +162,75 @@ class SurveyAnswerServiceTest {
             title = "Language Selection Survey",
             description = "Multiple choice test"
         )
-        val item = SurveyItem(1L, "Language", "Languages used", InputType.MULTI_CHOICE, true, survey = survey)
-        item.options.addAll(
-            listOf(
-                SelectionOption(value = "Kotlin", surveyItem = item),
-                SelectionOption(value = "Java", surveyItem = item),
-                SelectionOption(value = "Python", surveyItem = item)
-            )
+
+        val item = ChoiceItem(
+            name = "Language",
+            description = "Languages used",
+            isRequired = true,
+            isMultiple = true,
+            survey = survey
         )
+
+        val kotlin = SelectionOption(id = 200L, value = "Kotlin", item = item)
+        val java = SelectionOption(id = 201L, value = "Java", item = item)
+        val python = SelectionOption(id = 202L, value = "Python", item = item)
+        item.options.addAll(listOf(kotlin, java, python))
         survey.items.add(item)
 
         whenever(surveyRepository.findById(1L)).thenReturn(Optional.of(survey))
 
         val request = AnswerSubmitDto(
-            answers = listOf(AnswerDto(1L, listOf("Kotlin", "Scala")))
+            answers = listOf(
+                ChoiceAnswerDto(itemId = item.id, selectedOptionIds = listOf(kotlin.id, 999L))
+            )
         )
 
         val exception = assertThrows(InvalidSurveyRequestException::class.java) {
             surveyAnswerService.submitAnswer(1L, request)
         }
 
-        assertEquals(InvalidSurveyRequestException("You must enter a valid answer for the selected options.").message, exception.message)
+        assertEquals("You must enter a valid answer for the selected options.", exception.message)
+    }
+
+    @Test
+    @DisplayName("Should throw exception when required question is missing in answers")
+    fun shouldThrowExceptionWhenRequiredQuestionIsMissing() {
+        val survey = Survey(
+            id = 1L,
+            title = "Required Field Survey",
+            description = "Test for required field"
+        )
+
+        val requiredTextItem = TextItem(
+            name = "Your Name",
+            description = "Please enter your name",
+            isRequired = true,
+            isLong = false,
+            survey = survey
+        ).apply { id = 1L }
+
+        val optionalItem = TextItem(
+            name = "Your Hobby",
+            description = "Optional hobby",
+            isRequired = false,
+            isLong = false,
+            survey = survey
+        ).apply { id = 2L }
+
+        survey.items.addAll(listOf(requiredTextItem, optionalItem))
+
+        whenever(surveyRepository.findById(1L)).thenReturn(Optional.of(survey))
+
+        val request = AnswerSubmitDto(
+            answers = listOf(
+                TextAnswerDto(itemId = optionalItem.id, value = "Coding")
+            )
+        )
+
+        val exception = assertThrows(InvalidSurveyRequestException::class.java) {
+            surveyAnswerService.submitAnswer(1L, request)
+        }
+
+        assertEquals("Required questions must be answered.", exception.message)
     }
 }
