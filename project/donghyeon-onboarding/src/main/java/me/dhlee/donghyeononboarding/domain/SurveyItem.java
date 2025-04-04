@@ -23,6 +23,8 @@ import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import me.dhlee.donghyeononboarding.common.BaseEntity;
+import me.dhlee.donghyeononboarding.exception.AppException;
+import me.dhlee.donghyeononboarding.exception.ErrorCode;
 
 @Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
@@ -68,5 +70,16 @@ public class SurveyItem extends BaseEntity {
         this.isRequired = isRequired;
         this.displayOrder = displayOrder;
         this.survey = survey;
+    }
+
+    public void addOption(SurveyItemOption option) {
+        if (isFull()) {
+            throw new AppException(ErrorCode.SURVEY_ITEM_OPTION_SIZE_OVERFLOW);
+        }
+        this.options.add(option);
+    }
+
+    private boolean isFull() {
+        return this.options.size() > 10;
     }
 }

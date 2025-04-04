@@ -8,6 +8,8 @@ import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import me.dhlee.donghyeononboarding.common.BaseEntity;
+import me.dhlee.donghyeononboarding.exception.AppException;
+import me.dhlee.donghyeononboarding.exception.ErrorCode;
 
 import java.util.ArrayList;
 import java.util.HashSet;
@@ -34,5 +36,16 @@ public class Survey extends BaseEntity {
     private Survey(String title, String description) {
         this.title = title;
         this.description = description;
+    }
+
+    public void addItem(SurveyItem item) {
+        if (isFull()) {
+            throw new AppException(ErrorCode.SURVEY_ITEM_SIZE_OVERFLOW);
+        }
+        this.items.add(item);
+    }
+
+    private boolean isFull() {
+        return items.size() >= 10;
     }
 }
