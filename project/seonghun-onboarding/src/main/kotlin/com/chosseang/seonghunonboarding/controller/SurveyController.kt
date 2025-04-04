@@ -8,6 +8,7 @@ import com.chosseang.seonghunonboarding.entity.Survey
 import com.chosseang.seonghunonboarding.service.SurveyService
 import org.springframework.http.HttpStatus
 import org.springframework.http.ResponseEntity
+import org.springframework.web.bind.annotation.GetMapping
 import org.springframework.web.bind.annotation.PostMapping
 import org.springframework.web.bind.annotation.RequestBody
 import org.springframework.web.bind.annotation.RequestMapping
@@ -17,6 +18,12 @@ import org.springframework.web.bind.annotation.RestController
 @RestController
 @RequestMapping("/surveys")
 class SurveyController (val surveyService: SurveyService) {
+
+    @GetMapping
+    fun searchSurveys() : List<Survey> {
+
+        return surveyService.searchSurvey();
+    }
 
     @PostMapping("/create")
     @ResponseBody
