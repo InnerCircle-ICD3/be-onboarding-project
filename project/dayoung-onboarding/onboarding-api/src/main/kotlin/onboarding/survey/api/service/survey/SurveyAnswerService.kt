@@ -126,11 +126,12 @@ class SurveyAnswerService (
                     question?.let {
                         AnswerDetail(
                             questionId = it.questionId,
+                            orderNumber = it.orderNumber,
                             questionName = it.title,
                             answer = detail.answer.orEmpty()
                         )
                     }
-                }.sortedBy { it.questionId },
+                }.sortedBy { it.orderNumber },
             )
         }
 

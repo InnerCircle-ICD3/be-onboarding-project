@@ -16,6 +16,7 @@ data class AnswerResponse(
 
 data class AnswerDetail(
     val questionId: Int,
+    val orderNumber: Int,
     val questionName: String,
     val answer: Any
 )
