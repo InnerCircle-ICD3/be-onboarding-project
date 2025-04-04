@@ -13,7 +13,7 @@ class SurveyItemEntity(
 ) {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    val id = 0
+    val id: Long = 0
 
     var surveyId: Long = surveyId
         protected set

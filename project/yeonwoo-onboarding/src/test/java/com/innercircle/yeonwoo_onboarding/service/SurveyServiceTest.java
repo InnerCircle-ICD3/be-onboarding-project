@@ -1,12 +1,14 @@
 package com.innercircle.yeonwoo_onboarding.service;
 
 import com.innercircle.yeonwoo_onboarding.domain.Survey;
+
 import com.innercircle.yeonwoo_onboarding.domain.SurveyItem;
 import com.innercircle.yeonwoo_onboarding.domain.SurveyItemOption;
 import com.innercircle.yeonwoo_onboarding.repository.SurveyRepository;
 import com.innercircle.yeonwoo_onboarding.dto.SurveyCreateDto;
 import com.innercircle.yeonwoo_onboarding.dto.SurveyItemCreateDto;
 import com.innercircle.yeonwoo_onboarding.domain.enums.InputType;
+
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -16,6 +18,7 @@ import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
 import java.util.ArrayList;
+
 import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
@@ -45,6 +48,7 @@ class SurveyServiceTest {
     @BeforeEach
     void setUp() {
         testSurvey = new Survey();
+      
         testSurvey.setId("2025040300001");   
         testSurvey.setName("Test Survey");
         testSurvey.setDescription("Test Description");
@@ -71,7 +75,8 @@ class SurveyServiceTest {
     @DisplayName("Should return survey when valid ID is provided")
     void findSurveyById_WithValidId_ShouldReturnSurvey() {
         // Given
-        String surveyId = "2025040300001";  // Changed from Long to String
+        String surveyId = "2025040300001"; 
+
         when(surveyRepository.findById(surveyId)).thenReturn(Optional.of(testSurvey));
 
         // When
@@ -88,7 +93,8 @@ class SurveyServiceTest {
     @DisplayName("Should throw exception when survey is not found")
     void findSurveyById_WithInvalidId_ShouldThrowException() {
         // Given
-        String invalidId = "2025040399999";  // Changed from 999L to String
+        String invalidId = "2025040399999";  
+
         when(surveyRepository.findById(invalidId)).thenReturn(Optional.empty());
 
         // When & Then
@@ -100,6 +106,7 @@ class SurveyServiceTest {
     }
 
     @Test
+
     @DisplayName("Should successfully create survey with items")
     void createSurvey_WithItems_ShouldReturnSavedSurvey() {
         // Given
@@ -184,7 +191,7 @@ class SurveyServiceTest {
         
         assertThat(exception)
             .hasMessageContaining("Survey not found")
-            .hasMessageContaining(String.valueOf(invalidId));  // Convert Long to String for message comparison
+            .hasMessageContaining(String.valueOf(invalidId));  
         verify(surveyRepository).findById(invalidId);
         verify(surveyRepository, never()).save(any(Survey.class));
     }
@@ -193,7 +200,8 @@ class SurveyServiceTest {
     @DisplayName("Should throw exception when deleting non-existent survey")
     void deleteSurvey_WithInvalidId_ShouldThrowException() {
         // Given
-        String invalidId = "2025040399999";  // Changed from Long to String
+        String invalidId = "2025040399999";  
+
         when(surveyRepository.findById(invalidId)).thenReturn(Optional.empty());
 
         // When & Then
@@ -202,7 +210,8 @@ class SurveyServiceTest {
         
         assertThat(exception)
             .hasMessageContaining("Survey not found")
-            .hasMessageContaining(String.valueOf(invalidId));  // Convert Long to String for message comparison
+
+            .hasMessageContaining(String.valueOf(invalidId));  
         verify(surveyRepository).findById(invalidId);
         verify(surveyRepository, never()).deleteById(any());
     }
@@ -211,7 +220,7 @@ class SurveyServiceTest {
     @DisplayName("Should successfully delete existing survey")
     void deleteSurvey_ShouldDeleteSurvey() {
         // Given
-        String surveyId = "2025040300001";  // Changed from Long to String
+        String surveyId = "2025040300001";
         when(surveyRepository.findById(surveyId)).thenReturn(Optional.of(testSurvey));
 
         // When
@@ -221,4 +230,5 @@ class SurveyServiceTest {
         verify(surveyRepository).findById(surveyId);
         verify(surveyRepository).deleteById(surveyId);
     }
+
 }

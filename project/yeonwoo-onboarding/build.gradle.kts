@@ -45,8 +45,10 @@ dependencies {
         exclude(group = "org.junit.vintage", module = "junit-vintage-engine") // JUnit 4 제외
     }
     // testImplementation("org.junit.jupiter:junit-jupiter")
+
     //아이디 생성
     implementation("org.hibernate:hibernate-core:6.2.7.Final")
+
 
 }
 
@@ -54,11 +56,10 @@ tasks.withType<KotlinCompile> {
     kotlinOptions {
         freeCompilerArgs += "-Xjsr305=strict"
         jvmTarget = "19"
-
     }
 }
 
 tasks.withType<Test> {
-    useJUnitPlatform() 
 
+    useJUnitPlatform() 
 }

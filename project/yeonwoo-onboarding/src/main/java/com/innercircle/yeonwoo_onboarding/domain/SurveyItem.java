@@ -5,6 +5,7 @@ import com.innercircle.yeonwoo_onboarding.domain.enums.InputType;
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+
 import lombok.Setter;
 
 import java.util.ArrayList;
@@ -21,6 +22,7 @@ public class SurveyItem {
     @GeneratedValue(generator = "survey-item-id-generator")
     @GenericGenerator(name = "survey-item-id-generator", 
                      strategy = "com.innercircle.yeonwoo_onboarding.domain.generator.SurveyItemIdGenerator")
+
     @Column(name = "SURVEY_ITEM_ID")
     private String id;
 
@@ -76,4 +78,5 @@ public class SurveyItem {
         this.options.add(option);
         option.setSurveyItem(this);
     }
+
 }

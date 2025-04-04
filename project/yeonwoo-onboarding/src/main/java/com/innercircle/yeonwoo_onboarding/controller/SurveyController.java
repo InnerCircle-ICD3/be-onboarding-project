@@ -1,7 +1,9 @@
 package com.innercircle.yeonwoo_onboarding.controller;
 
 import com.innercircle.yeonwoo_onboarding.domain.Survey;
+
 import com.innercircle.yeonwoo_onboarding.dto.SurveyCreateDto;
+
 import com.innercircle.yeonwoo_onboarding.service.SurveyService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
@@ -26,6 +28,7 @@ public class SurveyController {
     }
 
     @PostMapping
+
     public ResponseEntity<Survey> createSurvey(@RequestBody SurveyCreateDto surveyDto) {
         try {
             Survey survey = surveyService.createSurvey(surveyDto);
@@ -39,6 +42,7 @@ public class SurveyController {
     @PutMapping("/{id}")
     public ResponseEntity<Survey> updateSurvey(@PathVariable String id, @RequestBody Survey survey) {
         return ResponseEntity.ok(surveyService.updateSurvey(id, survey));
+
     }
 
     @DeleteMapping("/{id}")
