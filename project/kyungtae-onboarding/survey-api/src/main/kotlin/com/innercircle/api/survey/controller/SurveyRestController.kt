@@ -41,4 +41,12 @@ class SurveyRestController(
         surveyService.updateSurvey(id, request)
         return ResponseEntity.noContent().build()
     }
+
+    @PostMapping("/{id:[a-f0-9]{8}-(?:[a-f0-9]{4}-){3}[a-f0-9]{12}}/answers")
+    fun answerSurvey(
+        @RequestBody @Valid request: SurveyCreateRequest
+    ): ResponseEntity<Unit> {
+        val surveyCreatedResponse = surveyService.createSurvey(request)
+        return ResponseEntity.created(URI.create("/api/surveys/${surveyCreatedResponse.externalId}")).build()
+    }
 }

@@ -1,6 +1,7 @@
 package com.innercircle.api.survey.controller
 
 import com.innercircle.api.common.jsonMapper
+import com.innercircle.api.survey.controller.request.SurveyAnswerCreateRequest
 import com.innercircle.api.survey.controller.request.SurveyCreateRequest
 import com.innercircle.api.survey.controller.request.SurveyUpdateRequest
 import com.innercircle.api.survey.controller.response.SurveyResponse
@@ -46,3 +47,18 @@ fun 설문_수정(id: String, surveyUpdateRequest: SurveyUpdateRequest): Validat
         .then()
         .log().body()
         .statusCode(HttpStatus.SC_NO_CONTENT)
+
+fun 설문_답변(surveyId: String, surveyAnswerRequest: SurveyAnswerCreateRequest): String? {
+    return RestAssured.given()
+        .contentType(ContentType.JSON)
+        .accept(ContentType.JSON)
+        .body(jsonMapper().writeValueAsString(surveyAnswerRequest))
+        .post("/api/surveys/$surveyId/answers")
+        .then()
+        .log().body()
+        .statusCode(HttpStatus.SC_CREATED)
+        .extract()
+        .headers()
+        .get(HttpHeaders.LOCATION)
+        .value
+}

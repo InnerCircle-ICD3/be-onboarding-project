@@ -13,6 +13,30 @@ import java.time.temporal.ChronoUnit
 
 @IntegrationTest
 class SurveyRestControllerIntegrationTest {
+
+    @Nested
+    inner class `설문 질문에 응답한다` {
+        @Test
+        fun `단일 선택형 설문에 응답한다`() {
+            // given
+            val surveyCreateRequest = 단일_선택형_설문_생성_요청()
+            val surveyId = getIdFromLocation(설문_생성(surveyCreateRequest))
+            val surveyResponse = 설문_조회(surveyId)
+            val questionId = surveyResponse.questions?.firstOrNull()?.id
+            val questionOptionId = surveyResponse.questions?.firstOrNull()?.options?.firstOrNull()?.id
+            val surveyAnswerRequest = 단일_선택형_설문_답변_요청(questionId, questionOptionId)
+
+            // when
+            val locationHeaderValue = 설문_답변(surveyId, surveyAnswerRequest)
+            val surveyAnswerId = getIdFromLocation(locationHeaderValue)
+
+            // then
+            assertThat(locationHeaderValue).matches(LOCATION_HEADER_VALUE_REGEX)
+            assertThat(surveyAnswerId).matches(LOCATION_HEADER_VALUE_REGEX)
+        }
+    }
+
+
     @Nested
     inner class `설문을_수정한다` {
 
