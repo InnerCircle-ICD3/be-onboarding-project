@@ -1,3 +1,3 @@
-rootProject.name = "servey-application"
+rootProject.name = "survey-application"
 
 include("domain", "survey-api")
