@@ -2,7 +2,7 @@ package com.hjpark.shared.exception
 
 import com.hjpark.shared.context.RequestContext
 import com.hjpark.shared.response.ApiResponse
-import com.sun.org.slf4j.internal.LoggerFactory
+import org.slf4j.LoggerFactory
 
 object ExceptionHandler {
     private val logger = LoggerFactory.getLogger(ExceptionHandler::class.java)
