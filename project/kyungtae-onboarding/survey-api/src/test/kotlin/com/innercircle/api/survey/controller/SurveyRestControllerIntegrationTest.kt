@@ -120,6 +120,7 @@ class SurveyRestControllerIntegrationTest {
             assertThat(surveyResponse.endAt?.truncatedTo(ChronoUnit.SECONDS))
                 .isEqualTo(surveyCreateRequest.endAt?.truncatedTo(ChronoUnit.SECONDS))
             assertThat(surveyResponse.participantCapacity).isEqualTo(surveyCreateRequest.participantCapacity)
+            assertThat(surveyResponse.participantCount).isZero()
             assertThat(surveyResponse.createdAt).isNotNull()
             assertThat(surveyResponse.updatedAt).isNotNull()
         }
