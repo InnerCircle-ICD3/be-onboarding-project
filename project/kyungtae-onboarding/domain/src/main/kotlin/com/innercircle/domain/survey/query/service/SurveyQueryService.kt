@@ -13,11 +13,6 @@ class SurveyQueryService(
     private val surveyRepository: SurveyRepository
 ) {
     @SoftDeletedFilter
-    fun fetchSurveyAggregateOrThrow(id: UUID): Survey {
-        val surveyWithQuestions = surveyRepository.fetchSurveyQuestions(id).orElseThrow()
-        val surveyWithAnswers = surveyRepository.fetchSurveyAnswers(id).orElseThrow()
-        surveyWithQuestions.answers.addAll(surveyWithAnswers.answers)
-        return surveyWithQuestions
-    }
+    fun fetchSurveyAggregateOrThrow(id: UUID): Survey = surveyRepository.fetchSurveyQuestions(id).orElseThrow()
 
 }
