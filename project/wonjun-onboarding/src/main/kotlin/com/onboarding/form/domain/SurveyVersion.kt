@@ -10,13 +10,22 @@ class SurveyVersion(
     var version: Int,
     @ManyToOne
     @JoinColumn(name = "survey_id")
-    val survey: Survey,
+    var survey: Survey? = null,
     @OneToMany(mappedBy = "surveyVersion", cascade = [CascadeType.ALL])
     val questions: MutableList<Question> = mutableListOf()
 ) {
     fun addQuestion(question: Question) {
         question.surveyVersion = this
         this.questions.add(question)
+    }
+
+    fun checkValid(questionIdToResponse: Map<Long, Answer>) {
+        questions.forEach { question ->
+            if (!question.isRequired) return@forEach
+            val answer =
+                requireNotNull(questionIdToResponse.getValue(question.id)) { "QuestionId ${question.id} is answer required" }
+            question.isValidAnswer(answer)
+        }
     }
 
     companion object {
