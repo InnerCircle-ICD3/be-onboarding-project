@@ -3,6 +3,7 @@ package com.chosseang.seonghunonboarding.controller
 import com.chosseang.seonghunonboarding.dto.ApiResponse
 import com.chosseang.seonghunonboarding.dto.SurveyCreateRequest
 import com.chosseang.seonghunonboarding.dto.SurveyCreateResponse
+import com.chosseang.seonghunonboarding.dto.SurveySearchResponse
 import com.chosseang.seonghunonboarding.entity.Item
 import com.chosseang.seonghunonboarding.entity.Survey
 import com.chosseang.seonghunonboarding.service.SurveyService
@@ -20,9 +21,21 @@ import org.springframework.web.bind.annotation.RestController
 class SurveyController (val surveyService: SurveyService) {
 
     @GetMapping
-    fun searchSurveys() : List<Survey> {
+    fun searchSurveys() : ResponseEntity<ApiResponse<List<SurveySearchResponse>>> {
 
-        return surveyService.searchSurvey();
+        val apiResponse = ApiResponse(
+            status = HttpStatus.OK.value(),
+            result = surveyService.searchSurvey().map {
+                survey -> SurveySearchResponse(
+                    id = survey.id,
+                    name = survey.name,
+                    description = survey.description,
+                    items = survey.items
+                )
+            }
+        )
+
+        return ResponseEntity.ok(apiResponse)
     }
 
     @PostMapping("/create")
