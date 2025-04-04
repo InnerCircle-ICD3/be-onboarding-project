@@ -15,7 +15,7 @@ data class Survey(
     var name: String,
     var description: String,
 
-    @OneToMany(mappedBy = "survey", orphanRemoval = true, cascade = [CascadeType.ALL])
+    @OneToMany(mappedBy = "survey", cascade = [CascadeType.ALL])
     var items: MutableList<Item>
 ){
     // 아이템 추가 메서드 - 양방향 관계 유지

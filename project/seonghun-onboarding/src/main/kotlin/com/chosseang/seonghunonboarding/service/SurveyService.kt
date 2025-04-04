@@ -51,37 +51,35 @@ class SurveyService(val repository: SurveyRepository) {
             findSurvey?.description = survey.description
         }
 
-        survey.items?.let { itemRequests ->
-            // 기존 아이템들 맵으로 변환
-            val existingItemsMap = findSurvey?.items?.associateBy { it.id }
+        // 아이템 업데이트
+        survey.items.forEach { requestItem ->
+            if (requestItem.id != null) {
+                // 기존 아이템 찾기
+                val existingItem = findSurvey?.items?.find { it.id == requestItem.id }
 
-            // 요청에 없는 아이템 모두 제거 (orphanRemoval이 처리함)
-            val requestItemIds = itemRequests.mapNotNull { it.id }.toSet()
-            findSurvey?.items?.removeIf { it.id != null && it.id !in requestItemIds }
-
-            // 업데이트하거나 새로 추가
-            itemRequests.forEach { itemRequest ->
-                if (existingItemsMap != null) {
-                    if (itemRequest.id != null && existingItemsMap.containsKey(itemRequest.id)) {
-                        // 기존 아이템 업데이트
-                        val item = existingItemsMap[itemRequest.id]!!
-                        itemRequest.name?.let { item.name = it }
-                        itemRequest.description?.let { item.description = it }
-                        itemRequest.type?.let { /* type은 val이라 업데이트 불가 */ }
-                        itemRequest.contents?.let { item.contents = it }
-                    } else {
-                        // 새 아이템 추가
-                        val newItem = Item(
-                            id = null,
-                            name = itemRequest.name ?: "",
-                            description = itemRequest.description ?: "",
-                            type = itemRequest.type ?: ItemType.ShortAnswer,
-                            contents = itemRequest.contents ?: emptyList(),
-                            survey = findSurvey
-                        )
-                        findSurvey?.addItem(newItem)
+                if (existingItem != null) {
+                    // 기존 아이템 업데이트 (item 클래스의 필드가 var인 경우)
+                    if (requestItem.name.isNotBlank()) {
+                        existingItem.name = requestItem.name
+                    }
+                    if (requestItem.description.isNotBlank()) {
+                        existingItem.description = requestItem.description
+                    }
+                    if (requestItem.contents.isNotEmpty()) {
+                        existingItem.contents = requestItem.contents
                     }
                 }
+            } else {
+                // 새 아이템 추가
+                val newItem = Item(
+                    id = null,
+                    name = requestItem.name,
+                    description = requestItem.description,
+                    type = requestItem.type,
+                    contents = requestItem.contents,
+                    survey = findSurvey
+                )
+                findSurvey?.addItem(newItem)
             }
         }
         return findSurvey
