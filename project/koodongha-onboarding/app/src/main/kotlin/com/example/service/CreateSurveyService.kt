@@ -1,9 +1,9 @@
 package com.example.service
 
-import com.example.dto.CreateSurveyRequest
+import com.example.dto.*
 import com.example.entity.*
 import com.example.repository.SurveyRepository
-import com.example.common.exception.InvalidSurveyRequestException
+import com.example.exception.InvalidSurveyRequestException
 import org.springframework.stereotype.Service
 
 @Service
@@ -20,24 +20,32 @@ class CreateSurveyService(
         )
 
         request.items.forEach { itemRequest ->
-            val item = SurveyItem(
-                name = itemRequest.name,
-                description = itemRequest.description,
-                inputType = itemRequest.inputType,
-                isRequired = itemRequest.isRequired,
-                survey = survey
-            )
-
-            if (item.inputType.isChoice()) {
-                itemRequest.options?.forEach { option ->
-                    val selectionOption = SelectionOption(
-                        value = option,
-                        surveyItem = item
+            val item = when (itemRequest) {
+                is TextItemRequest -> TextItem(
+                    isLong = itemRequest.isLong,
+                    name = itemRequest.name,
+                    description = itemRequest.description,
+                    isRequired = itemRequest.isRequired,
+                    survey = survey
+                )
+                is ChoiceItemRequest -> {
+                    val choiceItem = ChoiceItem(
+                        isMultiple = itemRequest.isMultiple,
+                        name = itemRequest.name,
+                        description = itemRequest.description,
+                        isRequired = itemRequest.isRequired,
+                        survey = survey
                     )
-                    item.options.add(selectionOption)
+                    itemRequest.options.forEach { option ->
+                        val selectionOption = SelectionOption(
+                            value = option,
+                            item = choiceItem
+                        )
+                        choiceItem.options.add(selectionOption)
+                    }
+                    choiceItem
                 }
             }
-
             survey.items.add(item)
         }
 
@@ -66,12 +74,9 @@ class CreateSurveyService(
                 throw InvalidSurveyRequestException("Item description is required.")
             }
 
-            if (item.inputType.isChoice() && item.options.isNullOrEmpty()) {
+            if (item is ChoiceItemRequest && item.options.isEmpty()) {
                 throw InvalidSurveyRequestException("Choice-type items must have options.")
             }
         }
     }
-
-    private fun InputType.isChoice(): Boolean =
-        this == InputType.SINGLE_CHOICE || this == InputType.MULTI_CHOICE
 }
