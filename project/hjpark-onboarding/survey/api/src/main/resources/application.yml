@@ -3,9 +3,6 @@ spring:
     name: hjpark-onboarding
   profiles:
     active: local
-  config:
-    import:
-      - logging.yml
 
 server:
   port: 8080
@@ -13,28 +10,17 @@ server:
 logging:
   level:
     root: INFO
-    hjpark: DEBUG
+    com.hjpark.survey: DEBUG # API 및 서비스 계층 로그 레벨 설정
+
+decorator:
+  datasource:
+    p6spy:
+      enable-logging: true
+      multiline: true
+      logging: slf4j
 
 springdoc:
   swagger-ui:
     path: /swagger-ui.html
-    groups-order: DESC
-    operationsSorter: method
-    disable-swagger-default-url: true
-    display-request-duration: true
   api-docs:
     path: /api-docs
-  show-actuator: true
-  default-consumes-media-type: application/json
-  default-produces-media-type: application/json
-  paths-to-match:
-    - /api/**
-
---- #local profile 설정
-spring.config.activate.on-profile: local
-
---- #dev profile 설정
-spring.config.activate.on-profile: dev
-
---- #prod profile 설정
-spring.config.activate.on-profile: prod
