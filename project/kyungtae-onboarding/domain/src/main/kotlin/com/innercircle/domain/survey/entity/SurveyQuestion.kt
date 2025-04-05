@@ -71,5 +71,9 @@ class SurveyQuestion private constructor(
 
 enum class QuestionType {
     SHORT_ANSWER, LONG_ANSWER, SINGLE_CHOICE, MULTI_CHOICE;
+
+    fun isChoiceType(): Boolean {
+        return this == SINGLE_CHOICE || this == MULTI_CHOICE
+    }
 }
 

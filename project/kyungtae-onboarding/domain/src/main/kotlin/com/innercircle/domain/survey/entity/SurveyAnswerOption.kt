@@ -27,8 +27,8 @@ class SurveyAnswerOption private constructor(
             surveyAnswer: SurveyAnswer
         ): SurveyAnswerOption {
             val id = SurveyAnswerOptionId(
-                surveyQuestionOption.id!!,
-                surveyAnswer.id!!
+                surveyQuestionOption.id,
+                surveyAnswer.id
             )
             return SurveyAnswerOption(
                 id = id,
