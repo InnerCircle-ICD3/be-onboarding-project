@@ -33,3 +33,10 @@ data class ItemResponse(
     val type: String,
     val contents: List<String>
 )
+
+data class SurveySearchResponse(
+    val id: Long?,
+    val name : String,
+    val description: String,
+    val items: List<Item>
+)

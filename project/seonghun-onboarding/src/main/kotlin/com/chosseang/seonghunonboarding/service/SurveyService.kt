@@ -33,4 +33,8 @@ class SurveyService(val repository: SurveyRepository) {
             )
         }
     }
+
+    fun searchSurvey(): List<Survey> {
+        return repository.findAll()
+    }
 }
