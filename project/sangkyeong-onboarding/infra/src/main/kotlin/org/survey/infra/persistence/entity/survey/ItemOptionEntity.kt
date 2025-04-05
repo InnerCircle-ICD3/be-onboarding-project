@@ -21,4 +21,7 @@ class ItemOptionEntity(
 
     var value: String = value
         protected set
+
+    var isDeleted: Boolean = false
+        protected set
 }

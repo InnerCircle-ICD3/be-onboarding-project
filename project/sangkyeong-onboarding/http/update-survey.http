@@ -1,0 +1,90 @@
+### 설문조사2 조회
+GET http://localhost:8080/api/v1/surveys/2
+Content-Type: application/json
+
+### 설문조사2 수정
+PATCH http://localhost:8080/api/v1/surveys/2
+Content-Type: application/json
+
+{
+  "title": "직원 복지 설문조사 수정",
+  "description": "더 나은 근무 환경을 위한 직원 의견 조사입니다. 수정",
+  "items": [
+    {
+      "id": 6,
+      "title": "부서수정",
+      "description": "수정 소속 부서를 선택해주세요.",
+      "inputType": "SINGLE_CHOICE",
+      "options": [],
+      "isRequired": true
+    },
+    {
+      "id": 9,
+      "title": "기타 추가 의견 수정",
+      "description": "아무 의견 내시오. 수정",
+      "inputType": "LONG_TEXT",
+      "options": [],
+      "isRequired": true
+    },
+    {
+      "id": 8,
+      "title": "회원 복지 제도 수정",
+      "description": "도입되었으면 하는 복지 제도를 모두 선택해주세요. 수정",
+      "inputType": "LONG_TEXT",
+      "options": [],
+      "isRequired": false
+    }
+  ]
+}
+
+### 설문조사2 수정 조회
+GET http://localhost:8080/api/v1/surveys/2
+Content-Type: application/json
+
+### 설문조사4 조회
+GET http://localhost:8080/api/v1/surveys/4
+Content-Type: application/json
+
+### 설문조사 수정4
+PATCH http://localhost:8080/api/v1/surveys/4
+Content-Type: application/json
+
+{
+  "title": "온보딩 설문조사 수정",
+  "description": "온보딩에 대한 의견을 남겨주세요. 수정",
+  "items": [
+    {
+      "id": 13,
+      "title": "온보딩 프로젝트의 난이도 설문조사 수정",
+      "description": "난이도는 1(매우 쉬움)부터 5(매우 어려움)까지의 점수로 평가해주세요. 수정",
+      "inputType": "MULTIPLE_CHOICE",
+      "isRequired": true,
+      "options": [
+        {
+          "id": 36,
+          "value": "6"
+        },
+        {
+          "id": 37,
+          "value": "7"
+        },
+        {
+          "id": 38,
+          "value": "8"
+        },
+        {
+          "id": 39,
+          "value": "9"
+        },
+        {
+          "id": 40,
+          "value": "10"
+        }
+      ]
+    }
+  ]
+}
+
+### 설문조사4 수정 조회
+GET http://localhost:8080/api/v1/surveys/4
+Content-Type: application/json

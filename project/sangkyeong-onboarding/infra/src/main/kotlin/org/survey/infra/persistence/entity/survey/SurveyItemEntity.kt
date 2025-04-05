@@ -36,4 +36,16 @@ class SurveyItemEntity(
 
     var isDeleted: Boolean = false
         protected set
+
+    fun update(
+        title: String,
+        description: String?,
+        inputType: String,
+        isRequired: Boolean,
+    ) {
+        this.title = title
+        this.description = description
+        this.inputType = inputType
+        this.isRequired = isRequired
+    }
 }

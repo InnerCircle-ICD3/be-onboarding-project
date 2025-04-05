@@ -31,4 +31,13 @@ class SurveyEntity(
     @Column(nullable = false)
     var updatedAt: LocalDateTime = LocalDateTime.now()
         protected set
+
+    fun updateFromDomain(
+        newTitle: String,
+        newDescription: String,
+    ) {
+        this.title = newTitle
+        this.description = newDescription
+        this.updatedAt = LocalDateTime.now()
+    }
 }

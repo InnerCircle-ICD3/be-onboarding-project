@@ -33,7 +33,7 @@ class CreateSurveyDomainServiceTest : BehaviorSpec({
                     shouldThrow<IllegalArgumentException> {
                         surveyCommandService.createSurvey(title, description, emptyItems)
                     }
-                exception.message shouldBe "설문 항목이 최소 1개 이상 필요하다."
+                exception.message shouldBe "설문 항목이 최소 1개 이상 필요합니다."
             }
         }
 
@@ -54,7 +54,7 @@ class CreateSurveyDomainServiceTest : BehaviorSpec({
                     shouldThrow<IllegalArgumentException> {
                         surveyCommandService.createSurvey(title, description, tooManyItems)
                     }
-                exception.message shouldBe "설문 항목은 최대 10개까지 가능하다."
+                exception.message shouldBe "설문 항목은 최대 10개까지 가능합니다."
             }
         }
 
@@ -142,7 +142,7 @@ class CreateSurveyDomainServiceTest : BehaviorSpec({
                     shouldThrow<IllegalArgumentException> {
                         surveyCommandService.createSurvey(title, description, invalidShortTextItem)
                     }
-                exception.message shouldBe "선택형 질문이 아니면 선택지가 없어야 한다."
+                exception.message shouldBe "선택형 질문이 아니면 선택지가 없어야 합니다."
             }
         }
 
@@ -163,7 +163,7 @@ class CreateSurveyDomainServiceTest : BehaviorSpec({
                     shouldThrow<IllegalArgumentException> {
                         surveyCommandService.createSurvey(title, description, invalidChoiceItem)
                     }
-                exception.message shouldBe "선택형 질문에는 최소 1개 이상의 선택지가 필요하다."
+                exception.message shouldBe "선택형 질문에는 최소 1개 이상의 선택지가 필요합니다."
             }
         }
     }

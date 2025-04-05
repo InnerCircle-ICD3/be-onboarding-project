@@ -33,7 +33,7 @@ Content-Type: application/json
 }
 
 ### 설문조사 조회
-GET http://localhost:8080/api/v1/surveys/4
+GET http://localhost:8080/api/v1/surveys/3
 Content-Type: application/json
 
 ### 설문조사 응답 생성

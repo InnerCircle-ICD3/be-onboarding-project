@@ -24,6 +24,11 @@ class SurveyQueryService(
     }
 
     fun getItemOptions(surveyItemIds: List<Long>): List<ItemOption> {
-        return itemOptionRepository.findBySurveyItemIdIn(surveyItemIds)
+        return itemOptionRepository.findBySurveyItemsIdIn(surveyItemIds)
+    }
+
+    fun getItemOptionsGroupBySurveyItem(itemIds: List<Long>): Map<Long, List<ItemOption>> {
+        val options = itemOptionRepository.findBySurveyItemsIdIn(itemIds)
+        return options.groupBy { it.surveyItemId }
     }
 }
