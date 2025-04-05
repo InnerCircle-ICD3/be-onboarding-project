@@ -1,12 +1,10 @@
 package com.survey.application.ui;
 
-import com.survey.application.dto.CreateSurveyRequest;
+import com.survey.application.dto.request.CreateSurveyRequest;
+import com.survey.application.dto.request.UpdateSurveyRequest;
 import com.survey.application.service.SurveyService;
 import jakarta.validation.Valid;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequestMapping("/api/survey")
@@ -20,6 +18,11 @@ public class SurveyController {
 
     @PostMapping
     public void createSurvey(@Valid @RequestBody CreateSurveyRequest request) {
-        surveyService.createSurvey(request);
+        surveyService.registerSurvey(request);
+    }
+
+    @PutMapping
+    public void updateSurvey(@Valid @RequestBody UpdateSurveyRequest request) {
+        surveyService.changeSurvey(request);
     }
 }
