@@ -11,6 +11,7 @@ import jakarta.persistence.OrderColumn
 @Entity
 @DiscriminatorValue("MULTI_SELECTION")
 class MultiSelectionItem(
+    id: Long? = null,
     title: String,
     description: String? = null,
     required: Boolean = false,
@@ -30,6 +31,7 @@ class MultiSelectionItem(
     @Column
     var maxSelections: Int? = null,
 ) : SurveyItem(
+    id = id,
     title = title,
     description = description,
     required = required,

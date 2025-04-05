@@ -7,6 +7,7 @@ import jakarta.persistence.Entity
 @Entity
 @DiscriminatorValue("LONG_ANSWER")
 class LongAnswerItem(
+    id: Long? = null,
     title: String,
     description: String? = null,
     required: Boolean = false,
@@ -15,6 +16,7 @@ class LongAnswerItem(
     var maxLength: Int? = 1000,
 
 ) : SurveyItem(
+    id = id,
     title = title,
     description = description,
     required = required,

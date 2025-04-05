@@ -10,6 +10,7 @@ import jakarta.persistence.OrderColumn
 @Entity
 @DiscriminatorValue("SINGLE_SELECTION")
 class SingleSelectionItem(
+    id: Long? = null,
     title: String,
     description: String? = null,
     required: Boolean = false,
@@ -23,6 +24,7 @@ class SingleSelectionItem(
     @OrderColumn(name = "order")
     var options: MutableList<String> = mutableListOf(),
 ) : SurveyItem(
+    id = id,
     title = title,
     description = description,
     required = required,

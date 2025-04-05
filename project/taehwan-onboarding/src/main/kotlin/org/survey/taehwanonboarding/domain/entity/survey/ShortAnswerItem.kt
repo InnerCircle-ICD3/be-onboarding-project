@@ -7,6 +7,7 @@ import jakarta.persistence.Entity
 @Entity
 @DiscriminatorValue("SHORT_ANSWER")
 class ShortAnswerItem(
+    id: Long? = null,
     title: String,
     description: String? = null,
     required: Boolean = false,
@@ -15,6 +16,7 @@ class ShortAnswerItem(
     @Column
     var maxLength: Int? = 255,
 ) : SurveyItem(
+    id = id,
     title = title,
     description = description,
     required = required,
