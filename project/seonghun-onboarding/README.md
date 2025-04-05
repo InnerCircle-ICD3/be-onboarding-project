@@ -21,6 +21,63 @@
 - 설문 조사 응답 제출
 - 설문 조사 응답 조회
 
+## API 명세서
+
+### 설문조사 생성
+<details>
+<summary>설문조사 생성 api</summary>
+<div markdown="1">
+
+| Http Method    | Path            |
+|---------|-----------------|
+|  POST      | /surveys/create |
+
+- Request
+
+| Param       | Type       | Description |
+|-------------|------------|------------|
+| name        | String     | 설문이름       |
+| description | String     | 설문 설명      |
+| items       | List<item> | 질문 항목들 배열  |
+
+> item 타입 형식
+
+```
+
+item : {
+    name: String,
+    description : String,
+    type: ItemType,
+    contents: List<String>
+}
+```
+
+- Response
+
+```
+{
+    "status": 200,
+    "result": {
+        "name": String,
+        "description": String,
+        "items": [
+            {
+                name: String,
+                description : String,
+                type: ItemType,
+                contents: List<String>
+            }
+        ]
+    }
+}
+
+```
+
+
+</div>
+</details>
+
+### 설문조사 응답
 
 
 ## 상세 기능

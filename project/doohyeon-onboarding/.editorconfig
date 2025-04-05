@@ -1,0 +1,24 @@
+# EditorConfig is awesome: https://editorconfig.org
+
+# EditorConfig 설정 파일
+# 이 파일은 코드 스타일을 정의하고 다양한 편집기에서 일관성을 유지하기 위해 사용됩니다.
+
+root = true
+
+[*]
+charset = utf-8                                     # 파일의 문자 인코딩 설정 (UTF-8로 설정)
+end_of_line = lf                                    # 줄 끝 스타일 설정 (LF - Line Feed, Unix 스타일)
+indent_style = space                                # 들여쓰기 스타일 설정 (공백 사용)
+trim_trailing_whitespace = true                     # 각 줄의 끝에 있는 공백을 자동으로 제거
+insert_final_newline = true                         # 파일의 마지막에 항상 빈 줄 추가
+max_line_length = 120                               # 한 줄의 최대 길이 설정 (120 문자)
+
+[*.kt]
+# Tab and Indent Size 설정
+ij_kotlin_tab_width = 4                             # 탭 너비 설정 (4칸)
+ij_kotlin_indent_size = 4                           # 들여쓰기 크기 (4칸)
+ij_kotlin_continuation_indent_size = 8              # 이어지는 줄에 대한 들여쓰기 크기 (8칸)
+ij_kotlin_keep_indents_on_empty_lines = false       # 빈 줄에서도 들여쓰기 유지 안 함
+
+# Blank Lines 설정
+ij_kotlin_blank_lines_after_class_header = 1        # 클래스 헤더 뒤에 빈 줄 하나 추가

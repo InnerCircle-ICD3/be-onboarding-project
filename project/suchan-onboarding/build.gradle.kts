@@ -1,23 +1,19 @@
+plugins {
+    java
+    `java-test-fixtures`
+    id("org.springframework.boot") version "3.4.3" apply false
+    id("io.spring.dependency-management") version "1.1.7" apply false
+
+}
+
 buildscript {
     extra.apply {
         set("springBootVersion", "3.4.3")
         set("springDependencyManagementVersion", "1.1.7")
         set("javaVersion", JavaVersion.VERSION_21)
-
         set("lombokVersion", "1.18.32")
         set("junitVersion", "5.10.2")
     }
-    repositories {
-        mavenCentral()
-    }
-    dependencies {
-        classpath("org.springframework.boot:spring-boot-gradle-plugin:${property("springBootVersion")}")
-        classpath("io.spring.gradle:dependency-management-plugin:${property("springDependencyManagementVersion")}")
-    }
-}
-
-plugins {
-    java
 }
 
 allprojects {
@@ -27,6 +23,12 @@ allprojects {
     repositories {
         mavenCentral()
     }
+}
+
+dependencies {
+    implementation(project(":domain"))
+    implementation(project(":application"))
+    implementation(project(":common"))
 }
 
 subprojects {
