@@ -51,6 +51,7 @@ class SurveyController(
     @GetMapping("/survey/answer/{surveyId}")
     fun getAnswers(
         @PathVariable surveyId: Int,
+        @RequestParam(required = false) filters: Map<String, String>?
     ): ResponseEntity<GetAnswersResponse> {
         val response = surveyAnswerService.getSurveyAnswers(surveyId)
         return ResponseEntity.ok(response)
