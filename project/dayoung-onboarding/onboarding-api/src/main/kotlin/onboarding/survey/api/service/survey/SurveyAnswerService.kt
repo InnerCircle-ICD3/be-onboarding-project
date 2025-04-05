@@ -2,7 +2,10 @@ package onboarding.survey.api.service.survey
 
 import jakarta.transaction.Transactional
 import onboarding.survey.api.model.request.AnswerSurveyRequest
+import onboarding.survey.api.model.response.AnswerDetail
+import onboarding.survey.api.model.response.AnswerResponse
 import onboarding.survey.api.model.response.AnswerSurveyResponse
+import onboarding.survey.api.model.response.GetAnswersResponse
 import onboarding.survey.data.survey.entity.SurveyAnswer
 import onboarding.survey.data.survey.entity.SurveyAnswerDetail
 import onboarding.survey.data.survey.repository.*
@@ -97,4 +100,44 @@ class SurveyAnswerService (
         )
     }
 
+    fun getSurveyAnswers(surveyId: Int): GetAnswersResponse {
+        surveyRepository.findById(surveyId)
+            .orElseThrow { IllegalArgumentException("설문이 존재하지 않습니다.") }
+
+        val questions = surveyQuestionRepository.findBySurveySurveyId(surveyId)
+            .filter { it.questionStatus == SurveyQuestionStatus.ACTIVE }
+            .associateBy { it.questionId }
+
+        val answers = surveyAnswerRepository.findBySurveySurveyId(surveyId)
+        val answerDetails = surveyAnswerDetailRepository.findByAnswerIdIn(answers.map { it.answerId })
+
+        // 그룹핑: answerId → List<Detail>
+        val detailGrouped = answerDetails.groupBy { it.answerId.answerId }
+
+        val responseItems = answers.map { answer ->
+            val details = detailGrouped[answer.answerId] ?: emptyList()
+
+            AnswerResponse(
+                answerId = answer.answerId,
+                userId = answer.user.userId,
+                answerAt = answer.createdTime ?: Date(),
+                answers = details.mapNotNull { detail ->
+                    val question = questions[detail.question.questionId]
+                    question?.let {
+                        AnswerDetail(
+                            questionId = it.questionId,
+                            orderNumber = it.orderNumber,
+                            questionName = it.title,
+                            answer = detail.answer.orEmpty()
+                        )
+                    }
+                }.sortedBy { it.orderNumber },
+            )
+        }
+
+        return GetAnswersResponse(
+            surveyId = surveyId,
+            answers = responseItems
+        )
+    }
 }
