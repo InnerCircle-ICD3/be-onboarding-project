@@ -65,3 +65,20 @@ data class SurveySummaryResponse(
     val itemCount: Int,
     val createdAt: String,
 )
+
+data class ResponseSubmitRequest(
+    val respondentId: String? = null,
+    val items: List<ResponseItemRequest>,
+)
+
+data class ResponseItemRequest(
+    val itemId: Long,
+    val value: String,
+)
+
+data class ResponseSubmitResponse(
+    val id: Long,
+    val surveyId: Long,
+    val status: String,
+    val responseAt: String,
+)
