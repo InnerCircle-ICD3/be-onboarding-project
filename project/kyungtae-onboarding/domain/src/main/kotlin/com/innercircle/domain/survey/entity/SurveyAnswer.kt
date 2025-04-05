@@ -17,8 +17,8 @@ class SurveyAnswer private constructor(
     @JoinColumn(name = "survey_question_id", nullable = false)
     val surveyQuestion: SurveyQuestion,
 
-    @Column(nullable = false, length = 500)
-    val content: String,
+    @Column(length = 500)
+    val content: String? = null,
 
     @Embedded
     @AttributeOverrides(
@@ -46,10 +46,6 @@ class SurveyAnswer private constructor(
 
     @OneToMany(mappedBy = "surveyAnswer", fetch = FetchType.LAZY, cascade = [CascadeType.PERSIST])
     val options: MutableList<SurveyAnswerOption> = mutableListOf()
-
-    init {
-        require(content.isNotBlank()) { "content must not be blank" }
-    }
 
     companion object {
 

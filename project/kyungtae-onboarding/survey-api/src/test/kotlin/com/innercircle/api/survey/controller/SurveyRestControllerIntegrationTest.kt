@@ -25,7 +25,7 @@ class SurveyRestControllerIntegrationTest {
             val surveyResponse = 설문_조회(surveyId)
             val questionId = surveyResponse.questions?.firstOrNull()?.id
             val questionOptionId = surveyResponse.questions?.firstOrNull()?.options?.firstOrNull()?.id
-            val surveyAnswerRequest = 단일_선택형_설문_답변_요청(questionId, questionOptionId)
+            val surveyAnswerRequest = 단일_선택형_설문_답변_요청(questionId, questionOptionId, surveyResponse)
 
             // when
             val locationHeaderValue = 설문_답변(surveyId, surveyAnswerRequest)
@@ -44,9 +44,9 @@ class SurveyRestControllerIntegrationTest {
             val surveyResponse = 설문_조회(surveyId)
             val questionResponse = surveyResponse.questions?.firstOrNull()
             val questionId = questionResponse?.id
-            val questionOptionId = questionResponse?.options?.firstOrNull()?.id
-            val secondQuestionOptionId = questionResponse?.options?.getOrNull(1)?.id
-            val surveyAnswerRequest = 다중_선택형_설문_답변_요청(questionId, questionOptionId, secondQuestionOptionId)
+            val questionOptionId = questionResponse?.options?.firstOrNull()?.id!!
+            val secondQuestionOptionId = questionResponse.options?.get(1)?.id!!
+            val surveyAnswerRequest = 다중_선택형_설문_답변_요청(questionId, surveyResponse, questionOptionId, secondQuestionOptionId)
 
             // when
             val locationHeaderValue = 설문_답변(surveyId, surveyAnswerRequest)
@@ -65,7 +65,7 @@ class SurveyRestControllerIntegrationTest {
             val surveyResponse = 설문_조회(surveyId)
             val questionResponse = surveyResponse.questions?.firstOrNull()
             val questionId = questionResponse?.id
-            val surveyAnswerRequest = 단답형_설문_답변_요청(questionId)
+            val surveyAnswerRequest = 단답형_설문_답변_요청(questionId, surveyResponse)
 
             // when
             val locationHeaderValue = 설문_답변(surveyId, surveyAnswerRequest)
@@ -84,7 +84,7 @@ class SurveyRestControllerIntegrationTest {
             val surveyResponse = 설문_조회(surveyId)
             val questionResponse = surveyResponse.questions?.firstOrNull()
             val questionId = questionResponse?.id
-            val surveyAnswerRequest = 장문형_설문_답변_요청(questionId)
+            val surveyAnswerRequest = 장문형_설문_답변_요청(questionId, surveyResponse)
 
             // when
             val locationHeaderValue = 설문_답변(surveyId, surveyAnswerRequest)
@@ -174,13 +174,21 @@ class SurveyRestControllerIntegrationTest {
             // given
             val surveyCreateRequest = 단일_선택형_설문_생성_요청()
             val surveyId = getIdFromLocation(설문_생성(surveyCreateRequest))
+            val createdSurveyResponse = 설문_조회(surveyId)
+            val questionId = createdSurveyResponse.questions?.firstOrNull()?.id
+            val questionOptionId = createdSurveyResponse.questions?.firstOrNull()?.options?.firstOrNull()?.id
+            val surveyAnswerRequest = 단일_선택형_설문_답변_요청(questionId, questionOptionId, createdSurveyResponse)
+            설문_답변(surveyId, surveyAnswerRequest)
+            설문_답변(surveyId, surveyAnswerRequest)
+            설문_답변(surveyId, surveyAnswerRequest)
 
             // when
             val surveyResponse = 설문_조회(surveyId)
 
             // then
-            설문_반환값_검사(surveyResponse, surveyId, surveyCreateRequest)
+            설문_반환값_검사(surveyResponse, surveyId, surveyCreateRequest, 3)
             설문_질문_반환값_검사(surveyResponse, surveyCreateRequest)
+            설문_질문_응답_반환값_검사(surveyResponse, surveyAnswerRequest)
         }
 
 
@@ -189,13 +197,22 @@ class SurveyRestControllerIntegrationTest {
             // given
             val surveyCreateRequest = 다중_선택형_설문_생성_요청()
             val surveyId = getIdFromLocation(설문_생성(surveyCreateRequest))
+            val createdSurveyResponse = 설문_조회(surveyId)
+            val questionId = createdSurveyResponse.questions?.firstOrNull()?.id
+            val questionOptionId = createdSurveyResponse.questions?.firstOrNull()?.options?.firstOrNull()?.id!!
+            val secondQuestionOptionId = createdSurveyResponse.questions?.firstOrNull()?.options?.get(1)?.id!!
+            val surveyAnswerRequest = 다중_선택형_설문_답변_요청(questionId, createdSurveyResponse, questionOptionId, secondQuestionOptionId)
+            설문_답변(surveyId, surveyAnswerRequest)
+            설문_답변(surveyId, surveyAnswerRequest)
+            설문_답변(surveyId, surveyAnswerRequest)
 
             // when
             val surveyResponse = 설문_조회(surveyId)
 
             // then
-            설문_반환값_검사(surveyResponse, surveyId, surveyCreateRequest)
+            설문_반환값_검사(surveyResponse, surveyId, surveyCreateRequest, 3)
             설문_질문_반환값_검사(surveyResponse, surveyCreateRequest)
+            설문_질문_응답_반환값_검사(surveyResponse, surveyAnswerRequest)
         }
 
         @Test
@@ -203,13 +220,20 @@ class SurveyRestControllerIntegrationTest {
             // given
             val surveyCreateRequest = 단답형_설문_생성_요청()
             val surveyId = getIdFromLocation(설문_생성(surveyCreateRequest))
+            val createdSurveyResponse = 설문_조회(surveyId)
+            val questionId = createdSurveyResponse.questions?.firstOrNull()?.id
+            val surveyAnswerRequest = 단답형_설문_답변_요청(questionId, createdSurveyResponse)
+            설문_답변(surveyId, surveyAnswerRequest)
+            설문_답변(surveyId, surveyAnswerRequest)
+            설문_답변(surveyId, surveyAnswerRequest)
 
             // when
             val surveyResponse = 설문_조회(surveyId)
 
             // then
-            설문_반환값_검사(surveyResponse, surveyId, surveyCreateRequest)
+            설문_반환값_검사(surveyResponse, surveyId, surveyCreateRequest, 3)
             설문_질문_반환값_검사(surveyResponse, surveyCreateRequest)
+            설문_질문_응답_반환값_검사(surveyResponse, surveyAnswerRequest)
         }
 
         @Test
@@ -217,17 +241,46 @@ class SurveyRestControllerIntegrationTest {
             // given
             val surveyCreateRequest = 장문형_설문_생성_요청()
             val surveyId = getIdFromLocation(설문_생성(surveyCreateRequest))
+            val createdSurveyResponse = 설문_조회(surveyId)
+            val questionId = createdSurveyResponse.questions?.firstOrNull()?.id
+            val surveyAnswerRequest = 장문형_설문_답변_요청(questionId, createdSurveyResponse)
+            설문_답변(surveyId, surveyAnswerRequest)
+            설문_답변(surveyId, surveyAnswerRequest)
+            설문_답변(surveyId, surveyAnswerRequest)
 
             // when
             val surveyResponse = 설문_조회(surveyId)
 
             // then
-            설문_반환값_검사(surveyResponse, surveyId, surveyCreateRequest)
+            설문_반환값_검사(surveyResponse, surveyId, surveyCreateRequest, 3)
             설문_질문_반환값_검사(surveyResponse, surveyCreateRequest)
+            설문_질문_응답_반환값_검사(surveyResponse, surveyAnswerRequest)
         }
 
     }
 
+    private fun 설문_질문_응답_반환값_검사(surveyResponse: SurveyResponse, surveyAnswerRequest: SurveyAnswerCreateRequest) {
+        val questions = surveyResponse.questions.orEmpty()
+        val surveyOptions = questions.flatMap { it.options.orEmpty() }
+        questions.forEach {
+            if (QuestionType.valueOf(it.questionType!!).isChoiceType()) {
+                if (it.questionType == QuestionType.SINGLE_CHOICE.name) {
+                    assertThat(surveyAnswerRequest.options).hasSize(1)
+                } else {
+                    assertThat(surveyAnswerRequest.options).hasSizeGreaterThan(1)
+                }
+                surveyAnswerRequest.options?.zip(surveyOptions)
+                    ?.forEach { (actualOption, expectedOption) ->
+                        assertThat(actualOption.content).isEqualTo(expectedOption.content)
+                        assertThat(actualOption.optionId).isEqualTo(expectedOption.id)
+                    }
+            } else {
+                assertThat(surveyAnswerRequest.content).isNotBlank()
+                assertThat(surveyAnswerRequest.options).isEmpty()
+            }
+        }
+
+    }
 
     private fun 설문_질문_반환값_검사(
         surveyResponse: SurveyResponse,
@@ -259,7 +312,8 @@ class SurveyRestControllerIntegrationTest {
     private fun 설문_반환값_검사(
         surveyResponse: SurveyResponse,
         surveyId: String,
-        surveyCreateRequest: SurveyCreateRequest
+        surveyCreateRequest: SurveyCreateRequest,
+        expectedParticipantCount: Int = 0
     ) {
         assertThat(surveyResponse.externalId.toString()).isEqualTo(surveyId)
         assertThat(surveyResponse.surveyStatus).isEqualTo(SurveyStatus.READY)
@@ -270,7 +324,7 @@ class SurveyRestControllerIntegrationTest {
         assertThat(surveyResponse.endAt?.truncatedTo(ChronoUnit.SECONDS))
             .isEqualTo(surveyCreateRequest.endAt?.truncatedTo(ChronoUnit.SECONDS))
         assertThat(surveyResponse.participantCapacity).isEqualTo(surveyCreateRequest.participantCapacity)
-        assertThat(surveyResponse.participantCount).isZero()
+        assertThat(surveyResponse.participantCount).isEqualTo(expectedParticipantCount)
         assertThat(surveyResponse.createdAt).isNotNull()
         assertThat(surveyResponse.updatedAt).isNotNull()
 

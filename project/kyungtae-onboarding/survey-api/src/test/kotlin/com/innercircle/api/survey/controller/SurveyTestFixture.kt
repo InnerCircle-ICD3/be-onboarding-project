@@ -196,58 +196,68 @@ fun 다중_선택형_설문_수정_요청(surveyResponse: SurveyResponse) = Surv
     )
 )
 
-fun 단일_선택형_설문_답변_요청(questionId: Long?, questionOptionId: Long?): SurveyAnswerCreateRequest =
+fun 단일_선택형_설문_답변_요청(
+    questionId: Long?,
+    questionOptionId: Long?,
+    surveyResponse: SurveyResponse
+): SurveyAnswerCreateRequest =
     SurveyAnswerCreateRequest(
         surveyQuestionId = questionId,
-        surveyName = "단일 선택형 설문",
-        surveyDescription = "단일 선택형 설문 설명",
-        surveyQuestionName = "단일 선택형 질문",
-        surveyQuestionDescription = "단일 선택형 질문 설명",
+        surveyName = surveyResponse.name,
+        surveyDescription = surveyResponse.description,
+        surveyQuestionName = surveyResponse.questions?.first()?.name,
+        surveyQuestionDescription = surveyResponse.questions?.first()?.description,
         questionType = QuestionType.SINGLE_CHOICE.name,
-        content = "단일 선택형 선택지 내용",
         options = listOf(
             SurveyAnswerOptionCreateRequest(
                 optionId = questionOptionId,
-                content = "단일 선택형 선택지 내용"
+                content = surveyResponse.questions?.first()?.options?.first()?.content
             )
         )
     )
 
-fun 다중_선택형_설문_답변_요청(questionId: Long?, vararg questionOptionIds: Long?): SurveyAnswerCreateRequest =
+fun 다중_선택형_설문_답변_요청(
+    questionId: Long?,
+    surveyResponse: SurveyResponse,
+    vararg choiceOptionId: Long,
+): SurveyAnswerCreateRequest =
     SurveyAnswerCreateRequest(
         surveyQuestionId = questionId,
-        surveyName = "다중 선택형 설문",
-        surveyDescription = "다중 선택형 설문 설명",
-        surveyQuestionName = "다중 선택형 질문",
-        surveyQuestionDescription = "다중 선택형 질문 설명",
-        questionType = QuestionType.SINGLE_CHOICE.name,
-        content = "다중 선택형 선택지 내용",
-        options = questionOptionIds.map {
-            SurveyAnswerOptionCreateRequest(
-                optionId = it,
-                content = "다중 선택형 선택지 내용"
-            )
-        }
-    )
+        surveyName = surveyResponse.name,
+        surveyDescription = surveyResponse.description,
+        surveyQuestionName = surveyResponse.questions?.first()?.name,
+        surveyQuestionDescription = surveyResponse.questions?.first()?.description,
+        questionType = QuestionType.MULTI_CHOICE.name,
+        options = surveyResponse.questions
+            ?.filter { it.id!! in choiceOptionId }
+            ?.flatMap { it.options!! }
+            ?.map {
+                SurveyAnswerOptionCreateRequest(
+                    optionId = it.id,
+                    content = it.content
+                )
+            })
 
-fun 단답형_설문_답변_요청(questionId: Long?): SurveyAnswerCreateRequest =
+
+fun 단답형_설문_답변_요청(questionId: Long?, surveyResponse: SurveyResponse): SurveyAnswerCreateRequest =
     SurveyAnswerCreateRequest(
         surveyQuestionId = questionId,
-        surveyName = "단답형 설문",
-        surveyDescription = "단답형 설문 설명",
-        surveyQuestionName = "단답형 질문",
-        surveyQuestionDescription = "단답형 질문 설명",
+        surveyName = surveyResponse.name,
+        surveyDescription = surveyResponse.description,
+        surveyQuestionName = surveyResponse.questions?.first()?.name,
+        surveyQuestionDescription = surveyResponse.questions?.first()?.description,
+        content = "단답형 답변",
         questionType = QuestionType.SHORT_ANSWER.name,
-        content = "단답형 설문 답변 내용",
     )
 
-fun 장문형_설문_답변_요청(questionId: Long?): SurveyAnswerCreateRequest =
+fun 장문형_설문_답변_요청(questionId: Long?, surveyResponse: SurveyResponse): SurveyAnswerCreateRequest =
     SurveyAnswerCreateRequest(
         surveyQuestionId = questionId,
-        surveyName = "장문형 설문",
-        surveyDescription = "장문형 설문 설명",
-        surveyQuestionName = "장문형 질문",
-        surveyQuestionDescription = "장문형 질문 설명",
+        surveyName = surveyResponse.name,
+        surveyDescription = surveyResponse.description,
+        surveyQuestionName = surveyResponse.questions?.first()?.name,
+        surveyQuestionDescription = surveyResponse.questions?.first()?.description,
+        content = "장문형 답변",
         questionType = QuestionType.LONG_ANSWER.name,
-        content = "장문형 설문 답변 내용",
+
     )
