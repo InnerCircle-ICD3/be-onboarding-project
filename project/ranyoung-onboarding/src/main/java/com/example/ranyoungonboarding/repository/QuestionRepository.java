@@ -1,0 +1,13 @@
+package com.example.ranyoungonboarding.repository;
+
+import com.example.ranyoungonboarding.domain.Question;
+import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.stereotype.Repository;
+
+import java.util.List;
+
+@Repository
+public interface QuestionRepository extends JpaRepository<Question, Long> {
+    List<Question> findBySurveyId(Long surveyId);
+    void deleteBySurveyId(Long surveyId);
+}
