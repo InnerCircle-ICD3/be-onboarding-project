@@ -76,8 +76,8 @@ public class TestSurveyEntityComparator {
         if (!Objects.equals(actual.getTitle(), expected.getTitle())) return false;
         if (!Objects.equals(actual.getDescription(), expected.getDescription())) return false;
 
-        List<SurveyOption> actualOptions = actual.getSurveyOptions();
-        List<SurveyOption> expectedOptions = expected.getSurveyOptions();
+        List<SurveyOption> actualOptions = actual.getSurveyOptions().stream().filter(SurveyOption::isActivated).toList();
+        List<SurveyOption> expectedOptions = expected.getSurveyOptions().stream().filter(SurveyOption::isActivated).toList();
 
         if (actualOptions.size() != expectedOptions.size()) return false;
 

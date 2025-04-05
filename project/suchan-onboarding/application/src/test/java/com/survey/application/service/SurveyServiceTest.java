@@ -15,6 +15,7 @@ import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
 
 import java.util.HashMap;
+import java.util.List;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
@@ -98,16 +99,19 @@ class SurveyServiceTest {
             Survey updated = surveyRepository.findCompleteSurvey(existingSurveyId).orElseThrow(IllegalArgumentException::new);
             Survey expected = request.create();
 
-            assertThat(updated.getSurveyOptions()).hasSameSizeAs(expected.getSurveyOptions());
+            assertThat(updated.getActivatedOptionSize()).isEqualTo(expected.getActivatedOptionSize());
+
+            List<SurveyOption> activatedUpdatedSurveyOptions = updated.getSurveyOptions().stream().filter(SurveyOption::isActivated).toList();
+            List<SurveyOption> activatedExpectedSurveyOptions = expected.getSurveyOptions().stream().filter(SurveyOption::isActivated).toList();
 
             assertThat(comparator.assertValuesAreEqualSurveyOption(
-                    updated.getSurveyOptions().getFirst(),
-                    expected.getSurveyOptions().getFirst()
+                    activatedUpdatedSurveyOptions.getFirst(),
+                    activatedExpectedSurveyOptions.getFirst()
             )).isTrue();
 
             assertThat(comparator.assertValuesAreEqualSurveyOption(
-                    updated.getSurveyOptions().get(1),
-                    expected.getSurveyOptions().get(1)
+                    activatedUpdatedSurveyOptions.get(1),
+                    activatedExpectedSurveyOptions.get(1)
             )).isTrue();
         }
 

@@ -121,4 +121,17 @@ public class Survey {
         survey.version = version;
         return survey;
     }
+
+    public int getActivatedOptionSize() {
+        return (int) this.surveyOptions.stream()
+                .filter(SurveyOption::isActivated)
+                .count();
+    }
+
+    public int getDeletedOptionSize() {
+        return (int) this.surveyOptions.stream()
+                .filter(SurveyOption::isDeleted)
+                .count();
+    }
+
 }

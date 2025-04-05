@@ -38,6 +38,7 @@ public class SurveyOption {
         this.title = title;
         this.description = description;
         this.isNecessary = isNecessary;
+        this.status = SurveyOptionStatus.ACTIVE;
         addInputForm(inputForm);
     }
 
@@ -46,6 +47,7 @@ public class SurveyOption {
         this.title = title;
         this.description = description;
         this.isNecessary = isNecessary;
+        this.status = SurveyOptionStatus.ACTIVE;
         addInputForm(inputForm);
     }
 
@@ -80,4 +82,9 @@ public class SurveyOption {
     public boolean isActivated() {
         return this.status == SurveyOptionStatus.ACTIVE;
     }
+
+    public boolean isDeleted() {
+        return this.status == SurveyOptionStatus.DELETED;
+    }
+
 }

@@ -103,12 +103,14 @@ class SurveyTest {
         // then
         assertThat(existingSurvey.getTitle()).isEqualTo("수정된 제목");
         assertThat(existingSurvey.getDescription()).isEqualTo("수정된 설명");
-        assertThat(existingSurvey.getSurveyOptions()).hasSize(2);
+        assertThat(existingSurvey.getActivatedOptionSize()).isEqualTo(2);
 
-        ChoiceInputForm choiceInputForm = existingSurvey.getSurveyOptions().get(0).getInputForm().getChoiceInputForm();
+        List<SurveyOption> activatedExistingSurvey = existingSurvey.getSurveyOptions().stream().filter(SurveyOption::isActivated).toList();
+
+        ChoiceInputForm choiceInputForm = activatedExistingSurvey.get(0).getInputForm().getChoiceInputForm();
         assertThat(choiceInputForm.getChoiceType()).isEqualTo(ChoiceType.SINGLE);
 
-        TextInputForm textInputForm = existingSurvey.getSurveyOptions().get(1).getInputForm().getTextInputForm();
+        TextInputForm textInputForm = activatedExistingSurvey.get(1).getInputForm().getTextInputForm();
         assertThat(textInputForm.getTextType()).isEqualTo(TextType.LONG);
     }
 
@@ -130,13 +132,21 @@ class SurveyTest {
 
         // then
         assertThat(existingSurvey.getTitle()).isEqualTo("수정된 설문");
-        assertThat(existingSurvey.getSurveyOptions()).hasSize(1);
+        assertThat(existingSurvey.getActivatedOptionSize()).isEqualTo(1);
+        assertThat(existingSurvey.getDeletedOptionSize()).isEqualTo(2);
 
-        SurveyOption resultOption = existingSurvey.getSurveyOptions().getFirst();
+        SurveyOption resultOption = getFirstActivatedSurveyOption(existingSurvey);
         assertThat(resultOption.getId()).isEqualTo(existingOptionId);
         assertThat(resultOption.getTitle()).isEqualTo("수정된 제목");
         assertThat(resultOption.getDescription()).isEqualTo("수정된 설명");
         assertThat(resultOption.getInputForm().getQuestion()).isEqualTo("수정된 질문");
+    }
+
+    private SurveyOption getFirstActivatedSurveyOption(Survey existingSurvey) {
+        return existingSurvey.getSurveyOptions().stream()
+                .filter(SurveyOption::isActivated)
+                .toList()
+                .getFirst();
     }
 
     @Test
@@ -153,9 +163,10 @@ class SurveyTest {
 
         // then
         assertThat(existingSurvey.getTitle()).isEqualTo("수정된 제목");
-        assertThat(existingSurvey.getSurveyOptions()).hasSize(1);
-        assertThat(existingSurvey.getSurveyOptions().getFirst().getTitle()).isEqualTo("새로운 설문 받을 항목");
-        assertThat(existingSurvey.getSurveyOptions().getFirst().getInputForm().getTextInputForm().getTextType()).isEqualTo(TextType.LONG);
+        assertThat(existingSurvey.getActivatedOptionSize()).isEqualTo(1);
+        SurveyOption firstActivatedSurveyOption = getFirstActivatedSurveyOption(existingSurvey);
+        assertThat(firstActivatedSurveyOption.getTitle()).isEqualTo("새로운 설문 받을 항목");
+        assertThat(firstActivatedSurveyOption.getInputForm().getTextInputForm().getTextType()).isEqualTo(TextType.LONG);
     }
 
 }
