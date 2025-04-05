@@ -1,9 +1,12 @@
-package com.innercircle.survey
+package com.innercircle.api
 
 import org.springframework.boot.autoconfigure.SpringBootApplication
+import org.springframework.boot.autoconfigure.domain.EntityScan
 import org.springframework.boot.runApplication
+import org.springframework.context.annotation.ComponentScan
 
 @SpringBootApplication
+@ComponentScan("com.innercircle")
 class SurveyApiApplication
 
 fun main(args: Array<String>) {

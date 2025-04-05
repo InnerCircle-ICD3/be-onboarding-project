@@ -1,5 +1,6 @@
 plugins {
 	kotlin("jvm")
+	id("java-test-fixtures")
 	kotlin("plugin.spring")
 	kotlin("plugin.jpa")
 	id("io.spring.dependency-management")
@@ -24,6 +25,8 @@ dependencies {
 	implementation("com.fasterxml.jackson.module:jackson-module-kotlin")
 	testImplementation("org.springframework.boot:spring-boot-starter-test")
 	testRuntimeOnly("org.junit.platform:junit-platform-launcher")
+
+	testFixturesImplementation("org.junit.jupiter:junit-jupiter-api")
 }
 
 dependencyManagement {
