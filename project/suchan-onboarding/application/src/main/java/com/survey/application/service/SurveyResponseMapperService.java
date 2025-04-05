@@ -13,12 +13,19 @@ import com.survey.domain.surveyResponse.TextResponse;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 @Service
 public class SurveyResponseMapperService {
+    private static final String UNSUPPORTED_SURVEY_OPTION_EXCEPTION_MESSAGE = "설문지에 존재하지 않는 항목에 대한 응답입니다 ";
+    private static final String NECESSARY_SURVEY_OPTION_EXCEPTION_MESSAGE = "필수 설문 항목에 대한 응답이 없습니다 ";
+    private static final String UNSUPPORTED_RESPONSE_TYPE_EXCEPTION_MESSAGE = "지원되지 않는 응답 형식입니다. 설문 항목 ID ";
 
     public GetAllSurveyResultResponse generate(Survey survey, SurveyResponse surveyResponse) {
+        validateResponsesExistInSurvey(survey, surveyResponse);
+
         List<SurveyOptionResultDto> surveyOptionResultDtos = new ArrayList<>();
 
         for (SurveyOption surveyOption : survey.getSurveyOptions()) {
@@ -34,6 +41,19 @@ public class SurveyResponseMapperService {
         );
     }
 
+    private void validateResponsesExistInSurvey(Survey survey, SurveyResponse surveyResponse) {
+        Set<Long> surveyOptionIds = new HashSet<>();
+        for (SurveyOption option : survey.getSurveyOptions()) {
+            surveyOptionIds.add(option.getId());
+        }
+
+        for (SurveyOptionResponse response : surveyResponse.getSurveyOptionResponses()) {
+            if (!surveyOptionIds.contains(response.getSurveyOptionId())) {
+                throw new IllegalArgumentException(UNSUPPORTED_SURVEY_OPTION_EXCEPTION_MESSAGE + response.getSurveyOptionId());
+            }
+        }
+    }
+
     private void addSurveyOptionResultDto(SurveyResponse surveyResponse, SurveyOption surveyOption, List<SurveyOptionResultDto> surveyOptionResultDtos) {
         if (!surveyOption.isActivated()) {
             return;
@@ -46,7 +66,9 @@ public class SurveyResponseMapperService {
             }
         }
 
-        throw new IllegalArgumentException("설문 조사 항목 id : " + surveyOption.getId() + " 이 존재하지 않습니다.");
+        if (surveyOption.isNecessary()) {
+            throw new IllegalArgumentException(NECESSARY_SURVEY_OPTION_EXCEPTION_MESSAGE + surveyOption.getId());
+        }
     }
 
     private SurveyOptionResultDto createSurveyOptionResult(SurveyOption surveyOption, SurveyOptionResponse surveyOptionRes) {
@@ -75,7 +97,7 @@ public class SurveyResponseMapperService {
                     createChoiceResult(choiceInputForm, surveyOptionRes.getChoiceResponse())
             );
         } else {
-            throw new IllegalArgumentException("설문 조사 항목 id : " + surveyOptionRes.getSurveyOptionId() + " 이 존재하지 않습니다.");
+            throw new IllegalArgumentException(UNSUPPORTED_RESPONSE_TYPE_EXCEPTION_MESSAGE + surveyOptionRes.getSurveyOptionId());
         }
     }
 
@@ -97,5 +119,4 @@ public class SurveyResponseMapperService {
                 choiceResponse.getSelectedOptions()
         );
     }
-
 }

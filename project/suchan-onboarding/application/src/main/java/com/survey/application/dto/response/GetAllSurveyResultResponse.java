@@ -100,7 +100,6 @@ public class GetAllSurveyResultResponse {
         @NotNull
         @NotEmpty
         private String answer;
-
     }
 
     @Getter
@@ -121,6 +120,5 @@ public class GetAllSurveyResultResponse {
         @NotNull
         @NotEmpty
         private List<String> selectedOptions;
-
     }
 }

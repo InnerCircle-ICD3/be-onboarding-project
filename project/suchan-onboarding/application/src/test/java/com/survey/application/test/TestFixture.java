@@ -3,7 +3,14 @@ package com.survey.application.test;
 import com.survey.application.dto.dto.*;
 import com.survey.application.dto.request.CreateSurveyRequest;
 import com.survey.application.dto.request.UpdateSurveyRequest;
+import com.survey.domain.survey.*;
+import com.survey.domain.surveyResponse.ChoiceResponse;
+import com.survey.domain.surveyResponse.SurveyOptionResponse;
+import com.survey.domain.surveyResponse.SurveyResponse;
+import com.survey.domain.surveyResponse.TextResponse;
 
+import java.awt.*;
+import java.time.LocalDateTime;
 import java.util.List;
 
 public class TestFixture {
@@ -181,4 +188,75 @@ public class TestFixture {
                 null
         );
     }
+
+    public static SurveyOption createShortTextSurveyOption(boolean isNecessary) {
+        return new SurveyOption(1L, "설문 항목1", "설명1", isNecessary, new InputForm("질문1", new TextInputForm(TextType.SHORT)));
+    }
+
+    public static SurveyOption createLongTextSurveyOption(boolean isNecessary) {
+        return new SurveyOption(2L, "설문 항목2", "설명2", isNecessary, new InputForm("질문2", new TextInputForm(TextType.LONG)));
+    }
+
+    public static SurveyOption createSingleChoiceSurveyOption(boolean isNecessary) {
+        return new SurveyOption(3L, "설문 항목3",
+                "설명3",
+                isNecessary,
+                new InputForm("질문3", new ChoiceInputForm(ChoiceType.SINGLE, List.of(
+                        new InputOption("선택지1"),
+                        new InputOption("선택지2"),
+                        new InputOption("선택지3")
+                )))
+        );
+    }
+
+    public static SurveyOption createMultipleChoiceSurveyOption(boolean isNecessary) {
+        return new SurveyOption(
+                4L,
+                "설문 항목4",
+                "설명4",
+                isNecessary,
+                new InputForm(
+                        "질문4", new ChoiceInputForm(
+                        ChoiceType.MULTIPLE,
+                        List.of(
+                                new InputOption("선택지1"),
+                                new InputOption("선택지2"),
+                                new InputOption("선택지3")
+                        )
+                )
+                )
+        );
+    }
+
+
+    public static SurveyOptionResponse createShortTextSurveyOptionResponse() {
+        return new SurveyOptionResponse(1L, new TextResponse(TextType.SHORT, "short answer"));
+    }
+
+    public static SurveyOptionResponse createLongTextSurveyOptionResponse() {
+        return new SurveyOptionResponse(2L, new TextResponse(TextType.LONG, "long answer"));
+    }
+
+    public static SurveyOptionResponse createSingleChoiceSurveyOptionResponse() {
+        return new SurveyOptionResponse(
+                3L,
+                new ChoiceResponse(ChoiceType.SINGLE, List.of("선택지1"))
+        );
+    }
+
+    public static SurveyOptionResponse createMultipleChoiceSurveyOptionResponse() {
+        return new SurveyOptionResponse(
+                4L,
+                new ChoiceResponse(ChoiceType.MULTIPLE, List.of(
+                        "선택지1",
+                        "선택지2",
+                        "선택지3")
+                )
+        );
+    }
+
+    public static SurveyOptionResponse createUnSupportedLongTextSurveyOptionResponse() {
+        return new SurveyOptionResponse(5L, new TextResponse(TextType.LONG, "very long answer"));
+    }
+
 }

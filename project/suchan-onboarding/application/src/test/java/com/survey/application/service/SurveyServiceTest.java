@@ -2,9 +2,11 @@ package com.survey.application.service;
 
 import com.survey.application.dto.request.CreateSurveyRequest;
 import com.survey.application.dto.request.UpdateSurveyRequest;
+import com.survey.application.dto.response.GetAllSurveyResultResponse;
 import com.survey.application.test.TestFixture;
 import com.survey.domain.survey.Survey;
 import com.survey.domain.survey.SurveyOption;
+import com.survey.domain.surveyResponse.SurveyResponse;
 import com.survey.domain.surveyResponse.repository.SurveyResponseRepository;
 import com.survey.domain.surveyResponse.service.SurveyResponseValidationService;
 import com.survey.test.FakeSurveyRepository;
@@ -25,11 +27,12 @@ class SurveyServiceTest {
     private SurveyService surveyService;
     private FakeSurveyRepository surveyRepository;
     private TestSurveyEntityComparator comparator;
+    private SurveyResponseRepository surveyResponseRepository;
 
     @BeforeEach
     void setUp() {
         surveyRepository = new FakeSurveyRepository(new HashMap<>());
-        SurveyResponseRepository surveyResponseRepository = new FakeSurveyResponseRepository(new HashMap<>());
+        surveyResponseRepository = new FakeSurveyResponseRepository(new HashMap<>());
         SurveyResponseValidationService surveyResponseValidationService = new SurveyResponseValidationService(surveyRepository);
         SurveyResponseMapperService surveyResponseMapperService = new SurveyResponseMapperService();
         surveyService = new SurveyService(surveyRepository, surveyResponseValidationService, surveyResponseRepository, surveyResponseMapperService);
@@ -149,5 +152,20 @@ class SurveyServiceTest {
                     .hasMessageContaining("설문 조사를 찾을 수 없습니다.");
         }
     }
+
+//    @Test
+//    @DisplayName("설문 조사 응답을 조회할 수 있다.")
+//    void get_all_survey_responses() {
+//        // given
+//        Long givenSurveyId = 1L;
+//        SurveyResponse givenSurveyResponse = TestFixture.createDefaultSurveyResponse(givenSurveyId);
+//        surveyResponseRepository.save(givenSurveyResponse);
+//
+//        // when
+//        List<GetAllSurveyResultResponse> result = surveyService.getAllSurveyResponses(givenSurveyId);
+//
+//        // then
+//        assertThat(result).isEqualTo();
+//    }
 
 }
