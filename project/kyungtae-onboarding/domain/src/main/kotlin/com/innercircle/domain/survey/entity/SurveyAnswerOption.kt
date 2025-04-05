@@ -18,7 +18,9 @@ class SurveyAnswerOption private constructor(
     @JoinColumn(name = "survey_answer_id", nullable = false)
     val surveyAnswer: SurveyAnswer,
 
-    ) {
+    val content: String
+
+) {
     companion object {
         fun of(
             surveyQuestionOption: SurveyQuestionOption,
@@ -31,7 +33,8 @@ class SurveyAnswerOption private constructor(
             return SurveyAnswerOption(
                 id = id,
                 surveyQuestionOption = surveyQuestionOption,
-                surveyAnswer = surveyAnswer
+                surveyAnswer = surveyAnswer,
+                content = surveyQuestionOption.content
             )
         }
     }

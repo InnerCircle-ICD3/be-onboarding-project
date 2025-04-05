@@ -5,18 +5,140 @@ import com.innercircle.api.common.jsonMapper
 import com.innercircle.api.survey.controller.request.SurveyCreateRequest
 import com.innercircle.api.survey.controller.request.SurveyQuestionCreateRequest
 import com.innercircle.api.survey.controller.request.SurveyQuestionOptionCreateRequest
+import com.innercircle.api.survey.controller.response.SurveyResponse
 import com.innercircle.survey.entity.QuestionType
+import com.innercircle.survey.entity.SurveyStatus
 import io.restassured.RestAssured
 import io.restassured.http.ContentType
 import org.apache.http.HttpHeaders.LOCATION
 import org.apache.http.HttpStatus
-import org.assertj.core.api.AssertionsForClassTypes.assertThat
+import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.Nested
 import org.junit.jupiter.api.Test
 import java.time.LocalDateTime
+import java.time.temporal.ChronoUnit
 
 @IntegrationTest
 class SurveyRestControllerIntegrationTest {
+
+    @Nested
+    inner class `설문을_조회한다` {
+        @Test
+        fun `단일 선택형 설문을 조회한다`() {
+            // given
+            val surveyCreateRequest = 단일_선택형_설문_생성_요청()
+            val surveyId = getIdFromLocation(설문_생성(surveyCreateRequest))
+
+            // when
+            val surveyResponse = 설문_조회(surveyId)
+
+            // then
+            설문_반환값_검사(surveyResponse, surveyId, surveyCreateRequest)
+            설문_질문_반환값_검사(surveyResponse, surveyCreateRequest)
+        }
+
+
+        @Test
+        fun `다중 선택형 설문을 조회한다`() {
+            // given
+            val surveyCreateRequest = 다중_선택형_설문_생성_요청()
+            val surveyId = getIdFromLocation(설문_생성(surveyCreateRequest))
+
+            // when
+            val surveyResponse = 설문_조회(surveyId)
+
+            // then
+            설문_반환값_검사(surveyResponse, surveyId, surveyCreateRequest)
+            설문_질문_반환값_검사(surveyResponse, surveyCreateRequest)
+        }
+
+        @Test
+        fun `단답형 설문을 조회한다`() {
+            // given
+            val surveyCreateRequest = 단답형_설문_생성_요청()
+            val surveyId = getIdFromLocation(설문_생성(surveyCreateRequest))
+
+            // when
+            val surveyResponse = 설문_조회(surveyId)
+
+            // then
+            설문_반환값_검사(surveyResponse, surveyId, surveyCreateRequest)
+            설문_질문_반환값_검사(surveyResponse, surveyCreateRequest)
+        }
+
+        @Test
+        fun `장문형 설문을 조회한다`() {
+            // given
+            val surveyCreateRequest = 장문형_설문_생성_요청()
+            val surveyId = getIdFromLocation(설문_생성(surveyCreateRequest))
+
+            // when
+            val surveyResponse = 설문_조회(surveyId)
+
+            // then
+            설문_반환값_검사(surveyResponse, surveyId, surveyCreateRequest)
+            설문_질문_반환값_검사(surveyResponse, surveyCreateRequest)
+        }
+
+        private fun 설문_질문_반환값_검사(
+            surveyResponse: SurveyResponse,
+            surveyCreateRequest: SurveyCreateRequest
+        ) {
+            val questionResponses = surveyResponse.questions.orEmpty()
+            val questionRequests = surveyCreateRequest.questions.orEmpty()
+
+            assertThat(questionResponses).hasSize(questionRequests.size)
+
+            questionRequests.zip(questionResponses).forEach { (expected, actual) ->
+                assertThat(actual.name).isEqualTo(expected.name)
+                assertThat(actual.description).isEqualTo(expected.description)
+                assertThat(actual.inputType).isEqualTo(expected.questionType)
+                assertThat(actual.required).isEqualTo(expected.required)
+                assertThat(actual.createdAt).isNotNull()
+                assertThat(actual.updatedAt).isNotNull()
+
+                actual.options?.zip(expected.options.orEmpty())
+                    ?.forEach { (actualOption, expectedOption) ->
+                        assertThat(actualOption.content).isEqualTo(expectedOption.content)
+                        assertThat(actualOption.createdAt).isNotNull()
+                        assertThat(actualOption.updatedAt).isNotNull()
+                    }
+            }
+        }
+
+        private fun 설문_반환값_검사(
+            surveyResponse: SurveyResponse,
+            surveyId: String,
+            surveyCreateRequest: SurveyCreateRequest
+        ) {
+            assertThat(surveyResponse.externalId.toString()).isEqualTo(surveyId)
+            assertThat(surveyResponse.surveyStatus).isEqualTo(SurveyStatus.READY)
+            assertThat(surveyResponse.name).isEqualTo(surveyCreateRequest.name)
+            assertThat(surveyResponse.description).isEqualTo(surveyCreateRequest.description)
+            assertThat(surveyResponse.startAt?.truncatedTo(ChronoUnit.SECONDS))
+                .isEqualTo(surveyCreateRequest.startAt?.truncatedTo(ChronoUnit.SECONDS))
+            assertThat(surveyResponse.endAt?.truncatedTo(ChronoUnit.SECONDS))
+                .isEqualTo(surveyCreateRequest.endAt?.truncatedTo(ChronoUnit.SECONDS))
+            assertThat(surveyResponse.participantCapacity).isEqualTo(surveyCreateRequest.participantCapacity)
+            assertThat(surveyResponse.participantCount).isZero()
+            assertThat(surveyResponse.createdAt).isNotNull()
+            assertThat(surveyResponse.updatedAt).isNotNull()
+        }
+
+    }
+
+    private fun 설문_조회(surveyId: String): SurveyResponse =
+        RestAssured.given()
+            .accept(ContentType.JSON)
+            .get("/api/surveys/$surveyId")
+            .then()
+            .log().body()
+            .statusCode(HttpStatus.SC_OK)
+            .extract()
+            .jsonPath()
+            .getObject("data", SurveyResponse::class.java)
+
+    private fun getIdFromLocation(locationHeaderValue: String?) = locationHeaderValue!!.substringAfterLast("/")
 
     @Nested
     inner class `설문을 생성한다` {

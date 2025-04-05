@@ -11,6 +11,10 @@ import jakarta.persistence.*
 class SurveyAnswer private constructor(
 
     @ManyToOne(fetch = FetchType.LAZY, optional = false)
+    @JoinColumn(name = "survey_id", nullable = false)
+    val survey: Survey,
+
+    @ManyToOne(fetch = FetchType.LAZY, optional = false)
     @JoinColumn(name = "survey_question_id", nullable = false)
     val surveyQuestion: SurveyQuestion,
 
@@ -52,14 +56,15 @@ class SurveyAnswer private constructor(
         fun of(
             surveyQuestion: SurveyQuestion,
             content: String,
-            inputType: QuestionType
+            questionType: QuestionType
         ): SurveyAnswer {
             return SurveyAnswer(
+                survey = surveyQuestion.survey,
                 surveyQuestion = surveyQuestion,
                 content = content,
                 surveyContext = surveyQuestion.survey.context,
                 surveyQuestionContext = surveyQuestion.context,
-                questionType = inputType
+                questionType = questionType
             ).also {
                 validateType(it)
             }

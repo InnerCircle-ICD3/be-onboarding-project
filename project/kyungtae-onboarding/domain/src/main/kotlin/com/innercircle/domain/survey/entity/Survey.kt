@@ -13,7 +13,7 @@ class Survey private constructor(
     @Embedded
     val context: SurveyContext,
 
-    val participantCapacity : Int = 0,
+    val participantCapacity: Int = 0,
 
     val participantCount : Int = 0,
 
@@ -38,6 +38,9 @@ class Survey private constructor(
 
     @OneToMany(mappedBy = "survey", fetch = FetchType.LAZY, cascade = [CascadeType.PERSIST])
     val questions: MutableList<SurveyQuestion> = mutableListOf()
+
+    @OneToMany(mappedBy = "survey", fetch = FetchType.LAZY)
+    val answers: MutableList<SurveyAnswer> = mutableListOf()
 
     @Column
     var startedAt: LocalDateTime? = null
