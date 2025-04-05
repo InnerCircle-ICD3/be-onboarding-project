@@ -25,12 +25,25 @@ class SurveyService(
 
     /** 설문 목록 조회 */
     @Transactional(readOnly = true)
-    fun getSurveys(keyword: String?): List<Survey> {
-        return if (keyword != null) {
+    fun getSurveys(keyword: String?): SurveyListDto {
+        val surveys = if (keyword != null) {
             surveyRepository.findByNameContaining(keyword)
         } else {
             surveyRepository.findAll()
         }
+
+        val surveyDtos = surveys.map { survey ->
+            SurveyDto(
+                id = survey.id!!,
+                name = survey.name,
+                description = survey.description,
+                createTime = survey.createTime!!,
+                updateTime = survey.updateTime!!,
+                questionCount = survey.questions.size
+            )
+        }
+
+        return SurveyListDto(surveys = surveyDtos)
     }
 
     /** 설문 생성 */

@@ -43,15 +43,19 @@ class SurveyController(
     }
 
     /** 설문 목록 조회 */
-    @Operation(summary = "[설문 목록 조회]")
+    @Operation(summary = "[설문 목록 조회]",
+        description = """
+        모든 설문 목록을 대상으로 하는 조회
+        검색 키워드를 제공하면 설문 제목에 해당 키워드가 포함된 설문의 간략한 정보들만 반환합니다.
+    """,)
     @GetMapping
     fun getSurveys(
-        @Parameter(description = "검색 키워드", example = "만족도")
+        @Parameter(description = "검색 키워드 (설문 제목에 포함된 텍스트)", example = "만족도")
         @RequestParam(required = false) keyword: String?
-    ): ApiResponse<List<Survey>> {
+    ): ApiResponse<SurveyListDto> {
         try {
             val surveyListDto = surveyService.getSurveys(keyword)
-            return ApiResponse.success(surveyListDto, keyword)
+            return ApiResponse.success(surveyListDto)
         } catch (ex: Exception) {
             return ExceptionHandler.handleException(ex)
         }

@@ -8,7 +8,8 @@ data class SurveyDto(
     val name: String,
     val description: String?,
     val createTime: LocalDateTime,
-    val updateTime: LocalDateTime
+    val updateTime: LocalDateTime,
+    val questionCount: Int
 )
 
 data class SurveyListDto(
