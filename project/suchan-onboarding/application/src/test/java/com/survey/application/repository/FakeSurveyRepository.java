@@ -1,7 +1,7 @@
 package com.survey.application.repository;
 
-import com.survey.domain.repository.SurveyRepository;
 import com.survey.domain.survey.Survey;
+import com.survey.domain.survey.repository.SurveyRepository;
 
 import java.util.Map;
 import java.util.Optional;
