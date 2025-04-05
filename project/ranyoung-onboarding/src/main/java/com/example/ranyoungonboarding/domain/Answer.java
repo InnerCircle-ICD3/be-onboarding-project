@@ -31,6 +31,6 @@ public class Answer {
     // For MULTIPLE_CHOICE
     @ElementCollection
     @CollectionTable(name = "answer_values", joinColumns = @JoinColumn(name = "answer_id"))
-    @Column(name = "value")
+    @Column(name = "answer_value")
     private List<String> multipleValues = new ArrayList<>();
 }
