@@ -3,16 +3,16 @@ package com.example
 import com.example.dto.*
 import com.example.controller.GetSurveyController
 import com.example.service.GetSurveyService
+import io.mockk.every
+import io.mockk.mockk
 import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.DisplayName
 import org.junit.jupiter.api.Test
-import org.mockito.kotlin.mock
-import org.mockito.kotlin.whenever
 import org.springframework.http.HttpStatus
 
 class GetSurveyControllerTest {
 
-    private val getSurveyService: GetSurveyService = mock()
+    private val getSurveyService: GetSurveyService = mockk()
     private val getSurveyController = GetSurveyController(getSurveyService)
 
     @Test
@@ -25,7 +25,7 @@ class GetSurveyControllerTest {
             items = emptyList()
         )
 
-        whenever(getSurveyService.getSurvey(1L, null, null)).thenReturn(expectedResponse)
+        every { getSurveyService.getSurvey(1L, null, null) } returns expectedResponse
 
         val response = getSurveyController.getSurvey(1L, null, null)
 
@@ -52,7 +52,7 @@ class GetSurveyControllerTest {
             )
         )
 
-        whenever(getSurveyService.getSurvey(1L, "Language", null)).thenReturn(expectedResponse)
+        every { getSurveyService.getSurvey(1L, "Language", null) } returns expectedResponse
 
         val response = getSurveyController.getSurvey(1L, "Language", null)
 
@@ -79,7 +79,7 @@ class GetSurveyControllerTest {
             )
         )
 
-        whenever(getSurveyService.getSurvey(1L, null, "Kotlin")).thenReturn(expectedResponse)
+        every { getSurveyService.getSurvey(1L, null, "Kotlin") } returns expectedResponse
 
         val response = getSurveyController.getSurvey(1L, null, "Kotlin")
 
@@ -107,7 +107,7 @@ class GetSurveyControllerTest {
             )
         )
 
-        whenever(getSurveyService.getSurvey(1L, "Tech Stack", "Kotlin")).thenReturn(expectedResponse)
+        every { getSurveyService.getSurvey(1L, "Tech Stack", "Kotlin") } returns expectedResponse
 
         val response = getSurveyController.getSurvey(1L, "Tech Stack", "Kotlin")
 

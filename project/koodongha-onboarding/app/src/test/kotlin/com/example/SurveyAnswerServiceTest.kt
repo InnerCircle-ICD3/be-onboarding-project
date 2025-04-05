@@ -45,7 +45,7 @@ class SurveyAnswerServiceTest {
 
         survey.items.addAll(listOf(singleChoiceItem, shortTextItem))
 
-        whenever(surveyRepository.findById(1L)).thenReturn(Optional.of(survey))
+        whenever(surveyRepository.findSurveyWithItemsAndAnswers(1L)).thenReturn(survey)
 
         val request = AnswerSubmitDto(
             answers = listOf(
@@ -79,7 +79,7 @@ class SurveyAnswerServiceTest {
         item.options.addAll(listOf(kotlin, java))
         survey.items.add(item)
 
-        whenever(surveyRepository.findById(1L)).thenReturn(Optional.of(survey))
+        whenever(surveyRepository.findSurveyWithItemsAndAnswers(1L)).thenReturn(survey)
 
         val request = AnswerSubmitDto(
             answers = listOf(
@@ -128,7 +128,7 @@ class SurveyAnswerServiceTest {
         item.options.addAll(listOf(kotlin, java))
         survey.items.add(item)
 
-        whenever(surveyRepository.findById(1L)).thenReturn(Optional.of(survey))
+        whenever(surveyRepository.findSurveyWithItemsAndAnswers(1L)).thenReturn(survey)
 
         val request = AnswerSubmitDto(
             answers = listOf(
@@ -162,7 +162,7 @@ class SurveyAnswerServiceTest {
         item.options.addAll(listOf(kotlin, java, python))
         survey.items.add(item)
 
-        whenever(surveyRepository.findById(1L)).thenReturn(Optional.of(survey))
+        whenever(surveyRepository.findSurveyWithItemsAndAnswers(1L)).thenReturn(survey)
 
         val request = AnswerSubmitDto(
             answers = listOf(
@@ -200,7 +200,7 @@ class SurveyAnswerServiceTest {
 
         survey.items.addAll(listOf(requiredTextItem, optionalItem))
 
-        whenever(surveyRepository.findById(1L)).thenReturn(Optional.of(survey))
+        whenever(surveyRepository.findSurveyWithItemsAndAnswers(1L)).thenReturn(survey)
 
         val request = AnswerSubmitDto(
             answers = listOf(
@@ -230,7 +230,7 @@ class SurveyAnswerServiceTest {
 
         survey.items.add(item)
 
-        whenever(surveyRepository.findById(1L)).thenReturn(Optional.of(survey))
+        whenever(surveyRepository.findSurveyWithItemsAndAnswers(1L)).thenReturn(survey)
 
         val longText = "a".repeat(256)
 
@@ -260,7 +260,7 @@ class SurveyAnswerServiceTest {
 
         survey.items.add(item)
 
-        whenever(surveyRepository.findById(1L)).thenReturn(Optional.of(survey))
+        whenever(surveyRepository.findSurveyWithItemsAndAnswers(1L)).thenReturn(survey)
 
         val request = AnswerSubmitDto(
             answers = listOf(TextAnswerDto(itemId = item.id, value = "Kotlin"))  // 잘못된 타입!
@@ -291,7 +291,7 @@ class SurveyAnswerServiceTest {
         item.options.addAll(listOf(spring, flask))
         survey.items.add(item)
 
-        whenever(surveyRepository.findById(1L)).thenReturn(Optional.of(survey))
+        whenever(surveyRepository.findSurveyWithItemsAndAnswers(1L)).thenReturn(survey)
 
         val request = AnswerSubmitDto(
             answers = listOf(ChoiceAnswerDto(itemId = item.id, selectedOptionIds = listOf(1L)))
@@ -319,7 +319,7 @@ class SurveyAnswerServiceTest {
 
         survey.items.add(item)
 
-        whenever(surveyRepository.findById(1L)).thenReturn(Optional.of(survey))
+        whenever(surveyRepository.findSurveyWithItemsAndAnswers(1L)).thenReturn(survey)
 
         val longText = "a".repeat(1000)
 
@@ -349,7 +349,7 @@ class SurveyAnswerServiceTest {
 
         survey.items.add(item)
 
-        whenever(surveyRepository.findById(1L)).thenReturn(Optional.of(survey))
+        whenever(surveyRepository.findSurveyWithItemsAndAnswers(1L)).thenReturn(survey)
 
         val request = AnswerSubmitDto(
             answers = listOf(TextAnswerDto(itemId = item.id, value = "   "))
@@ -379,7 +379,7 @@ class SurveyAnswerServiceTest {
         item.options.add(kotlin)
         survey.items.add(item)
 
-        whenever(surveyRepository.findById(1L)).thenReturn(Optional.of(survey))
+        whenever(surveyRepository.findSurveyWithItemsAndAnswers(1L)).thenReturn(survey)
 
         val request = AnswerSubmitDto(
             answers = listOf(ChoiceAnswerDto(itemId = item.id, selectedOptionIds = listOf(100L, 100L)))
@@ -419,7 +419,7 @@ class SurveyAnswerServiceTest {
     
         survey.items.addAll(listOf(choiceItem, textItem))
     
-        whenever(surveyRepository.findById(1L)).thenReturn(Optional.of(survey))
+        whenever(surveyRepository.findSurveyWithItemsAndAnswers(1L)).thenReturn(survey)
     
         val request = AnswerSubmitDto(
             answers = listOf(

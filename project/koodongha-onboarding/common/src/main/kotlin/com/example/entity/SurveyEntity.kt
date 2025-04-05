@@ -27,8 +27,11 @@ abstract class SurveyItemBase(
     @JoinColumn(name = "survey_id")
     val survey: Survey,
 
-    @OneToMany(mappedBy = "item")
-    val answers: MutableList<SurveyAnswerBase> = mutableListOf()
+    @OneToMany(mappedBy = "item", cascade = [CascadeType.ALL], orphanRemoval = true)
+    open val answers: MutableList<SurveyAnswerBase> = mutableListOf(),
+
+    @OneToMany(mappedBy = "item", cascade = [CascadeType.ALL], orphanRemoval = true)
+    open val options: MutableList<SelectionOption>? = null
 )
 
 @Entity
@@ -39,21 +42,31 @@ class TextItem(
     name: String,
     description: String?,
     isRequired: Boolean
-) : SurveyItemBase(name = name, description = description, isRequired = isRequired, survey = survey)
+) : SurveyItemBase(
+    name = name,
+    description = description,
+    isRequired = isRequired,
+    survey = survey,
+    options = null
+)
 
 @Entity
 @DiscriminatorValue("CHOICE")
 class ChoiceItem(
     var isMultiple: Boolean = false,
-
-    @OneToMany(mappedBy = "item", cascade = [CascadeType.ALL], orphanRemoval = true)
-    val options: MutableList<SelectionOption> = mutableListOf(),
-
     survey: Survey,
     name: String,
     description: String?,
-    isRequired: Boolean
-) : SurveyItemBase(name = name, description = description, isRequired = isRequired, survey = survey)
+    isRequired: Boolean,
+
+    override val options: MutableList<SelectionOption> = mutableListOf()
+) : SurveyItemBase(
+    name = name,
+    description = description,
+    isRequired = isRequired,
+    survey = survey,
+    options = options
+)
 
 @Entity
 class SelectionOption(
@@ -63,5 +76,60 @@ class SelectionOption(
 
     @ManyToOne
     @JoinColumn(name = "item_id")
-    val item: ChoiceItem
+    val item: SurveyItemBase
 )
+
+@Entity
+@Inheritance(strategy = InheritanceType.JOINED)
+@DiscriminatorColumn(name = "answer_type")
+abstract class SurveyAnswerBase(
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    var id: Long = 0,
+
+    val questionName: String,
+    val questionType: String,
+
+    @ManyToOne
+    @JoinColumn(name = "survey_id")
+    val survey: Survey,
+
+    @ManyToOne
+    @JoinColumn(name = "item_id")
+    val item: SurveyItemBase
+) {
+    abstract fun getAnswerValues(): List<String>
+}
+
+@Entity
+@DiscriminatorValue("TEXT")
+class TextAnswer(
+    val content: String,
+    questionName: String,
+    survey: Survey,
+    item: SurveyItemBase
+) : SurveyAnswerBase(
+    questionName = questionName,
+    questionType = "TEXT",
+    survey = survey,
+    item = item
+) {
+    override fun getAnswerValues(): List<String> = listOf(content)
+}
+
+@Entity
+@DiscriminatorValue("CHOICE")
+class ChoiceAnswer(
+    @ElementCollection
+    val selectedValues: List<String>,
+    questionName: String,
+    survey: Survey,
+    item: SurveyItemBase
+) : SurveyAnswerBase(
+    questionName = questionName,
+    questionType = "CHOICE",
+    survey = survey,
+    item = item
+) {
+    override fun getAnswerValues(): List<String> = selectedValues
+}

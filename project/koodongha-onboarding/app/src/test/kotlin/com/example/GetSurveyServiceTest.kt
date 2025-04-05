@@ -47,7 +47,6 @@ class GetSurveyServiceTest {
         val textAnswerEntity = TextAnswer(
             content = "Java",
             questionName = textItem.name,
-            questionType = "TEXT",
             survey = survey,
             item = textItem
         )
@@ -55,12 +54,11 @@ class GetSurveyServiceTest {
         val choiceAnswer = ChoiceAnswer(
             selectedValues = listOf("Kotlin"),
             questionName = choiceItem.name,
-            questionType = "CHOICE",
             survey = survey,
             item = choiceItem
         )
 
-        whenever(surveyRepository.findById(surveyId)).thenReturn(Optional.of(survey))
+        whenever(surveyRepository.findSurveyWithItemsAndAnswers(surveyId)).thenReturn(survey)
         whenever(answerRepository.findBySurveyId(surveyId)).thenReturn(listOf(choiceAnswer, textAnswerEntity))
 
         val result: SurveyResponse = service.getSurvey(surveyId)
@@ -99,7 +97,7 @@ class GetSurveyServiceTest {
 
         survey.items.add(textItem)
 
-        whenever(surveyRepository.findById(surveyId)).thenReturn(Optional.of(survey))
+        whenever(surveyRepository.findSurveyWithItemsAndAnswers(surveyId)).thenReturn(survey)
         whenever(answerRepository.findBySurveyId(surveyId)).thenReturn(emptyList())
 
         val result = service.getSurvey(surveyId)
@@ -131,7 +129,6 @@ class GetSurveyServiceTest {
         val answer1 = ChoiceAnswer(
             selectedValues = listOf("Spring"),
             questionName = choiceItem.name,
-            questionType = "CHOICE",
             survey = survey,
             item = choiceItem
         )
@@ -139,12 +136,11 @@ class GetSurveyServiceTest {
         val answer2 = ChoiceAnswer(
             selectedValues = listOf("Django"),
             questionName = choiceItem.name,
-            questionType = "CHOICE",
             survey = survey,
             item = choiceItem
         )
 
-        whenever(surveyRepository.findById(surveyId)).thenReturn(Optional.of(survey))
+        whenever(surveyRepository.findSurveyWithItemsAndAnswers(surveyId)).thenReturn(survey)
         whenever(answerRepository.findBySurveyId(surveyId)).thenReturn(listOf(answer1, answer2))
 
         val result = service.getSurvey(surveyId, filterName = "Framework", filterAnswer = "Spring")
@@ -175,12 +171,11 @@ class GetSurveyServiceTest {
         val answer = ChoiceAnswer(
             selectedValues = listOf("Linux"),
             questionName = choiceItem.name,
-            questionType = "CHOICE",
             survey = survey,
             item = choiceItem
         )
 
-        whenever(surveyRepository.findById(surveyId)).thenReturn(Optional.of(survey))
+        whenever(surveyRepository.findSurveyWithItemsAndAnswers(surveyId)).thenReturn(survey)
         whenever(answerRepository.findBySurveyId(surveyId)).thenReturn(listOf(answer))
 
         val result = service.getSurvey(surveyId, filterName = "OS", filterAnswer = "Windows")
@@ -207,12 +202,11 @@ class GetSurveyServiceTest {
         val oldAnswer = TextAnswer(
             content = "Snapshot value",
             questionName = "Old Question Name",
-            questionType = "TEXT",
             survey = survey,
             item = updatedItem
         )
 
-        whenever(surveyRepository.findById(surveyId)).thenReturn(Optional.of(survey))
+        whenever(surveyRepository.findSurveyWithItemsAndAnswers(surveyId)).thenReturn(survey)
         whenever(answerRepository.findBySurveyId(surveyId)).thenReturn(listOf(oldAnswer))
 
         val result = service.getSurvey(surveyId)
@@ -243,7 +237,6 @@ class GetSurveyServiceTest {
         val answer = TextAnswer(
             content = "Original Answer",
             questionName = "Old Name",
-            questionType = "TEXT",
             survey = survey,
             item = originalItem
         )
@@ -258,7 +251,7 @@ class GetSurveyServiceTest {
 
         survey.items.add(updatedItem)
 
-        whenever(surveyRepository.findById(surveyId)).thenReturn(Optional.of(survey))
+        whenever(surveyRepository.findSurveyWithItemsAndAnswers(surveyId)).thenReturn(survey)
         whenever(answerRepository.findBySurveyId(surveyId)).thenReturn(listOf(answer))
 
         val response = GetSurveyService(surveyRepository, answerRepository).getSurvey(surveyId)

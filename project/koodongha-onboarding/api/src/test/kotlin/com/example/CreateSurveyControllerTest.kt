@@ -4,14 +4,14 @@ import com.example.dto.*
 import com.example.service.CreateSurveyService
 import com.example.controller.CreateSurveyController
 import com.fasterxml.jackson.databind.ObjectMapper
+import com.ninjasquad.springmockk.MockkBean
+import io.mockk.every
+import io.mockk.just
+import io.mockk.Runs
 import org.junit.jupiter.api.DisplayName
 import org.junit.jupiter.api.Test
-import org.mockito.kotlin.any
-import org.mockito.kotlin.doNothing
-import org.mockito.kotlin.whenever
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest
-import org.springframework.boot.test.mock.mockito.MockBean
 import org.springframework.http.MediaType
 import org.springframework.test.web.servlet.MockMvc
 import org.springframework.test.web.servlet.post
@@ -23,7 +23,7 @@ class CreateSurveyControllerTest {
     @Autowired
     private lateinit var mockMvc: MockMvc
 
-    @MockBean
+    @MockkBean
     private lateinit var createSurveyService: CreateSurveyService
 
     private val objectMapper = ObjectMapper()
@@ -51,7 +51,7 @@ class CreateSurveyControllerTest {
             )
         )
 
-        doNothing().whenever(createSurveyService).createSurvey(any())
+        every { createSurveyService.createSurvey(request) } just Runs
 
         mockMvc.post("/surveys") {
             contentType = MediaType.APPLICATION_JSON

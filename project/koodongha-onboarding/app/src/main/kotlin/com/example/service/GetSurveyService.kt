@@ -6,6 +6,7 @@ import com.example.repository.SurveyAnswerRepository
 import com.example.repository.SurveyRepository
 import com.example.exception.SurveyNotFoundException
 import org.springframework.stereotype.Service
+import org.springframework.transaction.annotation.Transactional
 
 @Service
 class GetSurveyService(
@@ -13,19 +14,20 @@ class GetSurveyService(
     private val answerRepository: SurveyAnswerRepository
 ) {
 
+    @Transactional(readOnly = true)
     fun getSurvey(
         surveyId: Long,
         filterName: String? = null,
         filterAnswer: String? = null
     ): SurveyResponse {
-        val survey = surveyRepository.findById(surveyId)
-            .orElseThrow { SurveyNotFoundException() }
+        val survey = surveyRepository.findSurveyWithItemsAndAnswers(surveyId)
+            ?: throw SurveyNotFoundException()
 
         val allAnswers = answerRepository.findBySurveyId(surveyId)
 
         val itemResponses = survey.items.mapNotNull { item ->
             val itemAnswers = allAnswers.filter { it.item.id == item.id }
-            
+
             val filteredValues = itemAnswers
                 .flatMap { it.getAnswerValues() }
                 .filter {
@@ -47,7 +49,6 @@ class GetSurveyService(
                     isLong = item.isLong,
                     answers = filteredValues
                 )
-
                 is ChoiceItem -> ChoiceItemResponse(
                     id = item.id,
                     name = item.name,
@@ -57,11 +58,10 @@ class GetSurveyService(
                     options = item.options.map { it.value },
                     answers = filteredValues
                 )
-
                 else -> null
             }
         }
-        
+
         val filteredItems = if (filterName != null && filterAnswer != null) {
             itemResponses.filterNot { it.answers.isNullOrEmpty() }
         } else {
