@@ -1,5 +1,6 @@
 package com.hjpark.survey
 
+import com.hjpark.shared.exception.CustomException
 import com.hjpark.shared.surveyDto.*
 import com.hjpark.survey.entity.Question
 import com.hjpark.survey.entity.QuestionOption
@@ -49,6 +50,14 @@ class SurveyService(
     /** 설문 생성 */
     @Transactional
     fun createSurvey(request: CreateSurveyRequest): FullSurveyResponse {
+        // 질문 개수 유효성 검증 (1~10개)
+        if (request.questions.isEmpty() || request.questions.size > 10) {
+            throw CustomException(
+                userMessage = "질문은 1개 이상 10개 이하로 입력해야 합니다.",
+                detailMessage = "Question count must be between a minimum of 1 and a maximum of 10. Current count: ${request.questions.size}"
+            )
+        }
+
         val survey = Survey(
             name = request.name,
             description = request.description
