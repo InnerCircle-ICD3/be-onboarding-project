@@ -1,4 +1,4 @@
-package org.survey.application.dto
+package org.survey.application.dto.command
 
 data class CreateSurveyCommand(
     val title: String,

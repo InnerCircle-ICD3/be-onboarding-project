@@ -1,20 +1,14 @@
 package org.survey.presentation.dto.request
 
-import org.survey.application.dto.CreateItemOptionCommand
-import org.survey.application.dto.CreateSurveyCommand
-import org.survey.application.dto.CreateSurveyItemCommand
+import org.survey.application.dto.command.CreateItemOptionCommand
+import org.survey.application.dto.command.CreateSurveyCommand
+import org.survey.application.dto.command.CreateSurveyItemCommand
 
 data class CreateSurveyRequest(
     val title: String,
     val description: String,
     val items: List<CreateSurveyItemRequest>,
-) {
-    init {
-        require(items.size in 1..10) {
-            "설문 항목은 최소 1개, 최대 10개까지 추가할 수 있습니다."
-        }
-    }
-}
+)
 
 data class CreateSurveyItemRequest(
     val title: String,

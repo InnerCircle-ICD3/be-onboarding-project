@@ -1,14 +1,14 @@
-package org.survey.application.usecase
+package org.survey.application.usecase.survey
 
 import org.springframework.stereotype.Service
 import org.springframework.transaction.annotation.Transactional
-import org.survey.application.dto.CreateSurveyCommand
+import org.survey.application.dto.command.CreateSurveyCommand
 import org.survey.domain.dto.SurveyItemData
-import org.survey.domain.survey.service.SurveyDomainService
+import org.survey.domain.survey.service.SurveyCommandService
 
 @Service
 class CreateSurveyUseCase(
-    private val surveyDomainService: SurveyDomainService,
+    private val surveyCommandService: SurveyCommandService,
 ) {
     @Transactional
     fun execute(command: CreateSurveyCommand) {
@@ -23,6 +23,6 @@ class CreateSurveyUseCase(
                 )
             }
 
-        surveyDomainService.createSurvey(command.title, command.description, surveyItemDataList)
+        surveyCommandService.createSurvey(command.title, command.description, surveyItemDataList)
     }
 }

@@ -10,7 +10,7 @@ import org.survey.domain.survey.repository.SurveyItemRepository
 import org.survey.domain.survey.repository.SurveyRepository
 
 @Service
-class SurveyDomainService(
+class SurveyCommandService(
     private val surveyRepository: SurveyRepository,
     private val surveyItemRepository: SurveyItemRepository,
     private val itemOptionRepository: ItemOptionRepository,
