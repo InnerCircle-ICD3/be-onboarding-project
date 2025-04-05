@@ -1,119 +1,158 @@
+-- 설문조사 샘플 데이터 삽입
+INSERT INTO survey (id, title, description, created_at, updated_at) VALUES
+                                                                        (1, '고객 만족도 조사', '저희 서비스에 대한 고객님의 소중한 의견을 들려주세요.', '2023-09-01 10:00:00', '2023-09-01 10:00:00'),
+                                                                        (2, '직원 복지 설문조사', '더 나은 근무 환경을 위한 직원 의견 조사입니다.', '2023-09-02 14:30:00', '2023-09-02 14:30:00'),
+                                                                        (3, '제품 피드백 조사', '새로운 제품에 대한 사용자 경험을 알려주세요.', '2023-09-03 09:15:00', '2023-09-03 09:15:00');
 
--- 테스트 데이터 삽입
+-- 설문조사 항목 샘플 데이터 삽입
+INSERT INTO survey_item (id, survey_id, title, description, input_type, is_required, is_deleted) VALUES
+-- 고객 만족도 조사 항목
+(1, 1, '이름', '귀하의 성함을 알려주세요.', 'SHORT_ANSWER', true, false),
+(2, 1, '이메일', '연락 가능한 이메일을 입력해주세요.', 'SHORT_ANSWER', true, false),
+(3, 1, '서비스 만족도', '전반적인 서비스 만족도는 어떠신가요?', 'SINGLE_CHOICE', true, false),
+(4, 1, '개선사항', '개선되었으면 하는 점을 자유롭게 작성해주세요.', 'LONG_ANSWER', false, false),
+(5, 1, '관심 서비스', '관심 있는 서비스를 모두 선택해주세요.', 'MULTIPLE_CHOICE', false, false),
 
--- 설문조사 1: 고객 만족도 조사
-INSERT INTO survey (id, title, description, created_at, updated_at)
-VALUES (1, '고객 만족도 조사', '저희 서비스에 대한 만족도를 평가해주세요.', CURRENT_TIMESTAMP, CURRENT_TIMESTAMP);
+-- 직원 복지 설문조사 항목
+(6, 2, '부서', '소속 부서를 선택해주세요.', 'SINGLE_CHOICE', true, false),
+(7, 2, '현재 복지 만족도', '현재 복지 제도에 대한 만족도를 선택해주세요.', 'SINGLE_CHOICE', true, false),
+(8, 2, '희망 복지 제도', '도입되었으면 하는 복지 제도를 모두 선택해주세요.', 'MULTIPLE_CHOICE', true, false),
+(9, 2, '기타 의견', '복지 제도 관련 의견이 있으시면 자유롭게 작성해주세요.', 'LONG_ANSWER', false, false),
 
--- 설문조사 1의 문항들
--- 1. 단답형 질문
-INSERT INTO survey_item (id, survey_id, title, description, input_type, is_required)
-VALUES (1, 1, '이름을 입력해주세요.', NULL, 'SHORT_TEXT', true);
+-- 제품 피드백 조사 항목
+(10, 3, '사용 기간', '제품 사용 기간을 선택해주세요.', 'SINGLE_CHOICE', true, false),
+(11, 3, '자주 사용하는 기능', '가장 자주 사용하는 기능을 모두 선택해주세요.', 'MULTIPLE_CHOICE', true, false),
+(12, 3, '불편한 점', '사용하면서 불편했던 점을 자세히 작성해주세요.', 'LONG_ANSWER', false, false);
 
--- 2. 장문형 질문
-INSERT INTO survey_item (id, survey_id, title, description, input_type, is_required)
-VALUES (2, 1, '저희 서비스에 대한 의견을 자유롭게 작성해주세요.', '개선사항이나 불편한 점을 알려주세요.', 'LONG_TEXT', false);
+-- 항목 선택지 샘플 데이터 삽입
+INSERT INTO item_option (id, survey_item_id, value) VALUES
+-- 서비스 만족도 선택지
+(1, 3, '매우 불만족'),
+(2, 3, '불만족'),
+(3, 3, '보통'),
+(4, 3, '만족'),
+(5, 3, '매우 만족'),
 
--- 3. 단일 선택형 질문
-INSERT INTO survey_item (id, survey_id, title, description, input_type, is_required)
-VALUES (3, 1, '전반적인 서비스 만족도는 어떠신가요?', NULL, 'SINGLE_CHOICE', true);
+-- 관심 서비스 선택지
+(6, 5, '클라우드 서비스'),
+(7, 5, '보안 솔루션'),
+(8, 5, 'AI 서비스'),
+(9, 5, '데이터 분석'),
+(10, 5, '컨설팅'),
 
--- 단일 선택형 질문의 선택지
-INSERT INTO item_option (id, survey_item_id, value) VALUES (1, 3, '매우 만족');
-INSERT INTO item_option (id, survey_item_id, value) VALUES (2, 3, '만족');
-INSERT INTO item_option (id, survey_item_id, value) VALUES (3, 3, '보통');
-INSERT INTO item_option (id, survey_item_id, value) VALUES (4, 3, '불만족');
-INSERT INTO item_option (id, survey_item_id, value) VALUES (5, 3, '매우 불만족');
+-- 부서 선택지
+(11, 6, '개발팀'),
+(12, 6, '마케팅팀'),
+(13, 6, '영업팀'),
+(14, 6, '인사팀'),
+(15, 6, '경영지원팀'),
 
--- 4. 다중 선택형 질문
-INSERT INTO survey_item (id, survey_id, title, description, input_type, is_required)
-VALUES (4, 1, '가장 자주 이용하시는 기능은 무엇인가요? (복수 선택 가능)', NULL, 'MULTIPLE_CHOICE', false);
+-- 현재 복지 만족도 선택지
+(16, 7, '매우 불만족'),
+(17, 7, '불만족'),
+(18, 7, '보통'),
+(19, 7, '만족'),
+(20, 7, '매우 만족'),
 
--- 다중 선택형 질문의 선택지
-INSERT INTO item_option (id, survey_item_id, value) VALUES (6, 4, '주문 기능');
-INSERT INTO item_option (id, survey_item_id, value) VALUES (7, 4, '배송 조회');
-INSERT INTO item_option (id, survey_item_id, value) VALUES (8, 4, '고객 서비스');
-INSERT INTO item_option (id, survey_item_id, value) VALUES (9, 4, '리뷰 작성');
-INSERT INTO item_option (id, survey_item_id, value) VALUES (10, 4, '포인트 적립');
+-- 희망 복지 제도 선택지
+(21, 8, '유연근무제'),
+(22, 8, '재택근무 확대'),
+(23, 8, '자기계발비 지원'),
+(24, 8, '건강검진 확대'),
+(25, 8, '문화활동비 지원'),
 
--- 설문조사 2: 이벤트 참여 신청서
-INSERT INTO survey (id, title, description, created_at, updated_at)
-VALUES (2, '2025년 봄 신제품 출시 이벤트 신청', '신제품 체험단 모집을 위한 신청서입니다.', CURRENT_TIMESTAMP, CURRENT_TIMESTAMP);
+-- 사용 기간 선택지
+(26, 10, '1개월 미만'),
+(27, 10, '1~3개월'),
+(28, 10, '3~6개월'),
+(29, 10, '6개월~1년'),
+(30, 10, '1년 이상'),
 
--- 설문조사 2의 문항들
--- 1. 단답형 질문
-INSERT INTO survey_item (id, survey_id, title, description, input_type, is_required)
-VALUES (5, 2, '이름', NULL, 'SHORT_TEXT', true);
+-- 자주 사용하는 기능 선택지
+(31, 11, '데이터 동기화'),
+(32, 11, '실시간 알림'),
+(33, 11, '분석 리포트'),
+(34, 11, '협업 기능'),
+(35, 11, '자동화 기능');
 
--- 2. 단답형 질문
-INSERT INTO survey_item (id, survey_id, title, description, input_type, is_required)
-VALUES (6, 2, '연락처', '연락 가능한 전화번호를 입력해주세요.', 'SHORT_TEXT', true);
+-- 설문조사 응답 샘플 데이터 삽입
+INSERT INTO survey_response (id, survey_id, created_at) VALUES
+                                                            (1, 1, '2023-09-05 15:30:00'),
+                                                            (2, 1, '2023-09-06 10:15:00'),
+                                                            (3, 2, '2023-09-06 11:45:00'),
+                                                            (4, 2, '2023-09-07 09:20:00'),
+                                                            (5, 3, '2023-09-07 14:10:00');
 
--- 3. 단답형 질문
-INSERT INTO survey_item (id, survey_id, title, description, input_type, is_required)
-VALUES (7, 2, '이메일', NULL, 'SHORT_TEXT', true);
+-- 텍스트 답변 샘플 데이터 삽입
+INSERT INTO text_answer (id, survey_response_id, survey_item_id, value) VALUES
+-- 응답자 1 (고객 만족도 조사)
+(1, 1, 1, '홍길동'),
+(2, 1, 2, 'hong@example.com'),
+(3, 1, 4, '앱 로딩 속도가 조금 느린 것 같습니다. 개선되면 좋겠습니다.'),
 
--- 4. 장문형 질문
-INSERT INTO survey_item (id, survey_id, title, description, input_type, is_required)
-VALUES (8, 2, '지원 동기', '신제품 체험단에 지원하시는 이유를 작성해주세요.', 'LONG_TEXT', true);
+-- 응답자 2 (고객 만족도 조사)
+(4, 2, 1, '김철수'),
+(5, 2, 2, 'kim@example.com'),
+(6, 2, 4, '전반적으로 만족스럽지만, 고객센터 응대 시간이 개선되면 좋겠습니다.'),
 
--- 5. 단일 선택형 질문
-INSERT INTO survey_item (id, survey_id, title, description, input_type, is_required)
-VALUES (9, 2, '체험을 원하는 제품', NULL, 'SINGLE_CHOICE', true);
+-- 응답자 3 (직원 복지 설문조사)
+(7, 3, 9, '식대 지원 금액이 좀 더 현실적으로 조정되었으면 합니다.'),
 
--- 단일 선택형 질문의 선택지
-INSERT INTO item_option (id, survey_item_id, value) VALUES (11, 9, '스마트 워치');
-INSERT INTO item_option (id, survey_item_id, value) VALUES (12, 9, '무선 이어폰');
-INSERT INTO item_option (id, survey_item_id, value) VALUES (13, 9, '블루투스 스피커');
+-- 응답자 4 (직원 복지 설문조사)
+(8, 4, 9, '재택근무 일수를 좀 더 늘려주셨으면 합니다.'),
 
--- 설문조사 1에 대한 응답 예시
--- 응답 1
-INSERT INTO survey_response (id, survey_id, created_at)
-VALUES (1, 1, CURRENT_TIMESTAMP);
+-- 응답자 5 (제품 피드백 조사)
+(9, 5, 12, '모바일 버전에서 일부 기능 사용이 불편합니다. UI/UX 개선이 필요합니다.');
 
--- 응답 1의 답변들
-INSERT INTO answer (id, survey_response_id, survey_item_id, value)
-VALUES (1, 1, 1, '김철수');
+-- 선택형 답변 샘플 데이터 삽입
+INSERT INTO choice_answer (id, survey_response_id, survey_item_id) VALUES
+-- 응답자 1 (고객 만족도 조사)
+(1, 1, 3),  -- 서비스 만족도
+(2, 1, 5),  -- 관심 서비스
 
-INSERT INTO answer (id, survey_response_id, survey_item_id, value)
-VALUES (2, 1, 2, '전반적으로 만족하지만 배송이 조금 느린 것 같습니다. 배송 속도가 개선되면 좋겠습니다.');
+-- 응답자 2 (고객 만족도 조사)
+(3, 2, 3),  -- 서비스 만족도
+(4, 2, 5),  -- 관심 서비스
 
-INSERT INTO answer (id, survey_response_id, survey_item_id, item_option_id)
-VALUES (3, 1, 3, 2);
+-- 응답자 3 (직원 복지 설문조사)
+(5, 3, 6),  -- 부서
+(6, 3, 7),  -- 현재 복지 만족도
+(7, 3, 8),  -- 희망 복지 제도
 
--- 다중 선택형 질문에 대한 답변
-INSERT INTO answer (id, survey_response_id, survey_item_id)
-VALUES (4, 1, 4);
+-- 응답자 4 (직원 복지 설문조사)
+(8, 4, 6),  -- 부서
+(9, 4, 7),  -- 현재 복지 만족도
+(10, 4, 8),  -- 희망 복지 제도
 
-INSERT INTO answer_option (id, answer_id, item_option_id)
-VALUES (1, 4, 6);
+-- 응답자 5 (제품 피드백 조사)
+(11, 5, 10),  -- 사용 기간
+(12, 5, 11);  -- 자주 사용하는 기능
 
-INSERT INTO answer_option (id, answer_id, item_option_id)
-VALUES (2, 4, 7);
+-- 선택형 답변 옵션 샘플 데이터 삽입
+INSERT INTO choice_answer_option (choice_answer_id, item_option_ids) VALUES
+-- 응답자 1 (고객 만족도 조사)
+(1, 4),  -- 서비스 만족도: 만족
+(2, 6),  -- 관심 서비스: 클라우드 서비스
+(2, 8),  -- 관심 서비스: AI 서비스
 
--- 응답 2
-INSERT INTO survey_response (id, survey_id, created_at)
-VALUES (2, 1, CURRENT_TIMESTAMP);
+-- 응답자 2 (고객 만족도 조사)
+(3, 5),  -- 서비스 만족도: 매우 만족
+(4, 7),  -- 관심 서비스: 보안 솔루션
+(4, 9),  -- 관심 서비스: 데이터 분석
 
--- 응답 2의 답변들
-INSERT INTO answer (id, survey_response_id, survey_item_id, value)
-VALUES (5, 2, 1, '이영희');
+-- 응답자 3 (직원 복지 설문조사)
+(5, 11),  -- 부서: 개발팀
+(6, 18),  -- 현재 복지 만족도: 보통
+(7, 21),  -- 희망 복지 제도: 유연근무제
+(7, 23),  -- 희망 복지 제도: 자기계발비 지원
 
-INSERT INTO answer (id, survey_response_id, survey_item_id, value)
-VALUES (6, 2, 2, '상품 품질이 좋고 고객 서비스도 친절해요. 계속 이용할 예정입니다.');
+-- 응답자 4 (직원 복지 설문조사)
+(8, 13),  -- 부서: 영업팀
+(9, 19),  -- 현재 복지 만족도: 만족
+(10, 22),  -- 희망 복지 제도: 재택근무 확대
+(10, 25),  -- 희망 복지 제도: 문화활동비 지원
 
-INSERT INTO answer (id, survey_response_id, survey_item_id, item_option_id)
-VALUES (7, 2, 3, 1);
-
--- 다중 선택형 질문에 대한 답변
-INSERT INTO answer (id, survey_response_id, survey_item_id)
-VALUES (8, 2, 4);
-
-INSERT INTO answer_option (id, answer_id, item_option_id)
-VALUES (3, 8, 8);
-
-INSERT INTO answer_option (id, answer_id, item_option_id)
-VALUES (4, 8, 9);
-
-INSERT INTO answer_option (id, answer_id, item_option_id)
-VALUES (5, 8, 10);
+-- 응답자 5 (제품 피드백 조사)
+(11, 29),  -- 사용 기간: 6개월~1년
+(12, 32),  -- 자주 사용하는 기능: 실시간 알림
+(12, 34);  -- 자주 사용하는 기능: 협업 기능

@@ -7,5 +7,14 @@ interface ItemOptionRepository {
 
     fun saveAll(itemOptions: List<ItemOption>)
 
-    fun findBySurveyItemIdIn(itemIds: List<Long>): List<ItemOption>
+    fun findBySurveyItemsIdIn(itemIds: List<Long>): List<ItemOption>
+
+    fun saveOptions(
+        itemId: Long,
+        options: List<String>,
+    )
+
+    fun findAllById(optionIds: List<Long>): List<ItemOption>
+
+    fun deleteOptions(itemOptions: List<ItemOption>)
 }

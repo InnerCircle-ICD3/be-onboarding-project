@@ -8,4 +8,10 @@ interface SurveyItemRepository {
     fun saveAll(surveyItems: List<SurveyItem>): List<SurveyItem>
 
     fun findBySurveyId(surveyId: Long): List<SurveyItem>
+
+    fun findAllById(surveyItemIds: List<Long>): List<SurveyItem>
+
+    fun deleteItems(surveyItems: List<SurveyItem>)
+
+    fun updateItems(surveyItems: List<SurveyItem>)
 }
