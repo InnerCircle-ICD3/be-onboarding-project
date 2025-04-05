@@ -1,0 +1,31 @@
+
+// registsurvey
+{
+    "title": "hello",
+    "desc": "world",
+    "surveyItemList": [
+        {"title": "survey item title 1",
+        "desc": "item desc 1",
+        "isRequiredYN": "Y",
+        "itemType": "SHORT_ANS",
+        "itemOptionList": []},
+        {"title": "survey item title 1",
+        "desc": "item desc 1",
+        "isRequiredYN": "Y",
+        "itemType": "SHORT_ANS",
+        "itemOptionList": [{"content": "option1"}, {"content": "option2"}, {"content": "option3"}]}
+    ]
+}
+
+
+//registanswer
+{
+    "survey": {
+        "seq": "1",
+    },
+    "answerItemList": [
+        {"surveyItem": {"seq": "1"}, "itemOption": {"seq": "1"}},
+        {"surveyItem": {"seq": "2"}, "answVal": "answ 2"},
+        {"surveyItem": {"seq": "3"}, "answVal": "answ 3"}
+    ]
+}
