@@ -1,8 +1,10 @@
 package com.innercircle.api.survey.controller
 
 import com.innercircle.api.common.response.ApiResponse
+import com.innercircle.api.survey.controller.request.SurveyAnswerCreateRequest
 import com.innercircle.api.survey.controller.request.SurveyCreateRequest
 import com.innercircle.api.survey.controller.request.SurveyUpdateRequest
+import com.innercircle.api.survey.controller.response.SurveyAnswerCreatedResponse
 import com.innercircle.api.survey.controller.response.SurveyResponse
 import com.innercircle.api.survey.service.SurveyService
 import jakarta.validation.Valid
@@ -40,5 +42,19 @@ class SurveyRestController(
     ): ResponseEntity<Unit> {
         surveyService.updateSurvey(id, request)
         return ResponseEntity.noContent().build()
+    }
+
+    @PostMapping("/{surveyId:[a-f0-9]{8}-(?:[a-f0-9]{4}-){3}[a-f0-9]{12}}/answers")
+    fun answerSurvey(
+        @PathVariable surveyId: UUID,
+        @RequestBody @Valid request: SurveyAnswerCreateRequest
+    ): ResponseEntity<SurveyAnswerCreatedResponse> {
+        val surveyAnswerCreatedResponse = surveyService.answerSurvey(surveyId, request)
+        return ResponseEntity.created(
+            URI.create(
+                "/api/surveys/${surveyId}" +
+                        "/answers/${surveyAnswerCreatedResponse.id}"
+            )
+        ).build()
     }
 }

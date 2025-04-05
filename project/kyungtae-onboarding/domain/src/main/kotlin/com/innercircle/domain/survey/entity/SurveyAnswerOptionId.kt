@@ -5,8 +5,7 @@ import java.io.Serializable
 
 @Embeddable
 data class SurveyAnswerOptionId(
-
-    var surveyQuestionOptionId: Long,
-    var surveyAnswerId: Long
+    var surveyQuestionOptionId: Long?,
+    var surveyAnswerId: Long?
 ) : Serializable
 

@@ -1,6 +1,7 @@
 package com.innercircle.api.survey.controller
 
 import com.innercircle.api.common.IntegrationTest
+import com.innercircle.api.survey.controller.request.SurveyAnswerCreateRequest
 import com.innercircle.api.survey.controller.request.SurveyCreateRequest
 import com.innercircle.api.survey.controller.request.SurveyUpdateRequest
 import com.innercircle.api.survey.controller.response.SurveyResponse
@@ -13,6 +14,89 @@ import java.time.temporal.ChronoUnit
 
 @IntegrationTest
 class SurveyRestControllerIntegrationTest {
+
+    @Nested
+    inner class `설문 질문에 응답한다` {
+        @Test
+        fun `단일 선택형 설문에 응답한다`() {
+            // given
+            val surveyCreateRequest = 단일_선택형_설문_생성_요청()
+            val surveyId = getIdFromLocation(설문_생성(surveyCreateRequest))
+            val surveyResponse = 설문_조회(surveyId)
+            val questionId = surveyResponse.questions?.firstOrNull()?.id
+            val questionOptionId = surveyResponse.questions?.firstOrNull()?.options?.firstOrNull()?.id
+            val surveyAnswerRequest = 단일_선택형_설문_답변_요청(questionId, questionOptionId)
+
+            // when
+            val locationHeaderValue = 설문_답변(surveyId, surveyAnswerRequest)
+            val surveyAnswerId = getIdFromLocation(locationHeaderValue)
+
+            // then
+            assertThat(locationHeaderValue).matches(LOCATION_HEADER_VALUE_REGEX)
+            assertThat(surveyAnswerId).isNotNull()
+        }
+
+        @Test
+        fun `다중 선택형 설문에 응답한다`() {
+            // given
+            val surveyCreateRequest = 다중_선택형_설문_생성_요청()
+            val surveyId = getIdFromLocation(설문_생성(surveyCreateRequest))
+            val surveyResponse = 설문_조회(surveyId)
+            val questionResponse = surveyResponse.questions?.firstOrNull()
+            val questionId = questionResponse?.id
+            val questionOptionId = questionResponse?.options?.firstOrNull()?.id
+            val secondQuestionOptionId = questionResponse?.options?.getOrNull(1)?.id
+            val surveyAnswerRequest = 다중_선택형_설문_답변_요청(questionId, questionOptionId, secondQuestionOptionId)
+
+            // when
+            val locationHeaderValue = 설문_답변(surveyId, surveyAnswerRequest)
+            val surveyAnswerId = getIdFromLocation(locationHeaderValue)
+
+            // then
+            assertThat(locationHeaderValue).matches(LOCATION_HEADER_VALUE_REGEX)
+            assertThat(surveyAnswerId).isNotNull()
+        }
+
+        @Test
+        fun `단답형 설문에 응답한다`() {
+            // given
+            val surveyCreateRequest = 단답형_설문_생성_요청()
+            val surveyId = getIdFromLocation(설문_생성(surveyCreateRequest))
+            val surveyResponse = 설문_조회(surveyId)
+            val questionResponse = surveyResponse.questions?.firstOrNull()
+            val questionId = questionResponse?.id
+            val surveyAnswerRequest = 단답형_설문_답변_요청(questionId)
+
+            // when
+            val locationHeaderValue = 설문_답변(surveyId, surveyAnswerRequest)
+            val surveyAnswerId = getIdFromLocation(locationHeaderValue)
+
+            // then
+            assertThat(locationHeaderValue).matches(LOCATION_HEADER_VALUE_REGEX)
+            assertThat(surveyAnswerId).isNotNull()
+        }
+
+        @Test
+        fun `장문형 설문에 응답한다`() {
+            // given
+            val surveyCreateRequest = 장문형_설문_생성_요청()
+            val surveyId = getIdFromLocation(설문_생성(surveyCreateRequest))
+            val surveyResponse = 설문_조회(surveyId)
+            val questionResponse = surveyResponse.questions?.firstOrNull()
+            val questionId = questionResponse?.id
+            val surveyAnswerRequest = 장문형_설문_답변_요청(questionId)
+
+            // when
+            val locationHeaderValue = 설문_답변(surveyId, surveyAnswerRequest)
+            val surveyAnswerId = getIdFromLocation(locationHeaderValue)
+
+            // then
+            assertThat(locationHeaderValue).matches(LOCATION_HEADER_VALUE_REGEX)
+            assertThat(surveyAnswerId).isNotNull()
+        }
+    }
+
+
     @Nested
     inner class `설문을_수정한다` {
 
