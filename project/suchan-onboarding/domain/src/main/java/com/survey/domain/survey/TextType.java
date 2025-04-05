@@ -1,4 +1,4 @@
-package com.survey.domain;
+package com.survey.domain.survey;
 
 import java.util.Arrays;
 
@@ -20,7 +20,7 @@ public enum TextType {
                 .orElseThrow(() -> new IllegalArgumentException(TEXT_TYPE_EXCEPTION_PREFIX + textType));
     }
 
-    private String getName() {
+    public String getName() {
         return this.name;
     }
 }

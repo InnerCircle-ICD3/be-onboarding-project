@@ -1,8 +1,5 @@
-package com.survey.domain;
+package com.survey.domain.survey;
 
-import com.survey.domain.survey.ChoiceType;
-import com.survey.domain.survey.TextInputForm;
-import com.survey.domain.survey.TextType;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.CsvSource;

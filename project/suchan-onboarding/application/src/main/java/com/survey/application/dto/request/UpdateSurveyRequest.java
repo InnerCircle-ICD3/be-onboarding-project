@@ -1,7 +1,7 @@
 package com.survey.application.dto.request;
 
 import com.survey.application.dto.dto.UpdateSurveyOptionDto;
-import com.survey.domain.Survey;
+import com.survey.domain.survey.Survey;
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.NotEmpty;
 import jakarta.validation.constraints.NotNull;

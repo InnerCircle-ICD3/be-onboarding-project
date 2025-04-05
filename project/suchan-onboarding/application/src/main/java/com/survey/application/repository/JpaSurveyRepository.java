@@ -1,8 +1,8 @@
 package com.survey.application.repository;
 
-import com.survey.domain.ChoiceInputForm;
-import com.survey.domain.Survey;
-import com.survey.domain.SurveyOption;
+import com.survey.domain.survey.ChoiceInputForm;
+import com.survey.domain.survey.Survey;
+import com.survey.domain.survey.SurveyOption;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;

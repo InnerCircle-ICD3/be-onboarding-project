@@ -1,10 +1,10 @@
 package com.survey.application.repository;
 
-import com.survey.domain.ChoiceInputForm;
-import com.survey.domain.InputForm;
-import com.survey.domain.Survey;
-import com.survey.domain.SurveyOption;
-import com.survey.domain.repository.SurveyRepository;
+import com.survey.domain.survey.ChoiceInputForm;
+import com.survey.domain.survey.InputForm;
+import com.survey.domain.survey.Survey;
+import com.survey.domain.survey.SurveyOption;
+import com.survey.domain.survey.repository.SurveyRepository;
 import org.springframework.stereotype.Repository;
 
 import java.util.List;

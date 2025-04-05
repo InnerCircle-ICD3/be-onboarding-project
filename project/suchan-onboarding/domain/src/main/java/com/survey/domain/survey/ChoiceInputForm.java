@@ -1,4 +1,4 @@
-package com.survey.domain;
+package com.survey.domain.survey;
 
 import jakarta.persistence.*;
 import lombok.AccessLevel;
@@ -39,6 +39,13 @@ public class ChoiceInputForm {
 
     public ChoiceInputForm(ChoiceType choiceType, List<InputOption> inputOptions) {
         validateInputOptions(inputOptions);
+        this.choiceType = choiceType;
+        this.inputOptions = inputOptions;
+    }
+
+    public ChoiceInputForm(Long id, ChoiceType choiceType, List<InputOption> inputOptions) {
+        validateInputOptions(inputOptions);
+        this.id = id;
         this.choiceType = choiceType;
         this.inputOptions = inputOptions;
     }

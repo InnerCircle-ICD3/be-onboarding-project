@@ -1,4 +1,4 @@
-package com.survey.domain;
+package com.survey.domain.survey;
 
 import jakarta.persistence.*;
 import lombok.AccessLevel;
@@ -20,6 +20,10 @@ public class Survey {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
+    @Version
+    @Column(nullable = false)
+    private Long version = 1L;
+
     @Column(nullable = false)
     private String title;
 
@@ -34,6 +38,7 @@ public class Survey {
         this.id = id;
         this.title = title;
         this.description = description;
+        this.version = 1L;
         validateSurveyOptionCnt(surveyOptions);
         surveyOptions.forEach(this::addSurveyOption);
     }
@@ -41,14 +46,20 @@ public class Survey {
     public Survey(String title, String description, List<SurveyOption> surveyOptions) {
         this.title = title;
         this.description = description;
+        this.version = 1L;
         validateSurveyOptionCnt(surveyOptions);
         surveyOptions.forEach(this::addSurveyOption);
     }
 
     private void validateSurveyOptionCnt(List<SurveyOption> surveyOptions) {
-        if (surveyOptions == null || surveyOptions.isEmpty() || surveyOptions.size() > 10) {
+        if (surveyOptions == null || surveyOptions.isEmpty() || checkActivatedSurveyOptionsSizeOver(surveyOptions)) {
             throw new IllegalArgumentException(SURVEY_OPTIONS_CNT_EXCEPTION_MESSAGE);
         }
+    }
+
+    private boolean checkActivatedSurveyOptionsSizeOver(List<SurveyOption> surveyOptions) {
+        List<SurveyOption> activatedSurveyOptions = surveyOptions.stream().filter(SurveyOption::isActivated).toList();
+        return activatedSurveyOptions.size() > 10;
     }
 
     private void addSurveyOption(SurveyOption surveyOption) {
@@ -86,7 +97,7 @@ public class Survey {
             }
         }
 
-        this.surveyOptions.removeAll(optionsToRemove);
+        removeSurveyOption(optionsToRemove);
     }
 
     private void changeSurveyOption(SurveyOption newOption, Map<Long, SurveyOption> existingOptionsMap, List<SurveyOption> updatedOptions) {
@@ -99,4 +110,30 @@ public class Survey {
         addSurveyOption(newOption);
         updatedOptions.add(newOption);
     }
+
+    private void removeSurveyOption(List<SurveyOption> surveyOptions) {
+        for (SurveyOption surveyOption : surveyOptions) {
+            surveyOption.delete();
+        }
+    }
+
+    public static Survey createTestSurvey(Long id, Long version, String title, String description, List<SurveyOption> surveyOptions) {
+        Survey survey = new Survey(id, title, description, surveyOptions);
+        survey.id = id;
+        survey.version = version;
+        return survey;
+    }
+
+    public int getActivatedOptionSize() {
+        return (int) this.surveyOptions.stream()
+                .filter(SurveyOption::isActivated)
+                .count();
+    }
+
+    public int getDeletedOptionSize() {
+        return (int) this.surveyOptions.stream()
+                .filter(SurveyOption::isDeleted)
+                .count();
+    }
+
 }

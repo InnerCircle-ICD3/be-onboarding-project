@@ -1,6 +1,6 @@
 package com.survey.application.dto.dto;
 
-import com.survey.domain.InputForm;
+import com.survey.domain.survey.InputForm;
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.NotNull;
 import lombok.AllArgsConstructor;

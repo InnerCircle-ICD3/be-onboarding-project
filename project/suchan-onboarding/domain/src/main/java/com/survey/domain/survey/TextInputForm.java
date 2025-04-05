@@ -1,4 +1,4 @@
-package com.survey.domain;
+package com.survey.domain.survey;
 
 import jakarta.persistence.*;
 import lombok.AccessLevel;
@@ -25,6 +25,11 @@ public class TextInputForm {
     private InputForm inputForm;
 
     public TextInputForm(TextType textType) {
+        this.textType = textType;
+    }
+
+    public TextInputForm(Long id, TextType textType) {
+        this.id = id;
         this.textType = textType;
     }
 

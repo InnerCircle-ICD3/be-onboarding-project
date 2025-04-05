@@ -1,4 +1,4 @@
-package com.survey.domain;
+package com.survey.domain.survey;
 
 import java.util.Arrays;
 
@@ -20,7 +20,7 @@ public enum ChoiceType {
                 .orElseThrow(() -> new IllegalArgumentException(CHOICE_TYPE_EXCEPTION_PREFIX + choiceType));
     }
 
-    private String getName() {
+    public String getName() {
         return this.name;
     }
 }

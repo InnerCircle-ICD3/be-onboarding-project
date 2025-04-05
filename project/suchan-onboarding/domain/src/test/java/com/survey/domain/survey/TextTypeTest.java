@@ -1,4 +1,4 @@
-package com.survey.domain;
+package com.survey.domain.survey;
 
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -11,23 +11,23 @@ import java.util.stream.Stream;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
-class ChoiceTypeTest {
+class TextTypeTest {
 
     @ParameterizedTest
-    @MethodSource("provideChoiceType")
+    @MethodSource("provideTextType")
     @DisplayName("타입 이름으로 타입을 찾을 수 있다.")
-    void find_by_name(String given, ChoiceType expected) {
+    void find_by_name(String given, TextType expected) {
         // given // when
-        ChoiceType result = ChoiceType.findByName(given);
+        TextType result = TextType.findByName(given);
 
         // then
         assertThat(result).isEqualTo(expected);
     }
 
-    private static Stream<Arguments> provideChoiceType() {
+    private static Stream<Arguments> provideTextType() {
         return Stream.of(
-                Arguments.of("단일", ChoiceType.SINGLE),
-                Arguments.of("다중", ChoiceType.MULTIPLE)
+                Arguments.of("단답형", TextType.SHORT),
+                Arguments.of("장문형", TextType.LONG)
         );
     }
 
@@ -38,9 +38,9 @@ class ChoiceTypeTest {
         String given = "존재하지 않는 타입";
 
         // when // then
-        assertThatThrownBy(() -> ChoiceType.findByName(given))
+        assertThatThrownBy(() -> TextType.findByName(given))
                 .isInstanceOf(IllegalArgumentException.class)
-                .hasMessageContaining("잘못된 choice 타입 변환 : " + given);
+                .hasMessageContaining("잘못된 text 타입 변환 : " + given);
     }
 
 }

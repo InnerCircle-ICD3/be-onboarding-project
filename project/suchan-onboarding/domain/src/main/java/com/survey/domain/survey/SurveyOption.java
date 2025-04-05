@@ -1,4 +1,4 @@
-package com.survey.domain;
+package com.survey.domain.survey;
 
 import jakarta.persistence.*;
 import lombok.AccessLevel;
@@ -30,10 +30,15 @@ public class SurveyOption {
     @OneToOne(mappedBy = "surveyOption", cascade = CascadeType.ALL, orphanRemoval = true)
     private InputForm inputForm;
 
+    @Enumerated(EnumType.STRING)
+    @Column(nullable = false)
+    private SurveyOptionStatus status;
+
     public SurveyOption(String title, String description, boolean isNecessary, InputForm inputForm) {
         this.title = title;
         this.description = description;
         this.isNecessary = isNecessary;
+        this.status = SurveyOptionStatus.ACTIVE;
         addInputForm(inputForm);
     }
 
@@ -42,6 +47,7 @@ public class SurveyOption {
         this.title = title;
         this.description = description;
         this.isNecessary = isNecessary;
+        this.status = SurveyOptionStatus.ACTIVE;
         addInputForm(inputForm);
     }
 
@@ -62,4 +68,23 @@ public class SurveyOption {
         this.inputForm = inputForm;
         inputForm.addSurveyOption(this);
     }
+
+    public static SurveyOption createTestSurveyOption(Long id, String title, String description, boolean isNecessary, InputForm inputForm) {
+        SurveyOption surveyOption = new SurveyOption(title, description, isNecessary, inputForm);
+        surveyOption.id = id;
+        return surveyOption;
+    }
+
+    public void delete() {
+        this.status = SurveyOptionStatus.DELETED;
+    }
+
+    public boolean isActivated() {
+        return this.status == SurveyOptionStatus.ACTIVE;
+    }
+
+    public boolean isDeleted() {
+        return this.status == SurveyOptionStatus.DELETED;
+    }
+
 }

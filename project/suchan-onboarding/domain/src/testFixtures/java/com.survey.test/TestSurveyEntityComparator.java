@@ -1,6 +1,6 @@
 package com.survey.test;
 
-import com.survey.domain.*;
+import com.survey.domain.survey.*;
 
 import java.util.List;
 import java.util.Objects;
@@ -76,8 +76,8 @@ public class TestSurveyEntityComparator {
         if (!Objects.equals(actual.getTitle(), expected.getTitle())) return false;
         if (!Objects.equals(actual.getDescription(), expected.getDescription())) return false;
 
-        List<SurveyOption> actualOptions = actual.getSurveyOptions();
-        List<SurveyOption> expectedOptions = expected.getSurveyOptions();
+        List<SurveyOption> actualOptions = actual.getSurveyOptions().stream().filter(SurveyOption::isActivated).toList();
+        List<SurveyOption> expectedOptions = expected.getSurveyOptions().stream().filter(SurveyOption::isActivated).toList();
 
         if (actualOptions.size() != expectedOptions.size()) return false;
 
@@ -92,4 +92,5 @@ public class TestSurveyEntityComparator {
 
         return true;
     }
+
 }

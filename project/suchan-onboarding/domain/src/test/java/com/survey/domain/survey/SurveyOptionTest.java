@@ -1,4 +1,4 @@
-package com.survey.domain;
+package com.survey.domain.survey;
 
 import com.survey.test.TestFixture;
 import org.junit.jupiter.api.DisplayName;
