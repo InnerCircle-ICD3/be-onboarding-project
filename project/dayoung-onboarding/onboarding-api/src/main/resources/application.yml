@@ -1,0 +1,12 @@
+spring:
+  application:
+    name: onboarding-api
+server:
+  port: 8080
+  servlet:
+    session:
+      timeout: 30m
+# springdoc
+springdoc:
+  api-docs:
+    enabled: true
