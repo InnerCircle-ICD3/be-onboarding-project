@@ -190,18 +190,18 @@ public class TestFixture {
     }
 
     public static SurveyOption createShortTextSurveyOption(boolean isNecessary) {
-        return new SurveyOption(1L, "설문 항목1", "설명1", isNecessary, new InputForm("질문1", new TextInputForm(TextType.SHORT)));
+        return new SurveyOption(1L, "설문 항목1", "설명1", isNecessary, new InputForm(1L, "질문1", new TextInputForm(1L, TextType.SHORT)));
     }
 
     public static SurveyOption createLongTextSurveyOption(boolean isNecessary) {
-        return new SurveyOption(2L, "설문 항목2", "설명2", isNecessary, new InputForm("질문2", new TextInputForm(TextType.LONG)));
+        return new SurveyOption(2L, "설문 항목2", "설명2", isNecessary, new InputForm(2L, "질문2", new TextInputForm(2L, TextType.LONG)));
     }
 
     public static SurveyOption createSingleChoiceSurveyOption(boolean isNecessary) {
         return new SurveyOption(3L, "설문 항목3",
                 "설명3",
                 isNecessary,
-                new InputForm("질문3", new ChoiceInputForm(ChoiceType.SINGLE, List.of(
+                new InputForm(3L, "질문3", new ChoiceInputForm(3L, ChoiceType.SINGLE, List.of(
                         new InputOption("선택지1"),
                         new InputOption("선택지2"),
                         new InputOption("선택지3")
@@ -216,7 +216,9 @@ public class TestFixture {
                 "설명4",
                 isNecessary,
                 new InputForm(
+                        4L,
                         "질문4", new ChoiceInputForm(
+                        4L,
                         ChoiceType.MULTIPLE,
                         List.of(
                                 new InputOption("선택지1"),

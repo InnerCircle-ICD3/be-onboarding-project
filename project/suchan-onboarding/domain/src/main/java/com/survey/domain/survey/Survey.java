@@ -22,7 +22,7 @@ public class Survey {
 
     @Version
     @Column(nullable = false)
-    private Long version;
+    private Long version = 1L;
 
     @Column(nullable = false)
     private String title;
@@ -38,6 +38,7 @@ public class Survey {
         this.id = id;
         this.title = title;
         this.description = description;
+        this.version = 1L;
         validateSurveyOptionCnt(surveyOptions);
         surveyOptions.forEach(this::addSurveyOption);
     }
@@ -45,6 +46,7 @@ public class Survey {
     public Survey(String title, String description, List<SurveyOption> surveyOptions) {
         this.title = title;
         this.description = description;
+        this.version = 1L;
         validateSurveyOptionCnt(surveyOptions);
         surveyOptions.forEach(this::addSurveyOption);
     }

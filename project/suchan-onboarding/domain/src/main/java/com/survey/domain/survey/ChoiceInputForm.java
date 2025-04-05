@@ -43,6 +43,13 @@ public class ChoiceInputForm {
         this.inputOptions = inputOptions;
     }
 
+    public ChoiceInputForm(Long id, ChoiceType choiceType, List<InputOption> inputOptions) {
+        validateInputOptions(inputOptions);
+        this.id = id;
+        this.choiceType = choiceType;
+        this.inputOptions = inputOptions;
+    }
+
     private void validateInputOptions(List<InputOption> inputOptions) {
         if (inputOptions == null || inputOptions.isEmpty()) {
             throw new IllegalArgumentException(INPUT_OPTIONS_EXCEPTION_MESSAGE);

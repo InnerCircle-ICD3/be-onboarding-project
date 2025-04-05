@@ -71,7 +71,7 @@ class SurveyResponseMapperServiceTest {
         GetAllSurveyResultResponse result = surveyResponseMapperService.generate(survey, surveyResponse);
 
         // then
-        TestSurveyResultResponseComparator.areEqual(new GetAllSurveyResultResponse(
+        assertThat(TestSurveyResultResponseComparator.areEqual(new GetAllSurveyResultResponse(
                 1L, 1L, "제목", "설명", List.of(
                 new SurveyOptionResultDto(3L, "설문 항목3", "설명3", true,
                         new InputFormResultDto(3L, "질문3", new ChoiceResultDto(3L, "단일",
@@ -87,9 +87,12 @@ class SurveyResponseMapperServiceTest {
                                         "선택지1",
                                         "선택지2",
                                         "선택지3"),
-                                List.of("선택지1"))
+                                List.of(
+                                        "선택지1",
+                                        "선택지2",
+                                        "선택지3"))
                         ))
-        )), result);
+        )), result)).isTrue();
     }
 
     @Test

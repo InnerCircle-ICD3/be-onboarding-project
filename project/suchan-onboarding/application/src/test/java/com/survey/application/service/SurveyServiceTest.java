@@ -3,9 +3,14 @@ package com.survey.application.service;
 import com.survey.application.dto.request.CreateSurveyRequest;
 import com.survey.application.dto.request.UpdateSurveyRequest;
 import com.survey.application.dto.response.GetAllSurveyResultResponse;
+import com.survey.application.dto.response.GetAllSurveyResultResponse.InputFormResultDto;
+import com.survey.application.dto.response.GetAllSurveyResultResponse.SurveyOptionResultDto;
+import com.survey.application.dto.response.GetAllSurveyResultResponse.TextResultDto;
 import com.survey.application.test.TestFixture;
+import com.survey.application.test.TestSurveyResultResponseComparator;
 import com.survey.domain.survey.Survey;
 import com.survey.domain.survey.SurveyOption;
+import com.survey.domain.surveyResponse.SurveyOptionResponse;
 import com.survey.domain.surveyResponse.SurveyResponse;
 import com.survey.domain.surveyResponse.repository.SurveyResponseRepository;
 import com.survey.domain.surveyResponse.service.SurveyResponseValidationService;
@@ -16,6 +21,7 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
 
+import java.time.LocalDateTime;
 import java.util.HashMap;
 import java.util.List;
 
@@ -153,19 +159,65 @@ class SurveyServiceTest {
         }
     }
 
-//    @Test
-//    @DisplayName("설문 조사 응답을 조회할 수 있다.")
-//    void get_all_survey_responses() {
-//        // given
-//        Long givenSurveyId = 1L;
-//        SurveyResponse givenSurveyResponse = TestFixture.createDefaultSurveyResponse(givenSurveyId);
-//        surveyResponseRepository.save(givenSurveyResponse);
-//
-//        // when
-//        List<GetAllSurveyResultResponse> result = surveyService.getAllSurveyResponses(givenSurveyId);
-//
-//        // then
-//        assertThat(result).isEqualTo();
-//    }
+    @Test
+    @DisplayName("설문 조사 최종 결과를 조회할 수 있다.")
+    void get_all_survey_responses() {
+        // given
+        Long givenSurveyId = 1L;
+
+        SurveyOption shortOption = TestFixture.createShortTextSurveyOption(true);
+        SurveyOption longOption = TestFixture.createLongTextSurveyOption(true);
+        Survey survey = new Survey(givenSurveyId, "제목", "설명", List.of(shortOption, longOption));
+        surveyRepository.save(survey);
+
+        SurveyOptionResponse shortResponse = TestFixture.createShortTextSurveyOptionResponse();
+        SurveyOptionResponse longResponse = TestFixture.createLongTextSurveyOptionResponse();
+        SurveyResponse givenSurveyResponse = new SurveyResponse(
+                givenSurveyId,
+                1L,
+                LocalDateTime.now(),
+                List.of(shortResponse, longResponse)
+        );
+        surveyResponseRepository.save(givenSurveyResponse);
+
+        // when
+        List<GetAllSurveyResultResponse> results = surveyService.getAllSurveyResponses(givenSurveyId);
+
+        // then
+        assertThat(results).hasSize(1);
+
+        GetAllSurveyResultResponse expectedResponse = new GetAllSurveyResultResponse(
+                givenSurveyId,
+                1L,
+                "제목",
+                "설명",
+                List.of(
+                        new SurveyOptionResultDto(
+                                1L,
+                                "설문 항목1",
+                                "설명1",
+                                true,
+                                new InputFormResultDto(
+                                        1L,
+                                        "질문1",
+                                        new TextResultDto(1L, "단답형", "short answer")
+                                )
+                        ),
+                        new SurveyOptionResultDto(
+                                2L,
+                                "설문 항목2",
+                                "설명2",
+                                true,
+                                new InputFormResultDto(
+                                        2L,
+                                        "질문2",
+                                        new TextResultDto(2L, "장문형", "long answer")
+                                )
+                        )
+                )
+        );
+
+        assertThat(TestSurveyResultResponseComparator.areEqual(expectedResponse, results.getFirst())).isTrue();
+    }
 
 }

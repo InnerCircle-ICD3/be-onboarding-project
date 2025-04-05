@@ -28,6 +28,11 @@ public class TextInputForm {
         this.textType = textType;
     }
 
+    public TextInputForm(Long id, TextType textType) {
+        this.id = id;
+        this.textType = textType;
+    }
+
     public void addInputForm(InputForm inputForm) {
         this.inputForm = inputForm;
     }

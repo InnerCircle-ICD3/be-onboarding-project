@@ -36,6 +36,14 @@ public class InputForm {
         addChoiceInputForm(choiceInputForm);
     }
 
+    private InputForm(Long id, String question, TextInputForm textInputForm, ChoiceInputForm choiceInputForm) {
+        validateInputForm(textInputForm, choiceInputForm);
+        this.id = id;
+        this.question = question;
+        addTextInputForm(textInputForm);
+        addChoiceInputForm(choiceInputForm);
+    }
+
     protected InputForm(String question) {
         this(question, null, null);
     }
@@ -46,6 +54,14 @@ public class InputForm {
 
     public InputForm(String question, ChoiceInputForm choiceInputForm) {
         this(question, null, choiceInputForm);
+    }
+
+    public InputForm(Long id, String question, TextInputForm textInputForm) {
+        this(id, question, textInputForm, null);
+    }
+
+    public InputForm(Long id, String question, ChoiceInputForm choiceInputForm) {
+        this(id, question, null, choiceInputForm);
     }
 
     private void validateInputForm(TextInputForm textInputForm, ChoiceInputForm choiceInputForm) {
