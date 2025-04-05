@@ -15,7 +15,6 @@ interface QuestionRepository : JpaRepository<Question, Long> {
 
 interface QuestionOptionRepository : JpaRepository<QuestionOption, Long> {
     fun findByQuestionId(questionId: Long): List<QuestionOption>
-    
-    @Query("SELECT o FROM QuestionOption o WHERE o.question.id = :questionId ORDER BY o.sequence")
-    fun findAllByQuestionIdOrderBySequence(@Param("questionId") questionId: Long): List<QuestionOption>
+
+    fun findAllByQuestionIdOrderBySequence(questionId: Long): List<QuestionOption>
 } 

@@ -16,29 +16,16 @@ interface SurveyResponseRepository : JpaRepository<SurveyResponse, Long> {
     fun findBySurveyId(surveyId: Long): List<SurveyResponse>
     
     @Query("""
-        SELECT DISTINCT r FROM SurveyResponse r 
-        JOIN r.items i 
+     SELECT DISTINCT r FROM SurveyResponse r 
+        JOIN FETCH r.items i 
+        LEFT JOIN FETCH i.option o 
         WHERE r.survey.id = :surveyId 
-//        AND (:questionName IS NULL OR i.question.name = :questionName)
-        AND (:responseValue IS NULL OR i.textValue = :responseValue OR i.option.text = :responseValue)
-    """)
+        AND (:questionName IS NULL OR i.questionId IN (SELECT q.id FROM Question q WHERE q.name = :questionName))
+        AND (:responseValue IS NULL OR i.textValue = :responseValue OR o.text = :responseValue)
+     """)
     fun findByQuestionNameAndResponseValue(
         @Param("surveyId") surveyId: Long,
         @Param("questionName") questionName: String?,
         @Param("responseValue") responseValue: String?
     ): List<SurveyResponse>
 }
-
-interface ResponseItemRepository : JpaRepository<ResponseItem, Long> {
-    fun findBySurveyResponseId(surveyResponseId: Long): List<ResponseItem>
-    
-    @Query("""
-        SELECT i FROM ResponseItem i 
-        WHERE i.surveyResponse.survey.id = :surveyId 
-        AND i.questionId = :questionId
-    """)
-    fun findBySurveyIdAndQuestionId(
-        @Param("surveyId") surveyId: Long,
-        @Param("questionId") questionId: Long
-    ): List<ResponseItem>
-} 

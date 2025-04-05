@@ -1,6 +1,5 @@
 package com.hjpark.survey.entity
 
-import com.hjpark.survey.model.QuestionType
 import jakarta.persistence.*
 import org.hibernate.annotations.CreationTimestamp
 import java.time.LocalDateTime
@@ -18,20 +17,20 @@ class Question(
     val survey: Survey,
 
     @Column(name = "sequence", nullable = false)
-    val sequence: Short,
+    var sequence: Short,
 
     @Column(name = "question_name", nullable = false)
-    val name: String,
+    var name: String,
 
     @Column(name = "description")
-    val description: String?,
+    var description: String?,
 
     @Enumerated(EnumType.STRING)
     @Column(name = "question_type", nullable = false)
-    val type: QuestionType,
+    var type: QuestionType,
 
     @Column(name = "required", nullable = false)
-    val required: Boolean = false,
+    var required: Boolean = false,
 
     @OneToMany(mappedBy = "question", cascade = [CascadeType.ALL], orphanRemoval = true)
     @OrderBy("sequence ASC")
@@ -41,3 +40,10 @@ class Question(
     @CreationTimestamp
     val createTime: LocalDateTime? = null
 )
+
+enum class QuestionType {
+    SHORT_ANSWER,    // 단답형
+    LONG_ANSWER,     // 장문형
+    SINGLE_CHOICE,   // 단일 선택 리스트
+    MULTIPLE_CHOICE  // 다중 선택 리스트
+}
