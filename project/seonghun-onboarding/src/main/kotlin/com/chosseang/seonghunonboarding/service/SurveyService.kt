@@ -12,20 +12,18 @@ class SurveyService(val repository: SurveyRepository) {
 
     @Transactional
     fun createSurvey(surveyCreateRequest: SurveyCreateRequest): SurveyCreateResponse {
-        // 각 아이템의 survey 참조 설정 (양방향 관계 유지)
-        surveyCreateRequest.items.forEach { item ->
-            item.survey = Survey(
-                name = surveyCreateRequest.name,
-                description = surveyCreateRequest.description,
-                items = surveyCreateRequest.items.toMutableList()
-            )
-        }
 
-        return repository.save(Survey(
+        val survey = Survey(
             name = surveyCreateRequest.name,
             description = surveyCreateRequest.description,
-            items = surveyCreateRequest.items.toMutableList()
-        )).let {
+            items = mutableListOf() // 빈 리스트로 시작
+        )
+
+        // Survey 엔티티에 구현된 메서드를 사용하여 아이템 추가
+        survey.addItems(surveyCreateRequest.items)
+
+        // 저장 후 응답 변환
+        return repository.save(survey).let {
             SurveyCreateResponse(
                 name = it.name,
                 description = it.description,
