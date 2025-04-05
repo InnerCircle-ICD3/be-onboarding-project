@@ -1,2 +1,21 @@
+logging:
+  level:
+    org.hibernate:
+      sql: debug
+      orm.jdbc.bind: trace
 spring:
   application.name: donghyeon-onboarding
+  h2:
+    console.enabled: true
+  datasource:
+    url: jdbc:h2:mem:survey
+    driver-class-name: org.h2.Driver
+    username: sa
+    password: aa
+  jpa:
+    open-in-view: false
+    hibernate:
+      ddl-auto: create
+    show-sql: true
+    properties:
+      hibernate.format_sql: true

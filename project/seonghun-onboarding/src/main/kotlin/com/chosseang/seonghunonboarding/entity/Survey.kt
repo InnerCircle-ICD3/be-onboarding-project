@@ -11,10 +11,21 @@ import jakarta.persistence.OneToMany
 data class Survey(
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    val id: Long,
+    val id: Long? = null,
     val name: String,
     val description: String,
 
-    @OneToMany(cascade = [CascadeType.ALL], orphanRemoval = true)
-    val items: List<Item>
-)
+    @OneToMany(mappedBy = "survey", orphanRemoval = true, cascade = [CascadeType.ALL])
+    var items: MutableList<Item>
+){
+    // 아이템 추가 메서드 - 양방향 관계 유지
+    fun addItem(item: Item) {
+        items.add(item)
+        item.survey = this
+    }
+
+    // 여러 아이템 한번에 추가
+    fun addItems(itemList: List<Item>) {
+        itemList.forEach { addItem(it) }
+    }
+}
