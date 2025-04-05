@@ -1,0 +1,55 @@
+### 설문조사 생성
+POST http://localhost:8080/api/v1/surveys
+Content-Type: application/json
+
+{
+    "title": "온보딩 설문조사",
+    "description": "온보딩에 대한 의견을 남겨주세요.",
+    "items": [
+      {
+        "title": "온보딩 프로젝트의 난이도 설문조사",
+        "description": "난이도는 1(매우 쉬움)부터 5(매우 어려움)까지의 점수로 평가해주세요.",
+        "inputType": "SINGLE_CHOICE",
+        "isRequired": true,
+        "options": [
+          {
+            "value": "1"
+          },
+          {
+            "value": "2"
+          },
+          {
+            "value": "3"
+          },
+          {
+            "value": "4"
+          },
+          {
+            "value": "5"
+          }
+        ]
+      }
+    ]
+}
+
+### 설문조사 조회
+GET http://localhost:8080/api/v1/surveys/4
+Content-Type: application/json
+
+### 설문조사 응답 생성
+POST http://localhost:8080/api/v1/surveys/4/responses
+Content-Type: application/json
+
+{
+    "answers": [
+        {
+          "type": "SINGLE_CHOICE",
+          "surveyItemId": 13,
+          "itemOptionIds": [38]
+        }
+    ]
+}
+
+### 설문조사에 대한 모든 응답 조회
+GET http://localhost:8080/api/v1/surveys/4/responses
+Content-Type: application/json

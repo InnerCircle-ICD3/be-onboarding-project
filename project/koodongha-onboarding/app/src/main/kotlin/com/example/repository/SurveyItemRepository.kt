@@ -1,6 +1,6 @@
 package com.example.repository
 
-import com.example.entity.*
+import com.example.entity.SurveyItemBase
 import org.springframework.data.jpa.repository.JpaRepository
 
-interface SurveyItemRepository : JpaRepository<SurveyItem, Long>
+interface SurveyItemRepository : JpaRepository<SurveyItemBase, Long>
