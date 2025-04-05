@@ -94,4 +94,5 @@ class SurveyServiceTest @Autowired constructor(
         // then
         assertThat(response.surveyId).isNotNull()
     }
+
 }

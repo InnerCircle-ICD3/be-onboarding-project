@@ -1,7 +1,9 @@
 package com.example.doohyeononboarding.api.service
 
 import com.example.doohyeononboarding.api.service.request.CreateSurveyRequest
+import com.example.doohyeononboarding.api.service.request.UpdateSurveyRequest
 import com.example.doohyeononboarding.api.service.response.CreateSurveyResponse
+import com.example.doohyeononboarding.api.service.response.UpdateSurveyResponse
 import com.example.doohyeononboarding.domain.question.Question
 import com.example.doohyeononboarding.domain.servey.Survey
 import com.example.doohyeononboarding.domain.servey.SurveyRepository
@@ -42,9 +44,33 @@ class SurveyService(
 
         val savedSurvey = surveyRepository.save(survey)
 
-        return CreateSurveyResponse(
-            surveyId = savedSurvey.surveyId,
-        )
+        return CreateSurveyResponse(savedSurvey.surveyId)
+    }
+
+    /**
+     * 설문 수정
+     */
+    @Transactional
+    fun updateSurvey(surveyId: Long, request: UpdateSurveyRequest): UpdateSurveyResponse {
+        val survey = surveyRepository.findById(surveyId)
+            .orElseThrow { IllegalArgumentException("설문조사 아이디($surveyId)를 찾을 수 없습니다.") }
+
+        survey.updateTitle(request.title)
+        survey.updateDescription(request.description ?: "")
+        survey.questions?.forEach { question ->
+            val updatedQuestion = request.questions?.find { it.questionId == question.questionId }
+
+            if (updatedQuestion != null) {
+                question.updateTitle(updatedQuestion.title)
+                question.updateDescription(updatedQuestion.description ?: "")
+                question.updateType(updatedQuestion.type)
+                question.updateIsRequired(updatedQuestion.isRequired)
+                question.updateOptions(updatedQuestion.options ?: mutableListOf())
+            }
+        }
+
+        val updatedSurvey = surveyRepository.save(survey)
+        return UpdateSurveyResponse(updatedSurvey.surveyId)
     }
 
 }
