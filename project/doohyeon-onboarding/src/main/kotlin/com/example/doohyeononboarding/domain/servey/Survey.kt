@@ -18,12 +18,20 @@ class Survey(
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     val surveyId: Long = 0,
 
-    val title: String,
+    var title: String,
 
-    val description: String? = "",
+    var description: String? = "",
 
     @OneToMany(mappedBy = "survey", cascade = [CascadeType.ALL], orphanRemoval = true)
     var questions: List<Question>? = mutableListOf(),
 ) : BaseEntity() {
 
+    fun updateTitle(title: String) {
+        this.title = title
+    }
+
+    fun updateDescription(description: String) {
+        this.description = description
+    }
+    
 }

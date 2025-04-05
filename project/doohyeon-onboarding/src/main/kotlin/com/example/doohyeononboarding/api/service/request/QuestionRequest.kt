@@ -3,6 +3,7 @@ package com.example.doohyeononboarding.api.service.request
 import com.example.doohyeononboarding.domain.question.QuestionType
 
 class QuestionRequest(
+    val questionId: Long? = null,
     val title: String,
     val description: String? = "",
     val type: QuestionType,

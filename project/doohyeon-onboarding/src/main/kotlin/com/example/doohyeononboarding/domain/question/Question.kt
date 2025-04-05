@@ -24,23 +24,42 @@ class Question(
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     val questionId: Long = 0,
 
-    val title: String,
+    var title: String,
 
-    val description: String? = "",
+    var description: String? = "",
 
     @Enumerated(EnumType.STRING)
-    val type: QuestionType,
+    var type: QuestionType,
 
-    val isRequired: Boolean,
+    var isRequired: Boolean,
 
     @ElementCollection
     @CollectionTable(name = "question_options", joinColumns = [JoinColumn(name = "question_id")])
     @Column(name = "option_text")
-    val options: MutableList<String> = mutableListOf(),
+    var options: MutableList<String> = mutableListOf(),
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "survey_id", nullable = false)
     val survey: Survey
 ) : BaseEntity() {
 
+    fun updateTitle(title: String) {
+        this.title = title
+    }
+
+    fun updateDescription(description: String) {
+        this.description = description
+    }
+
+    fun updateType(type: QuestionType) {
+        this.type = type
+    }
+
+    fun updateIsRequired(isRequired: Boolean) {
+        this.isRequired = isRequired
+    }
+
+    fun updateOptions(options: List<String>) {
+        this.options = options.toMutableList()
+    }
 }
