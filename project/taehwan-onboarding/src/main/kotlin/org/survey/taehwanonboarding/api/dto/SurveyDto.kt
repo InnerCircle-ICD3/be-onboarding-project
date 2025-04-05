@@ -32,3 +32,36 @@ data class SurveyCreateResponse(
     val status: String,
     val createdAt: String,
 )
+
+// todo: 질문의 답변 중 id가 필요한지에 여부도 고민
+data class SurveyDetailResponse(
+    val id: Long,
+    val title: String,
+    val description: String?,
+    val status: String,
+    val createdAt: String,
+    val updatedAt: String,
+    val items: List<AnswerResponse>,
+)
+
+data class AnswerResponse(
+    val id: Long,
+    val title: String,
+    val description: String?,
+    val required: Boolean,
+    val orderNumber: Int,
+    val type: QuestionType,
+    val maxLength: Int? = null,
+    val options: List<String>? = null,
+    val minSelections: Int? = null,
+    val maxSelections: Int? = null,
+)
+
+data class SurveySummaryResponse(
+    val id: Long,
+    val title: String,
+    val description: String?,
+    val status: String,
+    val itemCount: Int,
+    val createdAt: String,
+)
