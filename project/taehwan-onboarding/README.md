@@ -156,7 +156,7 @@ Apply
 
 ```
 2. 플러그인 설치 후 build를 수행하면 로컬 설정에 따라 에러가 발생할 수 있다.
-   ![img.png](img.png)
+![img.png](img.png)
 3. 아래 명령어로 lint 설정에 맞도록 자동 수정할 수 있다
 ```shell
 ./gradlew ktlintFormat
