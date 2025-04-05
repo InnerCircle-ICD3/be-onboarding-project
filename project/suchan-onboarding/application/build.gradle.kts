@@ -8,4 +8,5 @@ dependencies {
 
     implementation(project(":common"))
     implementation(project(":domain"))
+    testImplementation(testFixtures(project(":domain")))
 }

@@ -8,7 +8,9 @@ import org.survey.infra.persistence.entity.survey.SurveyItemEntity
 import org.survey.infra.persistence.toDomain
 import org.survey.infra.persistence.toEntity
 
-interface SurveyItemJpaRepository : JpaRepository<SurveyItemEntity, Long>
+interface SurveyItemJpaRepository : JpaRepository<SurveyItemEntity, Long> {
+    fun findBySurveyIdAndIsDeletedIsFalse(surveyId: Long): List<SurveyItemEntity>
+}
 
 @Repository
 class SurveyItemRepositoryImpl(
@@ -20,5 +22,9 @@ class SurveyItemRepositoryImpl(
 
     override fun saveAll(surveyItems: List<SurveyItem>): List<SurveyItem> {
         return surveyItemJpaRepository.saveAll(surveyItems.map { it.toEntity() }).map { it.toDomain() }
+    }
+
+    override fun findBySurveyId(surveyId: Long): List<SurveyItem> {
+        return surveyItemJpaRepository.findBySurveyIdAndIsDeletedIsFalse(surveyId).map { it.toDomain() }
     }
 }

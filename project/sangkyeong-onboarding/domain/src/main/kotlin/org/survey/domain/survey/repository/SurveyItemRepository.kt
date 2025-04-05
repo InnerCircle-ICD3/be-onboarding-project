@@ -6,4 +6,6 @@ interface SurveyItemRepository {
     fun save(surveyItem: SurveyItem): Long
 
     fun saveAll(surveyItems: List<SurveyItem>): List<SurveyItem>
+
+    fun findBySurveyId(surveyId: Long): List<SurveyItem>
 }
