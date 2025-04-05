@@ -8,6 +8,7 @@ import com.chosseang.seonghunonboarding.entity.Survey
 import com.chosseang.seonghunonboarding.service.SurveyService
 import org.springframework.http.HttpStatus
 import org.springframework.http.ResponseEntity
+import org.springframework.web.bind.annotation.PatchMapping
 import org.springframework.web.bind.annotation.PostMapping
 import org.springframework.web.bind.annotation.RequestBody
 import org.springframework.web.bind.annotation.RequestMapping
@@ -51,5 +52,11 @@ class SurveyController (val surveyService: SurveyService) {
         )
 
         return ResponseEntity.ok(apiResponse)
+    }
+
+    @PatchMapping("/update")
+    @ResponseBody
+    fun updateSurvey(@RequestBody survey: Survey) : Survey? {
+        return surveyService.updateSurvey(survey)
     }
 }
