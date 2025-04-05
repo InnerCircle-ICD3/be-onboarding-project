@@ -78,7 +78,53 @@ item : {
 </details>
 
 ### 설문조사 응답
+<details>
+<summary>설문조사 응답 제출 api</summary>
+<div markdown="1">
 
+| Http Method | Path            |
+|------------|-----------------|
+| POST       | /answers/submit |
+
+- Request
+
+| Param     | Type         | Description |
+|-----------|--------------|------------|
+| name      | String       | 응답자        |
+| items     | json         | 질문 항목      |
+| responses | List<String> | 응답 항목      |
+
+> items json 형식
+```
+{
+  "question" : String,
+  "contents" : List<String>
+}
+```
+
+
+- Response
+
+```
+{
+    "status": 200,
+    "result": 
+        {
+            "id": Long,
+            "name": String,
+            "items": {
+                          "question" : String,
+                          "contents" : List<String>
+                        },
+            "responses": List<String>
+        }
+}
+
+```
+
+
+</div>
+</details>
 
 ## 상세 기능
 
