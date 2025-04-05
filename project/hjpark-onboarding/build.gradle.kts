@@ -15,10 +15,8 @@ allprojects {
 }
 
 subprojects {
-    apply(plugin = rootProject.libs.plugins.kotlin.jvm.get().pluginId)
-    apply(plugin = rootProject.libs.plugins.kotlin.spring.get().pluginId)
-    apply(plugin = rootProject.libs.plugins.spring.boot.get().pluginId)
-    
+    apply(plugin = "org.jetbrains.kotlin.jvm")
+
     // 공통 의존성
     dependencies {
         implementation(platform(org.springframework.boot.gradle.plugin.SpringBootPlugin.BOM_COORDINATES))
@@ -28,18 +26,8 @@ subprojects {
         testImplementation(rootProject.libs.bundles.testing)
     }
 
-    if (project.name != "api") {
-        tasks.getByName("bootJar") {
-            enabled = false
-        }
-        tasks.jar {
-            enabled = false
-        }
-    }
-
     // 테스트 설정
-    tasks.named<Test>("test") {
+    tasks.withType<Test> {
         useJUnitPlatform()
     }
-
 }
