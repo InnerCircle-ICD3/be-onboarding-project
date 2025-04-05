@@ -53,7 +53,7 @@ class SurveyController(
         @PathVariable surveyId: Int,
         @RequestParam(required = false) filters: Map<String, String>?
     ): ResponseEntity<GetAnswersResponse> {
-        // TODO: 서비스 호출 및 필터링 처리
-        return ResponseEntity.ok(GetAnswersResponse(answers = emptyList()))
+        val response = surveyAnswerService.getSurveyAnswers(surveyId)
+        return ResponseEntity.ok(response)
     }
 }

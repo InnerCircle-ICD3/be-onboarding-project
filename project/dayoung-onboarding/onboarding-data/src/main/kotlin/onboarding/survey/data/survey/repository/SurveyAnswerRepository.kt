@@ -4,4 +4,5 @@ import onboarding.survey.data.survey.entity.SurveyAnswer
 import org.springframework.data.jpa.repository.JpaRepository
 
 interface SurveyAnswerRepository : JpaRepository<SurveyAnswer, Int> {
+    fun findBySurveySurveyId(surveyId: Int): List<SurveyAnswer>
 }
