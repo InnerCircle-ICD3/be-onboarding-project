@@ -29,4 +29,3 @@ tasks.jar {
 tasks.bootRun {
     enabled = false
 }
-
