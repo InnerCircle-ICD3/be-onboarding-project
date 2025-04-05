@@ -2,10 +2,13 @@ package org.survey.taehwanonboarding.application.service
 
 import org.springframework.stereotype.Service
 import org.springframework.transaction.annotation.Transactional
+import org.survey.taehwanonboarding.api.dto.AnswerResponse
 import org.survey.taehwanonboarding.api.dto.QuestionRequest
 import org.survey.taehwanonboarding.api.dto.QuestionType
 import org.survey.taehwanonboarding.api.dto.SurveyCreateRequest
 import org.survey.taehwanonboarding.api.dto.SurveyCreateResponse
+import org.survey.taehwanonboarding.api.dto.SurveyDetailResponse
+import org.survey.taehwanonboarding.api.dto.SurveySummaryResponse
 import org.survey.taehwanonboarding.domain.entity.survey.LongAnswerItem
 import org.survey.taehwanonboarding.domain.entity.survey.MultiSelectionItem
 import org.survey.taehwanonboarding.domain.entity.survey.ShortAnswerItem
@@ -133,5 +136,88 @@ class SurveyService(
                 minSelections = question.minSelections,
                 maxSelections = question.maxSelections,
             )
+    }
+
+    @Transactional(readOnly = true)
+    fun getSurveyById(id: Long): SurveyDetailResponse {
+        val survey = surveyRepository.findById(id)
+            .orElseThrow { IllegalArgumentException("존재하지 않는 설문조사입니다: ID=$id") }
+
+        require(survey.status != Survey.SurveyStatus.ARCHIVED) {
+            "삭제된 설문조사입니다: ID=$id"
+        }
+
+        // todo: 타입에 따른 factory builder 패턴을 적용 가능함
+        return SurveyDetailResponse(
+            id = survey.id!!,
+            title = survey.title,
+            description = survey.description,
+            status = survey.status.name,
+            createdAt = survey.createdAt?.format(DateTimeFormatter.ISO_DATE_TIME) ?: "",
+            updatedAt = survey.updatedAt?.format(DateTimeFormatter.ISO_DATE_TIME) ?: "",
+            items = survey.items.sortedBy { it.orderNumber }.map { item ->
+                when (item) {
+                    is ShortAnswerItem -> AnswerResponse(
+                        id = item.id!!,
+                        title = item.title,
+                        description = item.description,
+                        required = item.required,
+                        orderNumber = item.orderNumber,
+                        type = QuestionType.SHORT_ANSWER,
+                        maxLength = item.maxLength,
+                    )
+                    is LongAnswerItem -> AnswerResponse(
+                        id = item.id!!,
+                        title = item.title,
+                        description = item.description,
+                        required = item.required,
+                        orderNumber = item.orderNumber,
+                        type = QuestionType.LONG_ANSWER,
+                        maxLength = item.maxLength,
+                    )
+                    is SingleSelectionItem -> AnswerResponse(
+                        id = item.id!!,
+                        title = item.title,
+                        description = item.description,
+                        required = item.required,
+                        orderNumber = item.orderNumber,
+                        type = QuestionType.SINGLE_SELECTION,
+                        options = item.options,
+                    )
+                    is MultiSelectionItem -> AnswerResponse(
+                        id = item.id!!,
+                        title = item.title,
+                        description = item.description,
+                        required = item.required,
+                        orderNumber = item.orderNumber,
+                        type = QuestionType.MULTI_SELECTION,
+                        options = item.options,
+                        minSelections = item.minSelections,
+                        maxSelections = item.maxSelections,
+                    )
+                    else -> throw IllegalStateException("허용되지 않은 질문 유형입니다 : ${item.javaClass}")
+                }
+            },
+        )
+    }
+
+    @Transactional(readOnly = true)
+    fun getSurveys(status: Survey.SurveyStatus? = null): List<SurveySummaryResponse> {
+        val surveys = if (status != null) {
+            surveyRepository.findAllByStatus(status)
+        } else {
+            surveyRepository.findAllByStatusNot(Survey.SurveyStatus.ARCHIVED)
+        }
+
+        return surveys.map { survey ->
+            SurveySummaryResponse(
+                id = survey.id!!,
+                title = survey.title,
+                description = survey.description,
+                status = survey.status.name,
+                itemCount = survey.items.size,
+                createdAt = survey.createdAt?.format(DateTimeFormatter.ISO_DATE_TIME) ?: "",
+            )
+        }
     }
 }
