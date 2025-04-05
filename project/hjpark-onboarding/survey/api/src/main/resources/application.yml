@@ -10,7 +10,7 @@ server:
 logging:
   level:
     root: INFO
-    com.hjpark.survey: DEBUG # API 및 서비스 계층 로그 레벨 설정
+    com.hjpark.survey: DEBUG
 
 decorator:
   datasource:
