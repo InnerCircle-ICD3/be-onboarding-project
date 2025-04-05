@@ -211,6 +211,7 @@ class SurveyRestController(
         return ResponseEntity.noContent().build()
     }
 
+
     @Operation(summary = "설문 답변", description = "설문에 답변합니다.")
     @ApiResponses(
         value = [

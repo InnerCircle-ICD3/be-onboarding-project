@@ -259,4 +259,5 @@ fun 장문형_설문_답변_요청(questionId: Long?, surveyResponse: SurveyResp
         surveyQuestionDescription = surveyResponse.questions?.first()?.description,
         content = "장문형 답변",
         questionType = QuestionType.LONG_ANSWER.name,
+
     )
