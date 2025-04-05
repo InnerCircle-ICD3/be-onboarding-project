@@ -15,8 +15,24 @@ interface SurveyJpaRepository : JpaRepository<SurveyEntity, Long>
 class SurveyRepositoryImpl(
     private val surveyJpaRepository: SurveyJpaRepository,
 ) : SurveyRepository {
+//    override fun save(survey: Survey): Long {
+//
+//        return surveyJpaRepository.save(survey.toNewEntity()).id
+//    }
+
     override fun save(survey: Survey): Long {
-        return surveyJpaRepository.save(survey.toEntity()).id
+        val entityToSave =
+            if (survey.id > 0) {
+                val existingEntity =
+                    surveyJpaRepository.findByIdOrNull(survey.id)
+                        ?: throw IllegalArgumentException("업데이트할 설문조사가 없습니다: ${survey.id}")
+
+                existingEntity.updateFromDomain(survey.title, survey.description)
+                existingEntity
+            } else {
+                survey.toEntity()
+            }
+        return surveyJpaRepository.save(entityToSave).id
     }
 
     override fun findById(id: Long): Survey? {

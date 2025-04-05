@@ -39,6 +39,7 @@ fun SurveyItemEntity.toDomain() =
         description = this.description,
         inputType = this.inputType,
         isRequired = this.isRequired,
+        isDeleted = this.isDeleted,
     )
 
 fun ItemOption.toEntity() =
