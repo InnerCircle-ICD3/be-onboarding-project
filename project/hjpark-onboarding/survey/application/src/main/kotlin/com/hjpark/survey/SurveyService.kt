@@ -29,7 +29,7 @@ class SurveyService(
         val surveys = if (keyword != null) {
             surveyRepository.findByNameContaining(keyword)
         } else {
-            surveyRepository.findAll()
+            surveyRepository.findAllOrderByCreateTimeDesc()
         }
 
         val surveyDtos = surveys.map { survey ->

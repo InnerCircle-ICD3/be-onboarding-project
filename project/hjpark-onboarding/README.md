@@ -25,7 +25,6 @@ hjpark-onboarding/
 - **역할과 책임**
   - 공통으로 사용되는 DTO 정의
   - 예외 처리와 응답 형식 정의
-  - 외부 의존성 최소화
   - API 계층과 Application 계층 간의 데이터 전달 객체 정의
 
 #### **logging**
@@ -71,10 +70,9 @@ hjpark-onboarding/
 shared-common -> api -> application -> data
 ```
 
-각 모듈의 의존성 규칙:
-- shared-common: 의존성 없음
-- api: shared-common, application
-- application: data
+각 모듈 간의 의존성 규칙:
+- api: shared-common, logging, application
+- application: shared-common, data
 - data: 의존성 없음
 
 ---
@@ -92,6 +90,26 @@ shared-common -> api -> application -> data
 | Spring Data JPA | -      | ORM 및 데이터베이스 액세스 |
 | H2 Database | -      | 인메모리 RDBMS               |
 | Gradle     | 8.13   | 빌드 도구                    |
+
+---
+
+## 추가 구현 사항
+
+### 설문 목록 조회 기능
+- 설문 제목을 키워드로 검색하여 설문 목록을 조회하는 기능 구현
+- 키워드가 없는 경우 전체 설문 목록 반환
+- 검색 결과는 설문 생성일 기준 내림차순으로 정렬
+- 각 설문의 간략한 정보(제목, 설명, 생성일 등)만 포함하여 반환
+- ```kotlin
+  data class SurveyDto(
+    val id: Long,
+    val name: String,
+    val description: String?,
+    val createTime: LocalDateTime,
+    val updateTime: LocalDateTime,
+    val questionCount: Int
+  )
+  ```
 
 ---
 

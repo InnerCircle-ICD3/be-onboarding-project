@@ -5,8 +5,6 @@ plugins {
 }
 
 dependencies {
-    implementation(project(":support:logging"))
-
     api("org.springframework.boot:spring-boot-starter-data-jpa")
     implementation("org.jetbrains.kotlin:kotlin-stdlib")
     implementation("org.jetbrains.kotlin:kotlin-reflect")

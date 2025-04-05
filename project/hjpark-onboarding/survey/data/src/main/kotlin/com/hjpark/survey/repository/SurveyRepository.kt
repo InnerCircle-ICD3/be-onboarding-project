@@ -8,8 +8,11 @@ import org.springframework.data.jpa.repository.Query
 import org.springframework.data.repository.query.Param
 
 interface SurveyRepository : JpaRepository<Survey, Long> {
-    @Query("SELECT s FROM Survey s WHERE s.name LIKE %:keyword%")
+    @Query("SELECT s FROM Survey s WHERE s.name LIKE %:keyword% ORDER BY s.createTime DESC")
     fun findByNameContaining(@Param("keyword") keyword: String): List<Survey>
+
+    @Query("SELECT s FROM Survey s ORDER BY s.createTime DESC")
+    fun findAllOrderByCreateTimeDesc(): List<Survey>
 }
 
 interface SurveyResponseRepository : JpaRepository<SurveyResponse, Long> {

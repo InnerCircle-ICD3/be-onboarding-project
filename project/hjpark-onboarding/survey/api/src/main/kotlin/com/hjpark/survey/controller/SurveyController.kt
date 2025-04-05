@@ -47,6 +47,7 @@ class SurveyController(
         description = """
         모든 설문 목록을 대상으로 하는 조회
         검색 키워드를 제공하면 설문 제목에 해당 키워드가 포함된 설문의 간략한 정보들만 반환합니다.
+        결과는 생성일(createTime) 기준으로 내림차순 정렬됩니다.
     """,)
     @GetMapping
     fun getSurveys(
