@@ -19,32 +19,33 @@ import org.springframework.test.web.servlet.result.MockMvcResultMatchers.status
 
 @SpringBootTest
 @AutoConfigureMockMvc
-class SurveyControllerTest{
+class SurveyControllerTest {
     @Autowired
     lateinit var mockMvc: MockMvc
+
     @Autowired
     lateinit var objectMapper: ObjectMapper
 
     @Test
     @DisplayName("Controller 요청시 성공 응답이 내려오는지 테스트")
-    fun createSurvey(){
+    fun createSurvey() {
         val createSurveyDto = CreateSurveyDto(
             title = "testTitle",
             description = "testDescription",
-            questions =  listOf(
+            questions = listOf(
                 CreateSelectQuestionDto(
                     title = "testTitle",
                     description = "testDescription",
                     type = QuestionType.MULTI_SELECT,
                     isRequired = true,
-                    answerList =  listOf("testAnswer1", "testAnswer2")
+                    answerList = listOf("testAnswer1", "testAnswer2")
                 ),
                 CreateSelectQuestionDto(
                     title = "testTitle",
                     description = "testDescription",
                     type = QuestionType.SINGLE_SELECT,
                     isRequired = true,
-                    answerList =  listOf("testAnswer1", "testAnswer2")
+                    answerList = listOf("testAnswer1", "testAnswer2")
                 ),
                 CreateStandardQuestionDto(
                     title = "testTitle",
@@ -74,16 +75,18 @@ class SurveyControllerTest{
 
     @Test
     @DisplayName("Survey에 Question을 10개이상 입력한 경우 에러 응답이 정상적으로 내려오는지 테스트")
-    fun createSurveyFail(){
+    fun createSurveyFail() {
         val createSurveyDto = CreateSurveyDto(
             title = "testTitle",
             description = "testDescription",
-            questions = (0 until 11).map { CreateStandardQuestionDto(
-                title = "testTitle",
-                description = "testDescription",
-                type = QuestionType.LONG,
-                isRequired = true,
-            ) }.toList()
+            questions = (0 until 11).map {
+                CreateStandardQuestionDto(
+                    title = "testTitle",
+                    description = "testDescription",
+                    type = QuestionType.LONG,
+                    isRequired = true,
+                )
+            }.toList()
         )
 
         mockMvc.perform(
