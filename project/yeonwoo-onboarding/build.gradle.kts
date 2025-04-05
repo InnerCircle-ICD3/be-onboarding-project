@@ -12,7 +12,9 @@ group = "com.example"
 version = "0.0.1-SNAPSHOT"
 
 java {
+
     sourceCompatibility = JavaVersion.VERSION_19
+
 }
 
 repositories {
@@ -43,6 +45,11 @@ dependencies {
         exclude(group = "org.junit.vintage", module = "junit-vintage-engine") // JUnit 4 제외
     }
     // testImplementation("org.junit.jupiter:junit-jupiter")
+
+    //아이디 생성
+    implementation("org.hibernate:hibernate-core:6.2.7.Final")
+
+
 }
 
 tasks.withType<KotlinCompile> {
@@ -53,5 +60,6 @@ tasks.withType<KotlinCompile> {
 }
 
 tasks.withType<Test> {
-    useJUnitPlatform() // ✅ JUnit 5 플랫폼 사용 설정
+
+    useJUnitPlatform() 
 }

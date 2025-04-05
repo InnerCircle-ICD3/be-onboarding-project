@@ -8,12 +8,21 @@ import lombok.Setter;
 import java.util.ArrayList;
 import java.util.List;
 
+
+import org.hibernate.annotations.GenericGenerator;
+
+
 @Entity
 @Getter
 @Setter
 @NoArgsConstructor
 public class Survey {
     @Id
+
+    @GeneratedValue(generator = "survey-id-generator")
+    @GenericGenerator(name = "survey-id-generator", 
+                     strategy = "com.innercircle.yeonwoo_onboarding.domain.generator.SurveyIdGenerator")
+
     @Column(name = "SURVEY_ID")
     private String id;
 

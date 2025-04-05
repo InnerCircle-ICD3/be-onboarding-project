@@ -5,14 +5,24 @@ import com.innercircle.yeonwoo_onboarding.domain.enums.InputType;
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+
+import lombok.Setter;
+
 import java.util.ArrayList;
 import java.util.List;
 
+import org.hibernate.annotations.GenericGenerator;
+
 @Entity
 @Getter
+@Setter
 @NoArgsConstructor
 public class SurveyItem {
     @Id
+    @GeneratedValue(generator = "survey-item-id-generator")
+    @GenericGenerator(name = "survey-item-id-generator", 
+                     strategy = "com.innercircle.yeonwoo_onboarding.domain.generator.SurveyItemIdGenerator")
+
     @Column(name = "SURVEY_ITEM_ID")
     private String id;
 
@@ -35,4 +45,38 @@ public class SurveyItem {
 
     @OneToMany(mappedBy = "surveyItem", cascade = CascadeType.ALL)
     private List<SurveyItemOption> options = new ArrayList<>();
+
+    public void setId(String id) {  
+        this.id = id;
+    }
+
+    public void setSurvey(Survey survey) {
+        this.survey = survey;
+    }
+
+    public void setName(String name) {
+        this.name = name;
+    }
+
+    public void setDescription(String description) {
+        this.description = description;
+    }
+
+    public void setInputType(InputType inputType) {
+        this.inputType = inputType;
+    }
+
+    public void setRequired(boolean required) {
+        this.requiredYn = required ? 'Y' : 'N';
+    }
+
+    public boolean isRequired() {
+        return this.requiredYn == 'Y';
+    }
+
+    public void addOption(SurveyItemOption option) {
+        this.options.add(option);
+        option.setSurveyItem(this);
+    }
+
 }
