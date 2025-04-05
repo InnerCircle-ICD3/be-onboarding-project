@@ -21,6 +21,8 @@ decorator:
 
 springdoc:
   swagger-ui:
+    groups-order: DESC
+    operations-sorter: method
     path: /swagger-ui.html
   api-docs:
     path: /api-docs
