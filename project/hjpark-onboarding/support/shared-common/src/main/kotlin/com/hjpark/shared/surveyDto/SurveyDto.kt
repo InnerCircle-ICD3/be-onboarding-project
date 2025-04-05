@@ -2,6 +2,7 @@ package com.hjpark.shared.surveyDto
 
 import java.time.LocalDateTime
 
+// 설문 간단 정보 조회용 Dto
 data class SurveyDto(
     val id: Long,
     val name: String,
@@ -13,7 +14,6 @@ data class SurveyDto(
 data class SurveyListDto(
     val surveys: List<SurveyDto>
 )
-
 
 // 설문 생성 요청 DTO
 data class CreateSurveyRequest(
@@ -39,17 +39,24 @@ data class CreateOptionRequest(
 )
 
 // 설문 수정 요청 DTO (생성과 동일한 구조)
-typealias UpdateSurveyRequest = CreateSurveyRequest
-
-// 응답 제출 요청 DTO (새로 추가)
-data class SubmitResponseRequest(
-    val respondentId: String?,
-    val items: List<ResponseItemRequest>
+data class UpdateSurveyRequest(
+    val name: String,
+    val description: String?,
+    val questions: List<UpdateQuestionRequest>
 )
 
-// 응답 항목 요청 DTO
-data class ResponseItemRequest(
-    val questionId: Long,
-    val textValue: String?,
-    val optionId: Long?
+data class UpdateQuestionRequest(
+    val id: Long?, // null이면 새 질문으로 간주
+    val name: String,
+    val description: String?,
+    val type: String, // "SHORT_ANSWER", "LONG_ANSWER", "SINGLE_CHOICE", "MULTIPLE_CHOICE"
+    val required: Boolean,
+    val sequence: Short?,
+    val options: List<UpdateOptionRequest>?
+)
+
+data class UpdateOptionRequest(
+    val id: Long?, // null인 경우 신규 옵션 생성
+    val text: String,
+    val sequence: Int
 )

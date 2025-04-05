@@ -8,11 +8,11 @@ data class QuestionDto(
     val surveyId: Long,
     val name: String,
     val description: String?,
-    val type: String,
+    val type: String, // "SHORT_ANSWER", "LONG_ANSWER", "SINGLE_CHOICE", "MULTIPLE_CHOICE"
     val required: Boolean,
     val sequence: Short,
     val createTime: LocalDateTime,
-    val options: List<QuestionOptionDto>
+    val options: List<QuestionOptionDto> // 선택지 목록 추가
 )
 
 
