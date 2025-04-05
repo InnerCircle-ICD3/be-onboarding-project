@@ -1,6 +1,6 @@
-package com.example.api.controller
+package com.example.controller
 
-import com.example.dto.AnswerSubmitDto
+import com.example.dto.SurveyUpdateRequest
 import com.example.service.UpdateSurveyService
 import org.springframework.http.ResponseEntity
 import org.springframework.web.bind.annotation.*
@@ -11,12 +11,12 @@ class UpdateSurveyController(
     private val updateSurveyService: UpdateSurveyService
 ) {
 
-    @PutMapping("/{id}/answers")
-    fun updateAnswer(
+    @PutMapping("/{id}")
+    fun updateSurvey(
         @PathVariable id: Long,
-        @RequestBody request: AnswerSubmitDto
+        @RequestBody request: SurveyUpdateRequest
     ): ResponseEntity<Void> {
-        updateSurveyService.submitAnswer(id, request)
+        updateSurveyService.updateSurvey(id, request)
         return ResponseEntity.ok().build()
     }
 }

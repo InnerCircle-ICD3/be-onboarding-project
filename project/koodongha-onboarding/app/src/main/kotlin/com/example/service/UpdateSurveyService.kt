@@ -2,84 +2,93 @@ package com.example.service
 
 import com.example.dto.*
 import com.example.entity.*
-import com.example.repository.SurveyAnswerRepository
-import com.example.repository.SurveyRepository
 import com.example.exception.InvalidSurveyRequestException
 import com.example.exception.SurveyNotFoundException
+import com.example.repository.SurveyAnswerRepository
+import com.example.repository.SurveyRepository
 import org.springframework.stereotype.Service
+import org.springframework.transaction.annotation.Transactional
 
 @Service
 class UpdateSurveyService(
     private val surveyRepository: SurveyRepository,
     private val surveyAnswerRepository: SurveyAnswerRepository
 ) {
-    fun submitAnswer(surveyId: Long, request: AnswerSubmitDto) {
-        val survey = surveyRepository.findById(surveyId)
-            .orElseThrow { SurveyNotFoundException() }
 
-        val itemMap = survey.items.associateBy { it.id }
-        val answeredItemIds = request.answers.map {
-            val item = itemMap[it.itemId]
-                ?: throw InvalidSurveyRequestException("Answer value does not match survey item.")
-            it.itemId
-        }.toSet()
+    @Transactional
+    fun updateSurvey(surveyId: Long, request: SurveyUpdateRequest) {
+        val survey = surveyRepository.findSurveyWithItemsAndAnswers(surveyId)
+        ?: throw SurveyNotFoundException()
 
-        val alreadyAnsweredItemIds = survey.items
-            .filter { it.answers.isNotEmpty() }
-            .mapNotNull { it.id }
+        // 1. 설문 제목 & 설명 수정
+        survey.title = request.title
+        survey.description = request.description
 
-        val effectiveAnsweredItemIds = answeredItemIds + alreadyAnsweredItemIds
+        // 2. 기존 항목 매핑
+        val existingItems = survey.items.associateBy { it.id }
 
-        val missingRequiredItems = survey.items.filter {
-            it.isRequired && it.id !in effectiveAnsweredItemIds
-        }
-        if (missingRequiredItems.isNotEmpty()) {
-            throw InvalidSurveyRequestException("Required questions must be answered.")
-        }
-
-        val answers = request.answers.map { dto ->
-            val item = itemMap[dto.itemId]
-                ?: throw InvalidSurveyRequestException("Answer value does not match survey item.")
-
-            when (dto) {
-                is TextAnswerDto -> {
-                    if (item !is TextItem) {
-                        throw InvalidSurveyRequestException("Item is not of type text.")
+        // 3. 요청된 항목 순회하며 갱신 or 생성
+        val updatedItems = request.items.map { itemRequest ->
+            when (itemRequest) {
+                is TextItemUpdateRequest -> {
+                    if (itemRequest.id == null) {
+                        TextItem(
+                            name = itemRequest.name,
+                            description = itemRequest.description,
+                            isRequired = itemRequest.isRequired,
+                            isLong = itemRequest.isLong,
+                            survey = survey
+                        )
+                    } else {
+                        val existing = existingItems[itemRequest.id]
+                        if (existing !is TextItem)
+                            throw InvalidSurveyRequestException("Invalid item type.")
+                        existing.apply {
+                            name = itemRequest.name
+                            description = itemRequest.description
+                            isRequired = itemRequest.isRequired
+                            isLong = itemRequest.isLong
+                        }
                     }
-
-                    if (!item.isLong && dto.value.length > 255) {
-                        throw InvalidSurveyRequestException("SHORT_TEXT answers must be within 255 characters.")
-                    }
-
-                    TextAnswer(
-                        content = dto.value,
-                        survey = survey,
-                        item = item
-                    )
                 }
 
-                is ChoiceAnswerDto -> {
-                    if (item !is ChoiceItem) {
-                        throw InvalidSurveyRequestException("Item is not of type choice.")
+                is ChoiceItemUpdateRequest -> {
+                    if (itemRequest.id == null) {
+                        val newChoiceItem = ChoiceItem(
+                            name = itemRequest.name,
+                            description = itemRequest.description,
+                            isRequired = itemRequest.isRequired,
+                            isMultiple = itemRequest.isMultiple,
+                            survey = survey
+                        )
+                        itemRequest.options.forEach {
+                            newChoiceItem.options.add(SelectionOption(value = it, item = newChoiceItem))
+                        }
+                        newChoiceItem
+                    } else {
+                        val existing = existingItems[itemRequest.id]
+                        if (existing !is ChoiceItem)
+                            throw InvalidSurveyRequestException("Invalid item type.")
+                        existing.apply {
+                            name = itemRequest.name
+                            description = itemRequest.description
+                            isRequired = itemRequest.isRequired
+                            isMultiple = itemRequest.isMultiple
+                            options.clear()
+                            itemRequest.options.forEach {
+                                options.add(SelectionOption(value = it, item = this))
+                            }
+                        }
                     }
-
-                    val selected = dto.selectedOptionIds.mapNotNull { id ->
-                        item.options.find { it.id == id }
-                    }
-
-                    if (selected.size != dto.selectedOptionIds.size) {
-                        throw InvalidSurveyRequestException("You must enter a valid answer for the selected options.")
-                    }
-
-                    ChoiceAnswer(
-                        selectedOptions = selected.toMutableList(),
-                        survey = survey,
-                        item = item
-                    )
                 }
             }
         }
 
-        surveyAnswerRepository.saveAll(answers)
+        // 4. 항목 전체 교체 (orphanRemoval = true 로 삭제 반영됨)
+        survey.items.clear()
+        survey.items.addAll(updatedItems)
+
+        // 5. 저장 (JPA dirty checking)
+        surveyRepository.save(survey)
     }
 }

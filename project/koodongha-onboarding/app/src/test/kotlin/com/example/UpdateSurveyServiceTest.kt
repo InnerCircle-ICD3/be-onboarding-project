@@ -1,15 +1,14 @@
 package com.example
 
-import com.example.exception.*
 import com.example.dto.*
 import com.example.entity.*
+import com.example.exception.*
 import com.example.repository.SurveyAnswerRepository
 import com.example.repository.SurveyRepository
 import com.example.service.UpdateSurveyService
 import org.junit.jupiter.api.Assertions.*
 import org.junit.jupiter.api.DisplayName
 import org.junit.jupiter.api.Test
-import org.mockito.kotlin.argumentCaptor
 import org.mockito.kotlin.mock
 import org.mockito.kotlin.verify
 import org.mockito.kotlin.whenever
@@ -22,204 +21,193 @@ class UpdateSurveyServiceTest {
     private val updateSurveyService = UpdateSurveyService(surveyRepository, surveyAnswerRepository)
 
     @Test
-    @DisplayName("Should save successfully when submitting valid answers")
-    fun shouldSaveSuccessfullyWhenSubmittingValidAnswers() {
-        val singleChoiceItem = ChoiceItem(
-            name = "Language Choice",
-            description = "Favorite Language",
-            isRequired = true,
-            isMultiple = false,
-            survey = mock()
-        ).apply { id = 1L }
-
-        val kotlinOption = SelectionOption(id = 10L, value = "Kotlin", item = singleChoiceItem)
-        singleChoiceItem.options.add(kotlinOption)
-
+    @DisplayName("Should update survey title and description")
+    fun shouldUpdateSurveyTitleAndDescription() {
         val survey = Survey(
             id = 1L,
-            title = "Survey",
-            description = "Test",
-            items = mutableListOf(singleChoiceItem)
+            title = "Old Title",
+            description = "Old Description",
+            items = mutableListOf()
         )
 
-        whenever(surveyRepository.findById(1L)).thenReturn(Optional.of(survey))
+        whenever(surveyRepository.findSurveyWithItemsAndAnswers(1L)).thenReturn(survey)
 
-        val request = AnswerSubmitDto(
-            answers = listOf(
-                ChoiceAnswerDto(itemId = 1L, selectedOptionIds = listOf(10L))
-            )
+        val request = SurveyUpdateRequest(
+            title = "New Title",
+            description = "New Description",
+            items = listOf()
         )
 
-        assertDoesNotThrow {
-            updateSurveyService.submitAnswer(1L, request)
-        }
+        updateSurveyService.updateSurvey(1L, request)
 
-        verify(surveyAnswerRepository).saveAll(argumentCaptor<List<SurveyAnswerBase>>().capture())
+        assertEquals("New Title", survey.title)
+        assertEquals("New Description", survey.description)
     }
 
     @Test
-    @DisplayName("Should throw exception when survey does not exist")
-    fun shouldThrowExceptionWhenSurveyDoesNotExist() {
-        whenever(surveyRepository.findById(999L)).thenReturn(Optional.empty())
-
-        val request = AnswerSubmitDto(
-            answers = listOf(TextAnswerDto(itemId = 1L, value = "Kotlin"))
-        )
-
-        val exception = assertThrows(SurveyNotFoundException::class.java) {
-            updateSurveyService.submitAnswer(999L, request)
-        }
-
-        assertEquals("설문을 찾을 수 없습니다.", exception.message)
-    }
-
-    @Test
-    @DisplayName("Should throw exception when answer item does not match survey item")
-    fun shouldThrowExceptionWhenAnswerItemDoesNotMatchSurveyItem() {
-        val item = ChoiceItem(
-            name = "Language Choice",
-            description = "Favorite Language",
-            isRequired = true,
-            isMultiple = false,
-            survey = mock()
-        ).apply { id = 1L }
-
-        val survey = Survey(
-            id = 1L,
-            title = "Survey",
-            description = "Test",
-            items = mutableListOf(item)
-        )
-
-        whenever(surveyRepository.findById(1L)).thenReturn(Optional.of(survey))
-
-        val request = AnswerSubmitDto(
-            answers = listOf(
-                ChoiceAnswerDto(itemId = 999L, selectedOptionIds = listOf(10L))
-            )
-        )
-
-        val exception = assertThrows(InvalidSurveyRequestException::class.java) {
-            updateSurveyService.submitAnswer(1L, request)
-        }
-
-        assertEquals("Answer value does not match survey item.", exception.message)
-    }
-
-    @Test
-    @DisplayName("Should save successfully when input type is LONG_TEXT")
-    fun shouldSaveSuccessfullyWhenInputTypeIsLongText() {
-        val longTextItem = TextItem(
-            name = "Self-Introduction",
-            description = "Please explain in detail",
-            isRequired = true,
-            isLong = true,
-            survey = mock()
-        ).apply { id = 1L }
-
-        val survey = Survey(
-            id = 1L,
-            title = "Self-Introduction Survey",
-            description = "Please write a detailed self-introduction",
-            items = mutableListOf(longTextItem)
-        )
-
-        whenever(surveyRepository.findById(1L)).thenReturn(Optional.of(survey))
-
-        val request = AnswerSubmitDto(
-            answers = listOf(
-                TextAnswerDto(itemId = 1L, value = "I am a backend developer, primarily using Kotlin and Java!")
-            )
-        )
-
-        assertDoesNotThrow {
-            updateSurveyService.submitAnswer(1L, request)
-        }
-
-        verify(surveyAnswerRepository).saveAll(argumentCaptor<List<SurveyAnswerBase>>().capture())
-    }
-
-    @Test
-    @DisplayName("Should throw exception when SHORT_TEXT answer is too long")
-    fun shouldThrowExceptionWhenShortTextAnswerIsTooLong() {
-        val shortTextItem = TextItem(
-            name = "One Line Introduction",
-            description = "Please introduce yourself in one line",
-            isRequired = true,
-            isLong = false,
-            survey = mock()
-        ).apply { id = 1L }
-
-        val survey = Survey(
-            id = 1L,
-            title = "Short Answer Test",
-            description = "Check for maximum length",
-            items = mutableListOf(shortTextItem)
-        )
-
-        whenever(surveyRepository.findById(1L)).thenReturn(Optional.of(survey))
-
-        val longText = "a".repeat(300)
-
-        val request = AnswerSubmitDto(
-            answers = listOf(TextAnswerDto(itemId = 1L, value = longText))
-        )
-
-        val exception = assertThrows(InvalidSurveyRequestException::class.java) {
-            updateSurveyService.submitAnswer(1L, request)
-        }
-
-        assertEquals("SHORT_TEXT answers must be within 255 characters.", exception.message)
-    }
-
-    @Test
-    @DisplayName("Should keep existing answers when items are updated")
-    fun shouldKeepExistingAnswersWhenItemsAreUpdated() {
-        val textItem = TextItem(
-            name = "Old Question",
+    @DisplayName("Should replace all survey items with updated ones")
+    fun shouldReplaceAllSurveyItems() {
+        val oldItem = TextItem(
+            name = "Old Item",
             description = "Old Description",
             isRequired = true,
             isLong = false,
             survey = mock()
         ).apply { id = 1L }
 
-        val updatedItem = TextItem(
-            name = "Updated Question",
+        val survey = Survey(
+            id = 1L,
+            title = "Survey",
+            description = "Survey Desc",
+            items = mutableListOf(oldItem)
+        )
+
+        whenever(surveyRepository.findSurveyWithItemsAndAnswers(1L)).thenReturn(survey)
+
+        val newRequestItem = TextItemUpdateRequest(
+            id = 1L,
+            name = "Updated Item",
             description = "Updated Description",
+            isRequired = false,
+            isLong = true
+        )
+
+        val request = SurveyUpdateRequest(
+            title = "Survey",
+            description = "Survey Desc",
+            items = listOf(newRequestItem)
+        )
+
+        updateSurveyService.updateSurvey(1L, request)
+
+        val updatedItem = survey.items.first() as TextItem
+        assertEquals("Updated Item", updatedItem.name)
+        assertEquals("Updated Description", updatedItem.description)
+        assertFalse(updatedItem.isRequired)
+        assertTrue(updatedItem.isLong)
+    }
+
+    @Test
+    @DisplayName("Should add new item when no ID is provided")
+    fun shouldAddNewItemWhenIdIsNull() {
+        val survey = Survey(
+            id = 1L,
+            title = "Survey",
+            description = "Survey Desc",
+            items = mutableListOf()
+        )
+
+        whenever(surveyRepository.findSurveyWithItemsAndAnswers(1L)).thenReturn(survey)
+
+        val newRequestItem = ChoiceItemUpdateRequest(
+            id = null,
+            name = "New Choice",
+            description = "Pick one",
             isRequired = true,
+            isMultiple = false,
+            options = listOf("A", "B")
+        )
+
+        val request = SurveyUpdateRequest(
+            title = "Survey",
+            description = "Survey Desc",
+            items = listOf(newRequestItem)
+        )
+
+        updateSurveyService.updateSurvey(1L, request)
+
+        assertEquals(1, survey.items.size)
+        val newItem = survey.items.first() as ChoiceItem
+        assertEquals("New Choice", newItem.name)
+        assertEquals(2, newItem.options.size)
+    }
+
+    @Test
+    @DisplayName("Should remove deleted items that are not in update request")
+    fun shouldRemoveDeletedItems() {
+        val keptItem = TextItem(
+            name = "Keep me",
+            description = "I'm staying",
+            isRequired = true,
+            isLong = false,
+            survey = mock()
+        ).apply { id = 1L }
+
+        val removedItem = TextItem(
+            name = "Remove me",
+            description = "I'm going",
+            isRequired = false,
             isLong = false,
             survey = mock()
         ).apply { id = 2L }
 
         val survey = Survey(
             id = 1L,
-            title = "Editable Survey",
-            description = "Before update",
-            items = mutableListOf(textItem, updatedItem)
+            title = "Survey",
+            description = "Survey Desc",
+            items = mutableListOf(keptItem, removedItem)
         )
 
-        val existingAnswer = TextAnswer(
-            content = "Old Answer",
-            survey = survey,
-            item = textItem
+        whenever(surveyRepository.findSurveyWithItemsAndAnswers(1L)).thenReturn(survey)
+
+        val updateRequest = TextItemUpdateRequest(
+            id = 1L,
+            name = "Keep me updated",
+            description = "Still here",
+            isRequired = true,
+            isLong = true
         )
 
-        textItem.answers.add(existingAnswer)
-        survey.items.addAll(listOf(textItem, updatedItem))
-
-        whenever(surveyRepository.findById(1L)).thenReturn(Optional.of(survey))
-
-        val request = AnswerSubmitDto(
-            answers = listOf(
-                TextAnswerDto(itemId = 2L, value = "New Answer")
-            )
+        val request = SurveyUpdateRequest(
+            title = "Survey",
+            description = "Survey Desc",
+            items = listOf(updateRequest)
         )
 
-        assertDoesNotThrow {
-            updateSurveyService.submitAnswer(1L, request)
+        updateSurveyService.updateSurvey(1L, request)
+
+        assertEquals(1, survey.items.size)
+        assertEquals("Keep me updated", survey.items[0].name)
+    }
+
+    @Test
+    @DisplayName("Should throw when item type mismatch on update")
+    fun shouldThrowWhenItemTypeMismatch() {
+        val originalItem = ChoiceItem(
+            name = "Pick one",
+            description = "Choices",
+            isRequired = true,
+            isMultiple = false,
+            survey = mock()
+        ).apply { id = 1L }
+
+        val survey = Survey(
+            id = 1L,
+            title = "Survey",
+            description = "Survey Desc",
+            items = mutableListOf(originalItem)
+        )
+
+        whenever(surveyRepository.findSurveyWithItemsAndAnswers(1L)).thenReturn(survey)
+
+        val invalidUpdate = TextItemUpdateRequest(
+            id = 1L,
+            name = "Invalid",
+            description = "Oops",
+            isRequired = true,
+            isLong = false
+        )
+
+        val request = SurveyUpdateRequest(
+            title = "Survey",
+            description = "Survey Desc",
+            items = listOf(invalidUpdate)
+        )
+
+        val ex = assertThrows(InvalidSurveyRequestException::class.java) {
+            updateSurveyService.updateSurvey(1L, request)
         }
 
-        verify(surveyAnswerRepository).saveAll(argumentCaptor<List<SurveyAnswerBase>>().capture())
-        assertTrue(textItem.answers.contains(existingAnswer))
+        assertEquals("Invalid item type.", ex.message)
     }
 }

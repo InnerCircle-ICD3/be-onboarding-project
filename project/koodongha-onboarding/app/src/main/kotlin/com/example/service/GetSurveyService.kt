@@ -6,6 +6,7 @@ import com.example.repository.SurveyAnswerRepository
 import com.example.repository.SurveyRepository
 import com.example.exception.SurveyNotFoundException
 import org.springframework.stereotype.Service
+import org.springframework.transaction.annotation.Transactional
 
 @Service
 class GetSurveyService(
@@ -13,26 +14,30 @@ class GetSurveyService(
     private val answerRepository: SurveyAnswerRepository
 ) {
 
+    @Transactional(readOnly = true)
     fun getSurvey(
         surveyId: Long,
         filterName: String? = null,
         filterAnswer: String? = null
     ): SurveyResponse {
-        val survey = surveyRepository.findById(surveyId)
-            .orElseThrow { SurveyNotFoundException() }
+        val survey = surveyRepository.findSurveyWithItemsAndAnswers(surveyId)
+            ?: throw SurveyNotFoundException()
 
         val allAnswers = answerRepository.findBySurveyId(surveyId)
 
         val itemResponses = survey.items.mapNotNull { item ->
             val itemAnswers = allAnswers.filter { it.item.id == item.id }
-                .flatMap { it.getAnswerValues() }
 
-            val filteredAnswers = if (
-                filterName != null && filterAnswer != null && item.name == filterName
-            ) {
-                itemAnswers.filter { it.trim() == filterAnswer }
-            } else {
-                itemAnswers
+            val filteredValues = itemAnswers
+                .flatMap { it.getAnswerValues() }
+                .filter {
+                    if (filterName != null && filterAnswer != null && item.name == filterName) {
+                        it.trim() == filterAnswer
+                    } else true
+                }
+
+            if (filterName != null && filterAnswer != null && item.name == filterName && filteredValues.isEmpty()) {
+                return@mapNotNull null
             }
 
             when (item) {
@@ -42,9 +47,8 @@ class GetSurveyService(
                     description = item.description,
                     isRequired = item.isRequired,
                     isLong = item.isLong,
-                    answers = filteredAnswers
+                    answers = filteredValues
                 )
-
                 is ChoiceItem -> ChoiceItemResponse(
                     id = item.id,
                     name = item.name,
@@ -52,9 +56,8 @@ class GetSurveyService(
                     isRequired = item.isRequired,
                     isMultiple = item.isMultiple,
                     options = item.options.map { it.value },
-                    answers = filteredAnswers
+                    answers = filteredValues
                 )
-
                 else -> null
             }
         }

@@ -1,4 +1,4 @@
-package com.example.api.exception
+package com.example.exception
 
 import com.example.exception.*
 import jakarta.servlet.http.HttpServletRequest
