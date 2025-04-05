@@ -6,7 +6,6 @@ import org.survey.taehwanonboarding.api.dto.QuestionRequest
 import org.survey.taehwanonboarding.api.dto.QuestionType
 import org.survey.taehwanonboarding.api.dto.SurveyCreateRequest
 import org.survey.taehwanonboarding.api.dto.SurveyCreateResponse
-import org.survey.taehwanonboarding.config.ValidationMessage
 import org.survey.taehwanonboarding.domain.entity.survey.LongAnswerItem
 import org.survey.taehwanonboarding.domain.entity.survey.MultiSelectionItem
 import org.survey.taehwanonboarding.domain.entity.survey.ShortAnswerItem
