@@ -1,9 +1,10 @@
 package com.innercircle.survey.entity
 
-import com.innercircle.common.DateTimeSystemAttribute
+import com.innercircle.common.BaseEntity
 import com.innercircle.domain.survey.command.dto.SurveyQuestionCreateCommand
 import com.innercircle.domain.survey.entity.SurveyQuestionContext
 import jakarta.persistence.*
+import org.hibernate.annotations.Filter
 
 @Entity
 class SurveyQuestion private constructor(
@@ -17,9 +18,9 @@ class SurveyQuestion private constructor(
 
     @Enumerated(EnumType.STRING)
     @Column(nullable = false)
-    val questionType: QuestionType
+    var questionType: QuestionType
 
-) : DateTimeSystemAttribute() {
+) : BaseEntity() {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -32,6 +33,7 @@ class SurveyQuestion private constructor(
         }
 
     @OneToMany(mappedBy = "surveyQuestion", fetch = FetchType.LAZY, cascade = [CascadeType.PERSIST])
+    @Filter(name = "deletedFilter", condition = "is_deleted = :isDeleted")
     val options: MutableList<SurveyQuestionOption> = mutableListOf()
 
     companion object {
@@ -69,5 +71,9 @@ class SurveyQuestion private constructor(
 
 enum class QuestionType {
     SHORT_ANSWER, LONG_ANSWER, SINGLE_CHOICE, MULTI_CHOICE;
+
+    fun isChoiceType(): Boolean {
+        return this == SINGLE_CHOICE || this == MULTI_CHOICE
+    }
 }
 

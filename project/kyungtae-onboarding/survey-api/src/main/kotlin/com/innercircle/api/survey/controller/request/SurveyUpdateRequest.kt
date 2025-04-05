@@ -1,15 +1,15 @@
 package com.innercircle.api.survey.controller.request
 
-import com.fasterxml.jackson.annotation.JsonIgnore
-import com.innercircle.domain.survey.command.dto.SurveyCreateCommand
+import com.innercircle.domain.survey.command.dto.SurveyUpdateCommand
 import io.swagger.v3.oas.annotations.media.Schema
-import jakarta.validation.constraints.AssertTrue
 import jakarta.validation.constraints.NotBlank
 import jakarta.validation.constraints.NotEmpty
 import jakarta.validation.constraints.NotNull
 import java.time.LocalDateTime
+import java.util.*
 
-data class SurveyCreateRequest(
+data class SurveyUpdateRequest(
+
     @field:NotBlank
     @Schema(description = "설문 이름", example = "직장인 최애 음식 설문", required = true)
     val name: String? = null,
@@ -32,20 +32,15 @@ data class SurveyCreateRequest(
 
     @field:NotEmpty
     @Schema(description = "설문 질문 목록", required = true)
-    val questions: List<SurveyQuestionCreateRequest>? = emptyList()
+    val questions: List<SurveyQuestionUpdateRequest> = emptyList()
 ) {
-    fun toCommand() = SurveyCreateCommand(
+    fun toCommand(externalId: UUID): SurveyUpdateCommand = SurveyUpdateCommand(
+        externalId = externalId,
         name = name!!,
         description = description!!,
         startAt = startAt!!,
         endAt = endAt!!,
         participantCapacity = participantCapacity!!,
-        questions = questions!!.map { it.toCommand() }
+        questions = questions.map { it.toCommand() }
     )
-
-    @JsonIgnore
-    @AssertTrue(message = "startAt은 endAt보다 이전이어야 합니다.")
-    fun isStartBeforeEnd(): Boolean {
-        return startAt!!.isBefore(endAt)
-    }
 }

@@ -7,10 +7,10 @@ import jakarta.persistence.Embeddable
 class SurveyQuestionContext(
 
     @Column(nullable = false, length = 100)
-    val name: String,
+    var name: String,
 
     @Column(nullable = false, length = 500)
-    val description: String,
+    var description: String,
 ) {
     init {
         require(name.isNotBlank()) { "name must not be blank" }
