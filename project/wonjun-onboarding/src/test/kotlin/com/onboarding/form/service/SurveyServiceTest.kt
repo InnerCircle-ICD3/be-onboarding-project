@@ -1,14 +1,16 @@
 package com.onboarding.form.service
 
-import com.onboarding.form.domain.MultiSelectQuestion
-import com.onboarding.form.domain.QuestionType
-import com.onboarding.form.domain.SingleSelectQuestion
+import CreateAnswerRequestDto
+import CreateInsertAnswerDto
+import CreateSelectAnswerDto
+import com.onboarding.form.domain.*
 import com.onboarding.form.request.CreateSelectQuestionDto
 import com.onboarding.form.request.CreateStandardQuestionDto
 import com.onboarding.form.request.CreateSurveyDto
 import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.Assertions.assertTrue
 import org.junit.jupiter.api.DisplayName
+import org.junit.jupiter.api.assertDoesNotThrow
 import org.junit.jupiter.api.assertThrows
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.boot.test.context.SpringBootTest
@@ -60,10 +62,10 @@ class SurveyServiceTest {
         assertEquals(actualSurvey.title, createSurveyDto.title)
         assertEquals(actualSurvey.description, createSurveyDto.description)
 
-        (actualSurvey.questions.zip(createSurveyDto.questions)).forEach {
+        (actualSurvey.getQuestions().zip(createSurveyDto.questions)).forEach {
             assertEquals(it.first.title, it.second.title)
             assertEquals(it.first.description, it.second.description)
-            assertEquals(it.first.getType(), it.second.type)
+            assertEquals(it.first.type, it.second.type)
             assertEquals(it.first.isRequired, it.second.isRequired)
 
             if (it.first is MultiSelectQuestion) {
@@ -85,6 +87,7 @@ class SurveyServiceTest {
             }
         }
     }
+
     @Test
     @DisplayName("Survey가 존재하지 않는데 수정을 시도할 시 에러가 발생한다.")
     fun updateSurveyTestSurveyIsNotExist() {
@@ -103,8 +106,8 @@ class SurveyServiceTest {
         )
 
 
-        assertThrows<IllegalArgumentException>{
-            surveyService.updateSurveyDto(0, updateSurveyDto)
+        assertThrows<IllegalArgumentException> {
+            surveyService.updateSurvey(1, updateSurveyDto)
         }
     }
 
@@ -182,15 +185,15 @@ class SurveyServiceTest {
             )
         )
 
-        val updateActualSurvey = surveyService.updateSurveyDto(actualSurvey.id!!, updateSurveyDto)
+        val updateActualSurvey = surveyService.updateSurvey(actualSurvey.id, updateSurveyDto)
 
         assertEquals(updateActualSurvey.title, updateSurveyDto.title)
         assertEquals(updateActualSurvey.description, updateSurveyDto.description)
 
-        (updateActualSurvey.questions.zip(updateSurveyDto.questions)).forEach {
+        (updateActualSurvey.getQuestions().zip(updateSurveyDto.questions)).forEach {
             assertEquals(it.first.title, it.second.title)
             assertEquals(it.first.description, it.second.description)
-            assertEquals(it.first.getType(), it.second.type)
+            assertEquals(it.first.type, it.second.type)
             assertEquals(it.first.isRequired, it.second.isRequired)
 
             if (it.first is MultiSelectQuestion) {
@@ -211,5 +214,93 @@ class SurveyServiceTest {
                 }
             }
         }
+    }
+
+    @Test
+    @DisplayName("설문조사 수정 시 새로운 버전이 추가된다.")
+    fun updateSurveyVersionTest() {
+        val createSurveyDto = CreateSurveyDto(
+            title = "testTitle",
+            description = "testDescription",
+            questions = listOf(
+                CreateSelectQuestionDto(
+                    title = "testTitle",
+                    description = "testDescription",
+                    type = QuestionType.MULTI_SELECT,
+                    isRequired = true,
+                    answerList = listOf("testAnswer1", "testAnswer2")
+                ),
+            )
+        )
+
+        val survey = surveyService.createSurvey(createSurveyDto)
+
+        assertEquals(survey.getCurrentVersion().version, 0)
+
+        val updateSurveyDto = CreateSurveyDto(
+            title = "testTitle2",
+            description = "testDescription2",
+            questions = listOf(
+                CreateSelectQuestionDto(
+                    title = "testTitle2",
+                    description = "testDescription2",
+                    type = QuestionType.MULTI_SELECT,
+                    isRequired = true,
+                    answerList = listOf("testAnswer12", "testAnswer22")
+                )
+            )
+        )
+
+        val updateActualSurvey = surveyService.updateSurvey(survey.id, updateSurveyDto)
+
+        assertEquals(updateActualSurvey.title, updateSurveyDto.title)
+        assertEquals(updateActualSurvey.description, updateSurveyDto.description)
+        assertEquals(updateActualSurvey.getCurrentVersion().version, 1)
+    }
+
+    @Test
+    @DisplayName("설문조사 수정 시 새로운 버전이 추가된다.")
+    fun submitAnswerTest() {
+        val createSurveyDto = CreateSurveyDto(
+            title = "testTitle",
+            description = "testDescription",
+            questions = listOf(
+                CreateSelectQuestionDto(
+                    title = "testTitle",
+                    description = "testDescription",
+                    type = QuestionType.MULTI_SELECT,
+                    isRequired = true,
+                    answerList = listOf("testAnswer1", "testAnswer2")
+                ),
+                CreateStandardQuestionDto(
+                    title = "testTitle",
+                    description = "testDescription",
+                    type = QuestionType.LONG,
+                    isRequired = true,
+                ),
+            )
+        )
+
+        val survey = surveyService.createSurvey(createSurveyDto)
+        val questions = survey.getQuestions()
+        val createResponseRequestDto = CreateAnswerRequestDto(
+            version = survey.getCurrentVersion().version,
+            answers = questions.map { question ->
+                when (question) {
+                    is MultiSelectQuestion -> CreateSelectAnswerDto(question.id, question.type, question.answerList)
+                    is SingleSelectQuestion -> CreateSelectAnswerDto(
+                        question.id,
+                        question.type,
+                        listOf(question.answerList.first())
+                    )
+
+                    is LongQuestion -> CreateInsertAnswerDto(question.id, question.type, "testValue")
+                    is ShortQuestion -> CreateInsertAnswerDto(question.id, question.type, "testValue")
+                    else -> throw IllegalArgumentException()
+                }
+            }
+        )
+
+        assertDoesNotThrow { surveyService.submitAnswer(survey.id, createResponseRequestDto) }
     }
 }
