@@ -1,6 +1,6 @@
 package com.innercircle.presurveyapi
 
-import com.innercircle.presurveyapi.common.logger
+import com.innercircle.presurveyapi.common.logging.logger
 import org.junit.jupiter.api.Test
 import org.slf4j.MDC
 import org.springframework.boot.test.context.SpringBootTest

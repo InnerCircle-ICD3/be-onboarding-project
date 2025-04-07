@@ -1,4 +1,4 @@
-package com.innercircle.presurveyapi.common
+package com.innercircle.presurveyapi.common.logging
 
 import jakarta.servlet.Filter
 import jakarta.servlet.FilterChain
