@@ -10,9 +10,8 @@
 hjpark-onboarding/
 ├── support/
 │   ├── shared-common/ (공통 모듈)
-│   └── logging/ (로깅 모듈) //사용 미정
+│   └── logging/ (로깅 모듈)
 └── survey/
-    ├── domain/ (도메인 모듈)
     ├── data/ (데이터 접근 모듈)
     ├── application/ (애플리케이션 모듈)
     └── api/ (API 모듈)
@@ -24,33 +23,34 @@ hjpark-onboarding/
 
 #### **shared-common**
 - **역할과 책임**
-  - 공통으로 사용되는 예외 처리와 응답 형식을 정의
-  - 외부 의존성 최소화
+  - 공통으로 사용되는 DTO 정의
+  - 예외 처리와 응답 형식 정의
+  - API 계층과 Application 계층 간의 데이터 전달 객체 정의
 
 #### **logging**
 - **역할과 책임**
   - 로깅 관련 설정과 유틸리티 제공
+  - 로그 포맷팅 및 필터링
+  - 로그 레벨 관리
+  - 로그 파일 관리
 
 ---
 
 ### 2. survey 모듈
 
-#### **domain**
-- **역할과 책임**
-  - 비즈니스 로직 포함
-  - 외부 의존성이 없음 (Spring, JPA 등에 의존하지 않음)
-
 #### **data**
 - **역할과 책임**
   - 데이터베이스와의 상호작용을 담당
   - JPA 엔티티와 리포지토리 정의
-  - 도메인 모듈에만 의존하여 데이터 접근 로직 캡슐화
+  - 데이터 접근 로직 캡슐화
+  - 트랜잭션 관리
 
 #### **application**
 - **역할과 책임**
-  - 유스케이스 구현을 담당
-  - 도메인 로직과 데이터 접근 계층을 조합하여 비즈니스 요구사항 구현
+  - 비즈니스 로직 구현
+  - 데이터 접근 계층을 활용한 비즈니스 요구사항 구현
   - 트랜잭션 처리
+  - 도메인 로직 실행
 
 #### **api**
 - **역할과 책임**
@@ -67,15 +67,17 @@ hjpark-onboarding/
 - 모듈 간 의존성
 
 ```
-shared-common -> api -> application -> domain <- data
+shared-common -> api -> application -> data
 ```
 
-각 모듈의 의존성 규칙:
-- shared-common: 의존성 없음
-- api: shared-common, application
-- application: domain
-- domain: 의존성 없음
-- data: domain
+각 모듈 간의 의존성 규칙:
+- api: shared-common, logging, application
+- application: shared-common, data
+- data: 의존성 없음
+
+---
+## ERD
+<img src="./erd/설문조사 시스템 ERD.png" width="600"> <img src="./erd/설문조사 시스템 ERD 상세.png" width="800">
 
 ---
 
@@ -88,6 +90,26 @@ shared-common -> api -> application -> domain <- data
 | Spring Data JPA | -      | ORM 및 데이터베이스 액세스 |
 | H2 Database | -      | 인메모리 RDBMS               |
 | Gradle     | 8.13   | 빌드 도구                    |
+
+---
+
+## 추가 구현 사항
+
+### 설문 목록 조회 기능
+- 설문 제목을 키워드로 검색하여 설문 목록을 조회하는 기능 구현
+- 키워드가 없는 경우 전체 설문 목록 반환
+- 검색 결과는 설문 생성일 기준 내림차순으로 정렬
+- 각 설문의 간략한 정보(제목, 설명, 생성일 등)만 포함하여 반환
+- ```kotlin
+  data class SurveyDto(
+    val id: Long,
+    val name: String,
+    val description: String?,
+    val createTime: LocalDateTime,
+    val updateTime: LocalDateTime,
+    val questionCount: Int
+  )
+  ```
 
 ---
 
@@ -109,3 +131,7 @@ shared-common -> api -> application -> domain <- data
 ```
 
 ---
+
+## API 명세서
+API 문서는 다음 경로에서 확인할 수 있습니다:
+- [API 문서](https://hj4645.github.io/page-publishing/)
