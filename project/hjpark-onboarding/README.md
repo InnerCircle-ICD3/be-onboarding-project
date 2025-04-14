@@ -131,3 +131,7 @@ shared-common -> api -> application -> data
 ```
 
 ---
+
+## API 명세서
+API 문서는 다음 경로에서 확인할 수 있습니다:
+- [API 문서](https://hj4645.github.io/page-publishing/)
